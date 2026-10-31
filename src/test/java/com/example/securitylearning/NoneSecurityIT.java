@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -36,6 +38,8 @@ class NoneSecurityIT {
             .header("Authorization", "Bearer deliberately-invalid")
         .when().get("/api/" + endpoint)
         .then().statusCode(200).body("", equalTo(Map.of("message", endpoint)));
+        assertThat(context.getBeansOfType(UserDetailsService.class)).isEmpty();
+        assertThat(context.getBeansOfType(PasswordEncoder.class)).isEmpty();
         assertThat(context.getBeansOfType(FilterChainProxy.class)).isEmpty();
         assertThat(context.getBeansOfType(SecurityFilterChain.class)).isEmpty();
         assertThat(context.containsBean("springSecurityFilterChain")).isFalse();

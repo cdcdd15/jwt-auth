@@ -1,6 +1,6 @@
 # Proposed Project Structure
 
-P1.S1–S3 and P2.S1 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
+P1.S1–S3 and P2.S1–S2 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
 
 ```text
 src/main/java/com/example/securitylearning/SecurityLearningApplication.java
@@ -13,7 +13,7 @@ src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java
 src/main/java/com/example/securitylearning/tracing/MvcTraceInterceptor.java
 src/test/java/com/example/securitylearning/PlainMvcIT.java
 src/test/java/com/example/securitylearning/NoneSecurityIT.java
-src/test/java/com/example/securitylearning/BasicSecurityIT.java
+src/test/java/com/example/securitylearning/BasicSecurityIT.java  # includes test-only principal probe
 src/test/java/com/example/securitylearning/SecurityModeConfigTest.java
 src/test/java/com/example/securitylearning/RequestTraceIT.java
 src/test/java/com/example/securitylearning/ErrorPathIT.java  # includes test-only error fixtures
@@ -22,6 +22,7 @@ docs/learning/P1.S1-WALKTHROUGH.md
 docs/learning/P1.S2-WALKTHROUGH.md
 docs/learning/P1.S3-WALKTHROUGH.md
 docs/learning/P2.S1-WALKTHROUGH.md
+docs/learning/P2.S2-WALKTHROUGH.md
 ```
 
 ```text
@@ -43,7 +44,7 @@ jwt-auth/
 │       ├── P3-JWT-RS256.md
 │       ├── P4-JWT-VALIDATION.md
 │       └── P5-COMPARISON.md
-└── src/                          # P1 + P2.S1; application, tracing, mode configuration, and tests
+└── src/                          # P1 + P2.S1–S2; application, tracing, mode configuration, and tests
 ```
 
 ## Target Java and test layout (mostly future work)

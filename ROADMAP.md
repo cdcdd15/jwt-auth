@@ -17,7 +17,7 @@ Scope: [in scope / out of scope](docs/IN-SCOPE-OUT-OF-SCOPE.md), covering P1.S1 
   - [x] P1.S3 — Error paths and P1 teaching material; verified 2026-10-31: 9 HTTP cases + 2 unit tests passed (JDK 24, release 21). [Walkthrough](docs/learning/P1.S3-WALKTHROUGH.md).
 - [ ] P2 — HTTP Basic. See `docs/roadmap/P2-BASIC-SECURITY.md`.
   - [x] P2.S1 — Security chain and mode isolation; verified 2026-10-31: 15 HTTP + 9 unit cases passed (JDK 24, release 21). [Walkthrough](docs/learning/P2.S1-WALKTHROUGH.md).
-  - [ ] P2.S2 — In-memory identity and Basic authentication.
+  - [x] P2.S2 — In-memory identity and Basic authentication; verified 2026-10-31: 21 HTTP + 9 unit cases passed (JDK 24, release 21). [Walkthrough](docs/learning/P2.S2-WALKTHROUGH.md).
   - [ ] P2.S3 — Authorization, failures and learning docs.
 - [ ] P3 — RS256 foundation and issuance: P3.S1, P3.S2, P3.S3. See `docs/roadmap/P3-JWT-RS256.md`.
 - [ ] P4 — JWT integration and edge cases: P4.S1, P4.S2, P4.S3. See `docs/roadmap/P4-JWT-VALIDATION.md`.

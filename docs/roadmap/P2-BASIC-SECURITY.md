@@ -7,7 +7,7 @@
 - [x] Implemented and verified 2026-10-31: `mvn verify` passed 15 integration + 9 unit cases, no failures/errors/skips (JDK 24, release 21).
 - One property: `app.security-mode=none|basic`, default none; unsupported/combined values fail configuration creation. JWT is not implemented yet.
 - Explicit isolation: Boot default chain, proxy registration, and generated-user auto-configurations excluded; only conditional basic configuration enables web security and registers the servlet proxy.
-- S1 uses an explicit status-only 401 entry point. Basic authentication/challenges and users remain S2; ADMIN policy remains S3.
+- At the S1 checkpoint, the entry point was status-only. S2 below now replaces it with a Basic challenge entry point and in-memory identities; ADMIN policy remains S3.
 - `BasicSecurityIT`: real proxy invoked on public 200 and protected 401; denied requests have only outer filter events. `NoneSecurityIT`: three 200 responses with ignored invalid header; no chain/proxy bean or servlet registration. All P1 suites run explicitly in none.
 - [Detailed walkthrough and actual chain/trace evidence](../learning/P2.S1-WALKTHROUGH.md). Tracing now precedes the security proxy.
 
@@ -15,6 +15,13 @@ Implemented design: Spring Security starter, explicit `SecurityFilterChain` for 
 **Learning:** DelegatingFilterProxy, FilterChainProxy, chain selection, authorization, filter registration vs permitAll.
 
 ## P2.S2 — In-memory identity and Basic authentication
+
+- [x] Implemented and verified 2026-10-31. `mvn verify`: 21 HTTP integration + 9 unit cases, zero failures/errors/skips (JDK 24, release 21).
+- Conditional basic configuration provides BCrypt, in-memory users, explicit DaoAuthenticationProvider, and shared BasicAuthenticationEntryPoint. None contains no identity/encoder beans or security proxy/chain.
+- `BasicSecurityIT`: both valid identities/authorities and erased credentials observed in MVC; missing credentials, bad password, unknown user, malformed Basic header, and public-route invalid credentials return 401 with the configured challenge. Anonymous public remains 200.
+- The standard entry point's sendError is allowed to render through Boot ERROR dispatch without re-denial. Initial application-handler rejection and error rendering are distinguished; S3 still owns detailed security/error diagnostics and role policy.
+- [Line-level walkthrough and actual sanitized evidence](../learning/P2.S2-WALKTHROUGH.md). No production principal endpoint or ADMIN access rule added.
+
 Add users `user/user123` (USER), `admin/admin123` (ADMIN), BCrypt PasswordEncoder, InMemoryUserDetailsManager, AuthenticationManager/DaoAuthenticationProvider as needed. Enable HTTP Basic and replace S1's explicit status-only entry point with the intended Basic authentication entry point, so missing/invalid protected credentials return 401 with `WWW-Authenticate`. Update S1's intermediate assertions that currently require no challenge and no BasicAuthenticationFilter; preserve the actual proxy-invocation and none-isolation checks. Test valid and invalid credentials and security context principal using test-only observation rather than adding a production identity endpoint. Record invalid Basic credentials on the public route separately from public authorization without credentials. ADMIN role enforcement remains S3; do not implement it early. Demo credentials are development-only and must not appear in logs.
 **Acceptance:** real HTTP cases cover public access, valid/invalid Basic credentials, challenge headers, and principal evidence; all none/P1 suites still pass. Write `docs/learning/P2.S2-WALKTHROUGH.md` in this step.
 **Learning:** BasicAuthenticationFilter, Authentication, AuthenticationManager, Provider, UserDetailsService, PasswordEncoder, SecurityContext.
