@@ -1,4 +1,4 @@
-# HTTP Integration Test Matrix — P1.S1–S2 verified; security rows planned
+# HTTP Integration Test Matrix — P1.S1–S3 verified; security rows planned
 
 P1.S1 executed `PlainMvcIT.publicEndpointReturnsPublicJson`, `userEndpointReturnsUserJsonWithoutCredentials`, and `adminEndpointReturnsAdminJsonWithoutCredentials`: all passed, asserting 200, JSON content type, and exact parsed bodies (`message`: `public`, `user`, `admin`). `mvn verify` on 2026-10-31: 3 tests, 0 failures/errors/skips, JDK 24 with release 21. No Basic/JWT or Authorization-header cases have been executed. See [walkthrough and test-to-code map](learning/P1.S1-WALKTHROUGH.md).
 
@@ -28,3 +28,14 @@ Additional JWT tests: expired token, future not-before, wrong issuer, wrong audi
 `mvn verify` passed on 2026-10-31: 7 HTTP cases plus 2 unit tests, zero failures/errors/skips (JDK 24, release 21). `RequestTraceIT.successfulRequestRecordsNestedOrder` runs for public/user/admin and checks 200, JSON, exact body, generated ID, and the exact six-event nested sequence. `concurrentRequestsKeepIndependentTraces` verifies distinct IDs and independent public/admin events plus an empty result for an unknown ID. Existing `PlainMvcIT` still passes all three endpoint tests.
 
 `TraceEventSinkTest.completedTracesAreBoundedAndRequestStateIsRemoved` verifies eviction after 129 completions and active-attribute removal. `completedSnapshotCannotBeModifiedByReaders` verifies immutable snapshots. These unit tests supplement real HTTP; they do not replace Tomcat tests. See [actual traces and source map](learning/P1.S2-WALKTHROUGH.md). Error/async paths remain untested in this step.
+
+## P1.S3 error-path evidence — executed
+
+`mvn verify` passed on 2026-10-31: 9 integration cases + 2 unit tests, zero failures/errors/skips (JDK 24, release 21). New test-only fixtures observe REQUEST/ERROR separately; the executable jar contains neither the failing controller nor the probe. Default Boot error JSON contains status/error/original path and omits exception/trace/message fields in these tests.
+
+| Test | Observed result |
+|---|---|
+| `ErrorPathIT.unmappedUrlReturns404ThroughResourceHandlerAndErrorDispatch` | GET `/api/not-mapped`: 404; resource-handler REQUEST, no REQUEST postHandle, completion exception null; Boot ERROR pre/post/completion |
+| `ErrorPathIT.controllerExceptionReturns500AndNextRequestHasFreshTrace` | GET `/test/throw`: 500; controller event, no REQUEST postHandle, completion IllegalStateException; Boot ERROR processing; following GET public: fresh ID and normal success |
+
+Final executed inventory: `PlainMvcIT.publicEndpointReturnsPublicJson`, `userEndpointReturnsUserJsonWithoutCredentials`, `adminEndpointReturnsAdminJsonWithoutCredentials` (3); `RequestTraceIT.successfulRequestRecordsNestedOrder` for public/user/admin plus `concurrentRequestsKeepIndependentTraces` (4); the two `ErrorPathIT` methods above (2); `TraceEventSinkTest.completedTracesAreBoundedAndRequestStateIsRemoved` and `completedSnapshotCannotBeModifiedByReaders` (2 unit tests). Prior sections retain historical step results; their former “error paths untested” statements are superseded by this section. Async lifecycle tests remain out of scope. [Actual traces and code commentary](learning/P1.S3-WALKTHROUGH.md).

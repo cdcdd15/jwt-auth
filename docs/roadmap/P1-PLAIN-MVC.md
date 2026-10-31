@@ -23,8 +23,14 @@ Add `RequestTraceFilter` (OncePerRequestFilter), `MvcTraceInterceptor`, and test
 **Learning:** Servlet Filter vs HandlerInterceptor vs DispatcherServlet; chain.doFilter; handler mapping; response unwinding.
 
 ## P1.S3 — Error paths and P1 teaching material
+
+- [x] Implemented and verified 2026-10-31. `mvn verify`: 9 HTTP integration cases + 2 unit tests; zero failures/errors/skips (JDK 24, release 21).
+- `ErrorPathIT.unmappedUrlReturns404ThroughResourceHandlerAndErrorDispatch`: observed resource-handler REQUEST completion followed by Boot ERROR processing, returning 404 JSON.
+- `ErrorPathIT.controllerExceptionReturns500AndNextRequestHasFreshTrace`: observed exception-bearing REQUEST completion, skipped REQUEST postHandle, successful ERROR processing, and a clean following request.
+- [Walkthrough and actual correlated traces](../learning/P1.S3-WALKTHROUGH.md). Failing handler and dispatch probe are test-only; production remains three endpoints with REQUEST-only tracing.
+
 Test unmapped URL and controller exception; document which hooks execute and in which order. Create `docs/learning/P1.S3-WALKTHROUGH.md`, audit and refresh the existing S1/S2 walkthroughs as needed, update `docs/FLOWS-COMPARED.md` and `docs/TEST-MATRIX.md`.
 **Acceptance:** both happy and failure path tests pass, actual logs match documentation, `mvn verify` passes.
 
 ## Exit criteria
-P1 request path can be explained from Tomcat through controller and back; code and trace evidence agree. No Basic/JWT code.
+P1 exit criteria met: successful and 404/500 paths are explained with actual trace evidence; all P1 suites pass. No Basic/JWT code. Java 21 runtime execution remains unverified; compilation targets release 21. Next: P2.S1 only when requested.

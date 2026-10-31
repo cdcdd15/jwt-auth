@@ -1,6 +1,6 @@
 # Proposed Project Structure
 
-P1.S1 and P1.S2 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
+P1.S1–S3 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
 
 ```text
 src/main/java/com/example/securitylearning/SecurityLearningApplication.java
@@ -11,9 +11,11 @@ src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java
 src/main/java/com/example/securitylearning/tracing/MvcTraceInterceptor.java
 src/test/java/com/example/securitylearning/PlainMvcIT.java
 src/test/java/com/example/securitylearning/RequestTraceIT.java
+src/test/java/com/example/securitylearning/ErrorPathIT.java  # includes test-only error fixtures
 src/test/java/com/example/securitylearning/tracing/TraceEventSinkTest.java
 docs/learning/P1.S1-WALKTHROUGH.md
 docs/learning/P1.S2-WALKTHROUGH.md
+docs/learning/P1.S3-WALKTHROUGH.md
 ```
 
 ```text
@@ -35,7 +37,7 @@ jwt-auth/
 │       ├── P3-JWT-RS256.md
 │       ├── P4-JWT-VALIDATION.md
 │       └── P5-COMPARISON.md
-└── src/                          # P1.S1–S2 application, tracing, and tests
+└── src/                          # P1 complete; application, tracing, and tests
 ```
 
 ## Target Java and test layout (mostly future work)

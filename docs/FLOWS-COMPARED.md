@@ -1,6 +1,6 @@
 # Understanding the Plain MVC, Basic, and JWT Flows
 
-This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1.S1 and P1.S2 are implemented and verified. Basic and JWT remain planned, so their descriptions explain intended architecture rather than observed runtime results.
+This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1.S1–S3 are implemented and verified. Basic and JWT remain planned, so their descriptions explain intended architecture rather than observed runtime results.
 
 ## The shared foundation
 
@@ -16,7 +16,7 @@ The implemented baseline exposes GET `/api/public`, `/api/user`, and `/api/admin
 
 Plain mode still has a servlet filter chain. Spring Boot can register infrastructure filters for concerns such as character encoding and request context. What is absent is Spring Security: no security dependency, `FilterChainProxy`, authentication provider, or authorization policy exists in P1.S1.
 
-This distinction matters because `permitAll()` would allow access while retaining security processing. It would not reproduce an application without Spring Security. Current tests prove the three HTTP responses, and dependency inspection confirms security’s absence. P1.S2 now verifies correlated ordering: filter entry, interceptor preHandle, controller, interceptor postHandle, interceptor afterCompletion, filter exit. Server-generated response IDs identify bounded, immutable event snapshots. Concurrent-request tests check isolation. Tracing covers synchronous REQUEST dispatches; error-path tests remain P1.S3 work. See the [P1.S2 walkthrough](learning/P1.S2-WALKTHROUGH.md) for actual events and code references.
+This distinction matters because `permitAll()` would allow access while retaining security processing. It would not reproduce an application without Spring Security. Current tests prove the three HTTP responses, and dependency inspection confirms security’s absence. P1.S2 now verifies correlated ordering: filter entry, interceptor preHandle, controller, interceptor postHandle, interceptor afterCompletion, filter exit. Server-generated response IDs identify bounded, immutable event snapshots. Concurrent-request tests check isolation. Tracing covers synchronous REQUEST dispatches. P1.S3 verifies 404/500 JSON, skipped REQUEST postHandle, and subsequent ERROR handling by Boot’s error controller. See [error-path evidence](learning/P1.S3-WALKTHROUGH.md).
 
 ## HTTP Basic: authenticate credentials on requests
 

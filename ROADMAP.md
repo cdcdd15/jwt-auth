@@ -11,10 +11,10 @@ Scope: [in scope / out of scope](docs/IN-SCOPE-OUT-OF-SCOPE.md), covering P1.S1 
 - Integration tests: JUnit 5, SpringBootTest RANDOM_PORT, RestAssured, Maven Failsafe.
 
 ## Execution plan
-- [ ] P1 — Plain Spring MVC. See `docs/roadmap/P1-PLAIN-MVC.md`.
+- [x] P1 — Plain Spring MVC. See `docs/roadmap/P1-PLAIN-MVC.md`.
   - [x] P1.S1 — Bootstrap and endpoints; verified 2026-10-31: 3 HTTP tests passed (JDK 24, release 21). [Walkthrough](docs/learning/P1.S1-WALKTHROUGH.md).
   - [x] P1.S2 — Servlet filter and MVC interceptor; verified 2026-10-31: 7 HTTP cases + 2 unit tests passed (JDK 24, release 21). [Walkthrough](docs/learning/P1.S2-WALKTHROUGH.md).
-  - [ ] P1.S3 — Error paths and P1 teaching material.
+  - [x] P1.S3 — Error paths and P1 teaching material; verified 2026-10-31: 9 HTTP cases + 2 unit tests passed (JDK 24, release 21). [Walkthrough](docs/learning/P1.S3-WALKTHROUGH.md).
 - [ ] P2 — HTTP Basic: P2.S1, P2.S2, P2.S3. See `docs/roadmap/P2-BASIC-SECURITY.md`.
 - [ ] P3 — RS256 foundation and issuance: P3.S1, P3.S2, P3.S3. See `docs/roadmap/P3-JWT-RS256.md`.
 - [ ] P4 — JWT integration and edge cases: P4.S1, P4.S2, P4.S3. See `docs/roadmap/P4-JWT-VALIDATION.md`.
