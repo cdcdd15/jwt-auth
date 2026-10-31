@@ -31,7 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "app.security-mode=none")
 @Import(ErrorPathIT.ErrorTestConfiguration.class)
 class ErrorPathIT {
 

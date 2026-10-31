@@ -22,7 +22,7 @@ public class TraceConfiguration {
         registration.setName("requestTraceFilter");
         registration.addUrlPatterns("/*");
         registration.setDispatcherTypes(DispatcherType.REQUEST);
-        registration.setOrder(Ordered.LOWEST_PRECEDENCE);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 10);
         return registration;
     }
 

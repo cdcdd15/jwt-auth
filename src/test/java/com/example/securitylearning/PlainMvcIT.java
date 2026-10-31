@@ -10,7 +10,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "app.security-mode=none")
 class PlainMvcIT {
 
     @LocalServerPort

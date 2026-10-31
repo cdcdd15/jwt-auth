@@ -1,10 +1,10 @@
 # Understanding the Plain MVC, Basic, and JWT Flows
 
-This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1.S1–S3 are implemented and verified. Basic and JWT remain planned, so their descriptions explain intended architecture rather than observed runtime results.
+This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1 and P2.S1 are verified. Basic credentials/roles and JWT remain planned; the Basic section distinguishes current infrastructure from its target behavior.
 
 ## The shared foundation
 
-Every mode starts with an HTTP client connecting to embedded Tomcat. Tomcat parses the request and passes servlet request and response objects through the matching servlet filters. Eventually, an allowed application request reaches Spring MVC’s `DispatcherServlet`.
+Tomcat parses HTTP and passes servlet objects through matching filters. Allowed requests reach Spring MVC’s `DispatcherServlet`.
 
 The dispatcher asks handler mappings which handler matches the path and HTTP method. `RequestMappingHandlerMapping` connects annotations such as `@GetMapping` to controller methods. `RequestMappingHandlerAdapter` invokes the selected method. For a `@RestController`, response-body processing selects an HTTP message converter; Jackson converts the returned Java map into JSON. The response travels back through the surrounding infrastructure to the client.
 
@@ -14,13 +14,13 @@ Security changes what happens before controller execution. It does not replace T
 
 The implemented baseline exposes GET `/api/public`, `/api/user`, and `/api/admin`. Each returns HTTP 200 and a deterministic JSON message without credentials. The names “user” and “admin” currently impose no restrictions.
 
-Plain mode still has a servlet filter chain. Spring Boot can register infrastructure filters for concerns such as character encoding and request context. What is absent is Spring Security: no security dependency, `FilterChainProxy`, authentication provider, or authorization policy exists in P1.S1.
+Plain mode still has a servlet filter chain. Spring Boot can register infrastructure filters for concerns such as character encoding and request context. P1 originally excluded security libraries. P2.S1 includes them but registers no security proxy or chain in `none`; HTTP tests verify that absence and ignored Authorization headers.
 
-This distinction matters because `permitAll()` would allow access while retaining security processing. It would not reproduce an application without Spring Security. Current tests prove the three HTTP responses, and dependency inspection confirms security’s absence. P1.S2 now verifies correlated ordering: filter entry, interceptor preHandle, controller, interceptor postHandle, interceptor afterCompletion, filter exit. Server-generated response IDs identify bounded, immutable event snapshots. Concurrent-request tests check isolation. Tracing covers synchronous REQUEST dispatches. P1.S3 verifies 404/500 JSON, skipped REQUEST postHandle, and subsequent ERROR handling by Boot’s error controller. See [error-path evidence](learning/P1.S3-WALKTHROUGH.md).
+This distinction matters because `permitAll()` would allow access while retaining security processing. It would not reproduce an application without Spring Security. Current tests verify responses, bean absence, and servlet registrations. P1.S2 now verifies correlated ordering: filter entry, interceptor preHandle, controller, interceptor postHandle, interceptor afterCompletion, filter exit. Server-generated IDs identify bounded snapshots; concurrent tests check isolation. Tracing covers synchronous REQUEST dispatches. P1.S3 verifies 404/500 JSON, skipped REQUEST postHandle, and subsequent ERROR handling by Boot’s error controller. See [error-path evidence](learning/P1.S3-WALKTHROUGH.md).
 
 ## HTTP Basic: authenticate credentials on requests
 
-The planned Basic mode inserts Spring Security before MVC. A servlet `DelegatingFilterProxy` delegates to `FilterChainProxy`, which selects a matching `SecurityFilterChain`. When Basic credentials are supplied, `BasicAuthenticationFilter` extracts them and submits an authentication request to an `AuthenticationManager`.
+P2.S1 inserts security before MVC in `basic`, allowing public access and returning status-only 401 elsewhere. Users, credential processing, challenges, and roles remain future work. The completed flow will work as follows: A servlet `DelegatingFilterProxy` delegates to `FilterChainProxy`, which selects a matching `SecurityFilterChain`. When Basic credentials are supplied, `BasicAuthenticationFilter` extracts them and submits an authentication request to an `AuthenticationManager`.
 
 A `DaoAuthenticationProvider` obtains the user through `InMemoryUserDetailsManager` and checks the supplied password using a `PasswordEncoder`. Successful authentication makes the identity and authorities available through the `SecurityContext`. Authorization then decides whether that identity may access the requested endpoint.
 
@@ -42,4 +42,4 @@ Invalid tokens produce 401; authenticated callers lacking permission receive 403
 
 ## The practical difference
 
-Plain MVC teaches request dispatch without identity checks. Basic repeatedly checks credentials; JWT checks a signed bearer credential after initial issuance. Both secured modes retain MVC and distinguish authentication from authorization. JWT adds cryptographic trust and claim validation, while moving password checking out of ordinary protected requests. Neither planned security flow is implemented by this document.
+Plain MVC teaches request dispatch without identity checks. Basic repeatedly checks credentials; JWT checks a signed bearer credential after initial issuance. Both secured modes retain MVC and distinguish authentication from authorization. JWT adds cryptographic trust and claim validation, while moving password checking out of ordinary protected requests. See [P2.S1 evidence](learning/P2.S1-WALKTHROUGH.md) for current isolation and denial traces.

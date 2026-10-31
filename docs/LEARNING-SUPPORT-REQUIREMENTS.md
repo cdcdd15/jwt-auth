@@ -8,7 +8,7 @@ For every step, add `docs/learning/<step-id>-WALKTHROUGH.md` (create folder when
 2. **Class-by-class explanation:** purpose, bean creation, interfaces, annotations, dependencies, injected collaborators, entry/exit points.
 3. **Line-by-line / block-by-block explanation:** cover every meaningful line of application code, imports where relevant, annotations, configuration expressions, method parameters, return values, and exception handling. Use short, numbered code excerpts or file:line references; do not paste unexplained large files. Explain framework-managed code that is not visible in the repo separately.
 4. **Exact request flow:** client → embedded Tomcat → servlet filter chain → Spring Security FilterChainProxy (when present) → DispatcherServlet → handler/controller, including response and exceptions. Mark which steps occur only in some modes.
-5. **Security-specific internals:** Authentication vs Authorization; AuthenticationManager, Provider, UserDetailsService, PasswordEncoder, SecurityContext, EntryPoint/AccessDeniedHandler; JWT header/claims/signature; Nimbus decoder, validators, authentication converter, and RS256 public/private key separation.
+5. **Security-specific internals (when introduced by the current step; otherwise mark as future work):** Authentication vs Authorization; AuthenticationManager, Provider, UserDetailsService, PasswordEncoder, SecurityContext, EntryPoint/AccessDeniedHandler; JWT header/claims/signature; Nimbus decoder, validators, authentication converter, and RS256 public/private key separation.
 6. **Sequence diagram (Mermaid)** with concrete method/class names and clear failure branches.
 7. **Test-to-code traceability:** for every integration test, show request, expected status/body, classes reached, security decision, and assertions. Distinguish observable runtime evidence from assumptions about framework internals.
 8. **Runtime trace examples:** actual sanitized log/event sequences from passing tests, with correlation ID and order. Do not fabricate trace output.
@@ -28,6 +28,8 @@ For every step, add `docs/learning/<step-id>-WALKTHROUGH.md` (create folder when
 ## Maintaining source references
 
 When a later step changes source files, refresh affected teaching references or explicitly label older excerpts and line numbers as historical and link to the current walkthrough. Keep a test-to-code traceability table without requiring a repeated standalone integration-test tutorial. Step walkthroughs are due at each step; phase-end audits consolidate them.
+
+Keep current summaries separate from historical checkpoint evidence. When behavior intentionally changes, update superseded test expectations and explain the transition in the new walkthrough; do not preserve an obsolete expectation as the permanent contract. A configured filter list, an observed invocation, and an ordered callback trace are different forms of evidence and must be labeled accordingly. Basic S1's no-challenge response is an intermediate contract, not the completed Basic behavior.
 
 ## Cross-phase reference documents
 Update `docs/FLOWS-COMPARED.md` and `docs/TEST-MATRIX.md` as phases complete. Each should distinguish planned design from implemented and tested behavior. Final P5 produces a unified learning guide and side-by-side flow diagrams.

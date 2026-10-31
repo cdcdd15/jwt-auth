@@ -1,21 +1,27 @@
 # Proposed Project Structure
 
-P1.S1–S3 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
+P1.S1–S3 and P2.S1 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
 
 ```text
 src/main/java/com/example/securitylearning/SecurityLearningApplication.java
 src/main/java/com/example/securitylearning/api/DemoController.java
+src/main/java/com/example/securitylearning/config/SecurityModeConfig.java
+src/main/java/com/example/securitylearning/config/BasicSecurityConfig.java
 src/main/java/com/example/securitylearning/tracing/TraceConfiguration.java
 src/main/java/com/example/securitylearning/tracing/TraceEventSink.java
 src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java
 src/main/java/com/example/securitylearning/tracing/MvcTraceInterceptor.java
 src/test/java/com/example/securitylearning/PlainMvcIT.java
+src/test/java/com/example/securitylearning/NoneSecurityIT.java
+src/test/java/com/example/securitylearning/BasicSecurityIT.java
+src/test/java/com/example/securitylearning/SecurityModeConfigTest.java
 src/test/java/com/example/securitylearning/RequestTraceIT.java
 src/test/java/com/example/securitylearning/ErrorPathIT.java  # includes test-only error fixtures
 src/test/java/com/example/securitylearning/tracing/TraceEventSinkTest.java
 docs/learning/P1.S1-WALKTHROUGH.md
 docs/learning/P1.S2-WALKTHROUGH.md
 docs/learning/P1.S3-WALKTHROUGH.md
+docs/learning/P2.S1-WALKTHROUGH.md
 ```
 
 ```text
@@ -37,7 +43,7 @@ jwt-auth/
 │       ├── P3-JWT-RS256.md
 │       ├── P4-JWT-VALIDATION.md
 │       └── P5-COMPARISON.md
-└── src/                          # P1 complete; application, tracing, and tests
+└── src/                          # P1 + P2.S1; application, tracing, mode configuration, and tests
 ```
 
 ## Target Java and test layout (mostly future work)
@@ -69,4 +75,4 @@ src/
 **JWT architecture:** use Spring Security's built-in `BearerTokenAuthenticationFilter`, `JwtAuthenticationProvider`, and `NimbusJwtDecoder`; create a `JwtAuthenticationConverter` configuration as necessary. The built-in filter is framework code, not a project class. Add `JwtKeyConfig`/`JwtDecoderConfig` as appropriate. Keep target class names flexible when framework-accurate alternatives are better.
 
 ## Development sequencing
-P1 initially has no Spring Security on the classpath. When adding P2, preserve the P1 experience through explicit security-filter registration isolation or a separate build profile; a `permitAll` chain is not equivalent to no Spring Security. Do not hardcode security-specific servlet filters into the P1 path.
+P1 originally had no Spring Security on the classpath. P2.S1 now includes security libraries in both modes but isolates registration: the application excludes Boot security/user defaults, conditional basic configuration enables security and registers the servlet proxy, and none creates neither a security chain nor its proxy. A `permitAll` chain is not used for none. See the P2.S1 walkthrough for exact bean/registration evidence.

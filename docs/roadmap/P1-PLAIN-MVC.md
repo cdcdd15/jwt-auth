@@ -1,13 +1,15 @@
 # P1 — Plain Spring MVC / Tomcat request lifecycle
 
-**Objective:** observe servlet HTTP processing before Spring Security exists. No security dependency in this phase.
+**Objective:** observe servlet HTTP processing before Spring Security exists. No security dependency was present during P1.
+
+**Historical phase:** P1 is complete. Since P2.S1, its suites run in explicit none mode with security libraries present but no security proxy/chain registration. Dependency-absence acceptance below describes the original P1 checkpoint, not the current jar.
 
 ## P1.S1 — Bootstrap and endpoints
 
 - [x] Implemented and verified 2026-10-31. `mvn verify`: 3 tests, 0 failures/errors/skips. JDK 24 compiled with release 21; JDK 21 execution not verified.
 - Evidence: `PlainMvcIT`, Failsafe reports in `target/failsafe-reports/`, resolved dependency tree and packaged jar contain no Spring Security.
 - Learning: [P1.S1 walkthrough](../learning/P1.S1-WALKTHROUGH.md), including code references, lifecycle, diagrams, tests, and actual initialization logs.
-- At the S1 checkpoint, correlated tracing was assigned to P1.S2 (now implemented below); error-path tests remain P1.S3.
+- At the S1 checkpoint, correlated tracing was assigned to P1.S2 (now implemented below); error-path tests were assigned to P1.S3 (now implemented below).
 Implement Java 21 Maven Spring Boot 3.x application, embedded Tomcat, `GET /api/public`, `/api/user`, `/api/admin` returning deterministic JSON. Configure Maven Surefire + Failsafe for `*Test` and `*IT`. Add RANDOM_PORT RestAssured integration tests for 200 and response bodies.
 **Acceptance:** `mvn verify` passes; no Spring Security on classpath; application serves real HTTP.
 **Learning:** entry point, component scanning, embedded Tomcat, controller annotations, DispatcherServlet mapping, JSON serialization.
@@ -33,4 +35,4 @@ Test unmapped URL and controller exception; document which hooks execute and in 
 **Acceptance:** both happy and failure path tests pass, actual logs match documentation, `mvn verify` passes.
 
 ## Exit criteria
-P1 exit criteria met: successful and 404/500 paths are explained with actual trace evidence; all P1 suites pass. No Basic/JWT code. Java 21 runtime execution remains unverified; compilation targets release 21. Next: P2.S1 only when requested.
+P1 exit criteria met: successful and 404/500 paths are explained with actual trace evidence; all P1 suites pass. No Basic/JWT code. Java 21 runtime execution remains unverified; compilation targets release 21. P2.S1 has since been completed; current next step is P2.S2.
