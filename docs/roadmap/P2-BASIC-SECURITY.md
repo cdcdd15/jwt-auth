@@ -11,7 +11,7 @@ Add users `user/user123` (USER), `admin/admin123` (ADMIN), BCrypt PasswordEncode
 **Learning:** BasicAuthenticationFilter, Authentication, AuthenticationManager, Provider, UserDetailsService, PasswordEncoder, SecurityContext.
 
 ## P2.S3 — Authorization, failures and learning docs
-`/api/admin` requires ADMIN; `/api/user` requires authenticated. Test USER 403 on admin, ADMIN 200, missing/incorrect Basic 401 and challenge header. Instrument sanitized flow and explain exception translation and access denied vs authentication entry point. Produce P2.S1–S3 learning walkthroughs; update FLOWS-COMPARED and TEST-MATRIX.
+`/api/admin` requires ADMIN; `/api/user` requires authenticated. Test USER 403 on admin, ADMIN 200, missing/incorrect Basic 401 and challenge header. Instrument sanitized flow and explain exception translation and access denied vs authentication entry point. Audit the P2.S1–S3 walkthroughs delivered with their respective steps; update FLOWS-COMPARED and TEST-MATRIX.
 **Acceptance:** P1 + P2 integration suites pass, `mvn verify`, modes remain isolated.
 
 ## Exit criteria

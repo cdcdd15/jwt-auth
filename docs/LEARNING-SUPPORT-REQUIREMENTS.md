@@ -25,6 +25,10 @@ For every step, add `docs/learning/<step-id>-WALKTHROUGH.md` (create folder when
 - Record exact file paths and code references **after** implementation; never invent line numbers.
 - Never include passwords, signing private keys, or full tokens in traces.
 
+## Maintaining source references
+
+When a later step changes source files, refresh affected teaching references or explicitly label older excerpts and line numbers as historical and link to the current walkthrough. Keep a test-to-code traceability table without requiring a repeated standalone integration-test tutorial. Step walkthroughs are due at each step; phase-end audits consolidate them.
+
 ## Cross-phase reference documents
 Update `docs/FLOWS-COMPARED.md` and `docs/TEST-MATRIX.md` as phases complete. Each should distinguish planned design from implemented and tested behavior. Final P5 produces a unified learning guide and side-by-side flow diagrams.
 

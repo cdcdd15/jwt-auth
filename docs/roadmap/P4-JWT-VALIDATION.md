@@ -11,7 +11,7 @@ Test tampered JWT, unknown RSA signing key, wrong algorithm (reject e.g. HS256),
 **Learning:** JWS signature, JWT claims validators, algorithm confusion prevention, error paths.
 
 ## P4.S3 — Filter chain and error diagnostics
-Add sanitized structured tracing across JWT request path; identify actual Spring Security filter order in running application, including BearerTokenAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter, SecurityContext management and MVC handoff. Test trace correlation and no secret leakage. Explain authentication failure vs authorization failure handling. Produce P4.S1–S3 walkthroughs and update FLOWS-COMPARED / TEST-MATRIX.
+Add sanitized structured tracing across JWT request path; identify actual Spring Security filter order in running application, including BearerTokenAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter, SecurityContext management and MVC handoff. Test trace correlation and no secret leakage. Explain authentication failure vs authorization failure handling. Audit the P4.S1–S3 walkthroughs delivered with their respective steps and update FLOWS-COMPARED / TEST-MATRIX.
 
 ## Exit criteria
 Every JWT negative case has a test, documented expected behavior, and observed result. `mvn verify` passes in all modes. No custom JwtAuthenticationFilter.

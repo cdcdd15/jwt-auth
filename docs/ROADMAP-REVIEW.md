@@ -1,0 +1,33 @@
+# Roadmap review against the learning objective
+
+Reviewed 2026-10-31 after P1.S2. The overall sequence is appropriate: learn MVC first, add password authentication, introduce JWT validation before login issuance, exercise negative paths, then compare and audit. Keep the existing P1–P5 sequence and compact endpoint set. The following recommendations clarify evidence and contracts; they do not mark future work complete or authorize implementation.
+
+## Recommended clarifications before the affected steps
+
+| Priority / step | Recommendation | Learning benefit / acceptance evidence |
+|---|---|---|
+| High — P1.S3 | Define whether a trace covers one servlet dispatch or the entire HTTP exchange. Record REQUEST versus ERROR dispatch explicitly when investigating errors. Keep the deliberately failing handler test-only if possible. | Avoid confusing MVC exception resolution, container error dispatch, and filter cleanup. Show actual callback order for unmapped and thrown-error cases, including absent hooks. Do not assume every 404 bypasses handler mapping. |
+| High — P2.S1 | Choose and document one mode-isolation mechanism, plus behavior for unsupported/conflicting mode settings. Explain which beans and servlet registrations exist in each mode. | Prove that `none` does not invoke Spring Security; a 200 alone does not prove absence. Avoid a mixture of profile/property switches that hides the learning model. |
+| High — P2.S1 | Resolve the 401 sequencing dependency: this step requires protected requests to return 401, but Basic is enabled in S2. Configure an explicit 401 authentication entry point in S1, or deliberately revise the step boundary before implementation. | Makes S1 independently runnable and its status expectation explicit rather than relying on form-login/default entry-point behavior. Do not silently implement S2's users/password flow early. |
+| High — P2.S1/P2.S3 | Review trace-filter registration before introducing security. The current filter uses `LOWEST_PRECEDENCE`; do not assume it surrounds security rejections. Arrange the observer outside the security chain when that evidence is required. | A denied request may never reach MVC or an inner tracing filter. Demonstrate no controller event, while still retaining a correlated outer trace and context-cleanup evidence. |
+| High — P3.S1/P3.S2/P4.S2 | Write a claim contract: required presence/type for sub, iss, aud, exp and application-specific fields; rules for optional iat/nbf; accepted clock skew; deterministic validation clock. Distinguish absent roles from malformed roles. | A signed token, a timestamp-valid token, and an authorized identity are separate outcomes. State whether missing roles yields authenticated/no authorities or rejection, then test it consistently. Do not assume timestamp checking proves mandatory-claim presence. |
+| High — P2.S3/P4.S3/P5.S1 | Add consecutive authenticated-then-anonymous requests and independent concurrent identities to context-isolation evidence. Capture the configured security-chain list as well as application events. | Explains `SecurityContext` lifetime and cleanup rather than merely showing a successful principal. Chain membership is not proof that every filter authenticates on every request. |
+| Medium — P2.S1/P3.S3 | Explain why CSRF is disabled for the chosen non-browser API demonstration and what statelessness does and does not guarantee. | Prevent a misleading general rule: browsers can automatically resend Basic credentials, so stateless Basic can still face CSRF risks. Keep browser-session implementation out of scope. |
+| Medium — P2.S3/P4.S2/P5.S1 | Freeze ambiguous matrix cells before implementing them: invalid credentials on public routes, wrong Authorization schemes, missing versus malformed roles, and whether ADMIN has USER authority or only authenticated access. | Separate “public authorization allowed” from “invalid supplied authentication ignored.” Assert status/challenge and controller reachability for the chosen contract. |
+| Medium — P3.S2/P4.S1 | State that P3 supplies minimum valid-role conversion and P4 finalizes edge cases and policy. | Avoid implementing the same feature twice or broadening P3 into the entire negative-validation suite. |
+| Medium — P5.S2 | Execute final verification on JDK 21, recording the resolved Boot/Spring/Security/Tomcat versions and exact command. | Close the existing gap between release-21 compilation and execution on the intended runtime. If unavailable, retain the explicit blocker rather than claiming verification. |
+
+Spring's [CSRF guidance](https://docs.spring.io/spring-security/reference/6.5/servlet/exploits/csrf.html) supports the browser/Basic qualification. Its [Resource Server documentation](https://docs.spring.io/spring-security/reference/6.5/servlet/oauth2/resource-server/jwt.html) separates decoding/validation, conversion, and security-context establishment. These references describe the 6.5 line; use the project's exact resolved source/API versions for final call-level teaching evidence. Our required-claim and mode-contract recommendations are project design choices, not claims about automatically enabled defaults.
+
+## Documentation improvements applied in this review
+
+- Added [the full scope boundary](IN-SCOPE-OUT-OF-SCOPE.md), including the final P5.S2 learning package and exclusions.
+- Removed the roadmap suggestion to combine steps, aligning it with the working agreement's one-step rule.
+- Clarified that walkthroughs are delivered with each step; phase-end work audits and consolidates them rather than deferring them.
+- Removed the obsolete custom JWT-filter class from the proposed structure; retained the built-in Resource Server architecture.
+- Updated P5's shared-document references to the combined flow guide and test matrix.
+- Clarified that old walkthrough references are historical and need refreshing or explicit version labeling when later steps change code.
+
+## Keep the course focused
+
+Do not add databases, OAuth2 grants, frontend work, production deployment, or another security mechanism to solve documentation gaps. A short hypothesis, real HTTP experiment, measured trace, and explanation of the observed framework behavior are more valuable here than extra application layers. No new phase is recommended. The next implementation step remains P1.S3; this review changes documentation only.

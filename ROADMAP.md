@@ -1,5 +1,7 @@
 # Master Roadmap
 
+Scope: [in scope / out of scope](docs/IN-SCOPE-OUT-OF-SCOPE.md), covering P1.S1 through P5.S2. Recommended clarifications are recorded in [the roadmap review](docs/ROADMAP-REVIEW.md); they do not authorize future implementation.
+
 ## Fixed design decisions
 - Java 21; Spring Boot 3.x; Maven; embedded Tomcat; Spring MVC; Spring Security 6.x.
 - One application, three mutually exclusive security modes: `none`, `basic`, `jwt`.
@@ -11,7 +13,7 @@
 ## Execution plan
 - [ ] P1 — Plain Spring MVC. See `docs/roadmap/P1-PLAIN-MVC.md`.
   - [x] P1.S1 — Bootstrap and endpoints; verified 2026-10-31: 3 HTTP tests passed (JDK 24, release 21). [Walkthrough](docs/learning/P1.S1-WALKTHROUGH.md).
-  - [ ] P1.S2 — Servlet filter and MVC interceptor.
+  - [x] P1.S2 — Servlet filter and MVC interceptor; verified 2026-10-31: 7 HTTP cases + 2 unit tests passed (JDK 24, release 21). [Walkthrough](docs/learning/P1.S2-WALKTHROUGH.md).
   - [ ] P1.S3 — Error paths and P1 teaching material.
 - [ ] P2 — HTTP Basic: P2.S1, P2.S2, P2.S3. See `docs/roadmap/P2-BASIC-SECURITY.md`.
 - [ ] P3 — RS256 foundation and issuance: P3.S1, P3.S2, P3.S3. See `docs/roadmap/P3-JWT-RS256.md`.
@@ -20,10 +22,10 @@
 
 ## Mandatory step exit gate
 1. Implementation meets step scope and avoids future steps.
-2. Automated unit/integration tests cover positive and negative behavior.
+2. Real HTTP integration tests cover the step’s specified behavior; meaningful unit tests supplement them. Negative cases follow their assigned steps rather than being implemented early.
 3. `mvn verify` succeeds (or a specific environment blocker is recorded).
 4. Step-specific learning material is written and linked to actual code/tests.
 5. Relevant roadmap checkbox and traceability notes are updated.
 
 ## Recommended execution
-One Codex task per numbered step; review the evidence and learning notes between steps. Combine only when measured execution is fast and acceptance criteria remain independent.
+One Codex task per numbered step; review the evidence and learning notes between steps. Stop at the requested step. Deliver its walkthrough immediately; phase-end documentation work audits and consolidates existing walkthroughs.

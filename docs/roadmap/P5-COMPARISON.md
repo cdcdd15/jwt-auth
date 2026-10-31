@@ -7,7 +7,7 @@ Run equivalent real HTTP requests in `none`, `basic`, `jwt` modes with isolated 
 **Acceptance:** full matrix passes and trace evidence is reproducible.
 
 ## P5.S2 — Learning package, review and final verification
-Audit every application class/method/meaningful code line against `docs/learning/` walkthroughs; explain framework-owned behavior, configuration, positive and negative tests. Add `docs/learning/COMPLETE-GUIDE.md` linking all walkthroughs and cross-referencing test cases, plus interview-style questions and exercises. Verify no private keys/secrets logged or committed. Run `mvn verify`, report exact executed tests, and update README/ROADMAP and all flow docs.
+Audit every application class/method/meaningful code line against `docs/learning/` walkthroughs; explain framework-owned behavior, configuration, positive and negative tests. Add `docs/learning/COMPLETE-GUIDE.md` linking all walkthroughs and cross-referencing test cases, plus interview-style questions and exercises. Verify no private keys/secrets logged or committed. Run `mvn verify`, report exact executed tests, and update README/ROADMAP, `docs/FLOWS-COMPARED.md`, and `docs/TEST-MATRIX.md`.
 **Acceptance:** an engineer can reconstruct each request flow from docs and tests; all phase exit gates met.
 
 ## Exit criteria
