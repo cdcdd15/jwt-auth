@@ -51,3 +51,6 @@ Thumbs.db
 
 # Vaadin-generated frontend resources
 /src/main/frontend/generated/
+
+# Local development RSA key material (never commit private keys)
+/.local-keys/

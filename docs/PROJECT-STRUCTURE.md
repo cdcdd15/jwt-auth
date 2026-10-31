@@ -1,10 +1,11 @@
 # Proposed Project Structure
 
-P1 and P2 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
+P1, P2, and P3.S1 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
 
 ```text
 src/main/java/com/example/securitylearning/SecurityLearningApplication.java
 src/main/java/com/example/securitylearning/api/DemoController.java
+src/main/java/com/example/securitylearning/security/RsaKeyGenerator.java
 src/main/java/com/example/securitylearning/config/SecurityModeConfig.java
 src/main/java/com/example/securitylearning/config/BasicSecurityConfig.java
 src/main/java/com/example/securitylearning/tracing/TraceConfiguration.java
@@ -16,6 +17,7 @@ src/test/java/com/example/securitylearning/PlainMvcIT.java
 src/test/java/com/example/securitylearning/NoneSecurityIT.java
 src/test/java/com/example/securitylearning/BasicSecurityIT.java  # includes test-only principal probe
 src/test/java/com/example/securitylearning/SecurityModeConfigTest.java
+src/test/java/com/example/securitylearning/security/RsaJwtTest.java
 src/test/java/com/example/securitylearning/RequestTraceIT.java
 src/test/java/com/example/securitylearning/ErrorPathIT.java  # includes test-only error fixtures
 src/test/java/com/example/securitylearning/tracing/TraceEventSinkTest.java
@@ -25,6 +27,8 @@ docs/learning/P1.S3-WALKTHROUGH.md
 docs/learning/P2.S1-WALKTHROUGH.md
 docs/learning/P2.S2-WALKTHROUGH.md
 docs/learning/P2.S3-WALKTHROUGH.md
+docs/learning/P3.S1-WALKTHROUGH.md
+docs/JWT-CLAIM-CONTRACT.md
 ```
 
 ```text
@@ -40,13 +44,14 @@ jwt-auth/
 │   ├── LEARNING-SUPPORT-REQUIREMENTS.md
 │   ├── FLOWS-COMPARED.md
 │   ├── TEST-MATRIX.md
+│   ├── JWT-CLAIM-CONTRACT.md
 │   └── roadmap/
 │       ├── P1-PLAIN-MVC.md
 │       ├── P2-BASIC-SECURITY.md
 │       ├── P3-JWT-RS256.md
 │       ├── P4-JWT-VALIDATION.md
 │       └── P5-COMPARISON.md
-└── src/                          # P1 + P2 complete; application, tracing, mode configuration, and tests
+└── src/                          # P1 + P2 complete; P3.S1 crypto foundation; application, tracing, mode configuration, and tests
 ```
 
 ## Target Java and test layout (mostly future work)

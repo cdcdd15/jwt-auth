@@ -1,6 +1,6 @@
 # Understanding the Plain MVC, Basic, and JWT Flows
 
-This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1 and P2 are verified. Basic authentication and ADMIN authorization are implemented; JWT remains planned.
+This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1/P2 HTTP and P3.S1 signing tests are verified. Basic authentication/ADMIN authorization are implemented; JWT HTTP remains planned.
 
 ## The shared foundation
 

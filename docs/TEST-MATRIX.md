@@ -1,6 +1,6 @@
-# HTTP Integration Test Matrix — P1 and P2 verified; JWT and final comparison rows planned
+# HTTP Integration Test Matrix — P1/P2 HTTP and P3.S1 crypto verified; JWT HTTP/comparison planned
 
-Current verified checkpoint: **P2.S3**, with 27 real HTTP integration cases and 9 unit cases passing on JDK 24 with release 21. None has no security registration/identity beans. Basic verifies USER/admin 403, ADMIN/admin 200, valid user access for both identities, anonymous public 200, missing/invalid credentials 401 with challenges, fixed security events, context cleanup, identity isolation, and preserved error rendering. JWT remains unimplemented. See [current evidence](learning/P2.S3-WALKTHROUGH.md).
+Current verified checkpoint: **P3.S1**, with 27 real HTTP integration cases and 13 unit cases passing on JDK 24 with release 21. None has no security registration/identity beans. Basic verifies USER/admin 403, ADMIN/admin 200, valid user access for both identities, anonymous public 200, missing/invalid credentials 401 with challenges, fixed security events, context cleanup, identity isolation, and preserved error rendering. JWT signing/verification now has 4 unit cases; JWT HTTP mode remains unimplemented. See [P2 HTTP evidence](learning/P2.S3-WALKTHROUGH.md) and [P3.S1 crypto evidence](learning/P3.S1-WALKTHROUGH.md).
 
 ## Target matrix for completed modes — not all cells executed
 
@@ -88,3 +88,16 @@ Remaining cases: NoneSecurityIT 3; RequestTraceIT 4; PlainMvcIT 3; ErrorPathIT 2
 Every Basic trace assertion also checks that the worker-thread context contains no authentication after the real security proxy returns. A defensive test clear runs only after recording the observation. Events distinguish early credential failure (challenge only), anonymous authorization failure, authenticated role denial, and allowed MVC execution. Production REQUEST traces still omit ERROR callbacks; no claims about full async timelines are made. Earlier step counts/policies remain historical, not the current contract.
 
 The Basic bearer-only wrong-scheme cell remains a planned comparative case rather than a claimed executed result; all JWT cells remain planned. See [actual trace and test inventory](learning/P2.S3-WALKTHROUGH.md).
+
+## P3.S1 — RSA/JWT foundation executed (unit checks, not JWT HTTP)
+
+`mvn verify` on 2026-10-31 passed 27 existing HTTP integration cases + 13 unit cases, zero failures/errors/skips, JDK 24/release 21. New Surefire `RsaJwtTest` cases:
+
+| Method | Direct cryptographic result |
+|---|---|
+| `developmentKeysAreRsa2048WithMatchingPublicAndPrivateModulus` | ≥2048-bit RSA public key and matching private/public modulus |
+| `rs256TokenHasExpectedHeaderAndClaimsAndVerifiesWithPublicKey` | Three compact parts, RS256/JWT/kid header, seven expected claims, matching public-key verification true |
+| `differentPublicKeyCannotVerifySignature` | Verification false with another generated public key |
+| `changedPayloadCannotVerifyOriginalSignature` | Verification false after replacing payload without re-signing |
+
+No new HTTP test or token-acceptance status is claimed. No current-time/issuer/audience validation or JWT SecurityContext population is implemented. Keys stay in test memory; complete tokens/private material are not logged. Existing suites retain their P2.S3 counts; the four crypto cases increase unit cases from 9 to 13. [Claim policy for future runtime enforcement](JWT-CLAIM-CONTRACT.md), [actual output and source map](learning/P3.S1-WALKTHROUGH.md).
