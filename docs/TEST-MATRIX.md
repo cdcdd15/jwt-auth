@@ -1,10 +1,10 @@
-# HTTP Integration Test Matrix — P1 and P2.S1–S2 verified; ADMIN-policy/JWT rows planned
+# HTTP Integration Test Matrix — P1 and P2 verified; JWT and final comparison rows planned
 
-Current verified checkpoint: **P2.S2**, with 21 real HTTP integration cases and 9 unit cases passing on JDK 24 with release 21. None ignores Authorization headers and has no security/identity beans or proxy registration. Basic authenticates both in-memory identities on `/api/user`; missing/invalid Basic credentials return 401 with the realm challenge and no session cookie. Invalid Basic also fails on public access. ADMIN enforcement/403 and JWT remain planned. See [current evidence](learning/P2.S2-WALKTHROUGH.md).
+Current verified checkpoint: **P2.S3**, with 27 real HTTP integration cases and 9 unit cases passing on JDK 24 with release 21. None has no security registration/identity beans. Basic verifies USER/admin 403, ADMIN/admin 200, valid user access for both identities, anonymous public 200, missing/invalid credentials 401 with challenges, fixed security events, context cleanup, identity isolation, and preserved error rendering. JWT remains unimplemented. See [current evidence](learning/P2.S3-WALKTHROUGH.md).
 
 ## Target matrix for completed modes — not all cells executed
 
-The table describes the completed project contract. Current coverage includes the three anonymous rows in none/basic, invalid-bearer requests in none, valid USER/ADMIN Basic access to user, and Basic challenge behavior. Basic admin role decisions and every JWT cell remain future work. S1’s status-only response is historical, replaced by S2’s Basic entry point.
+The table describes the completed project contract. Current coverage includes the three anonymous rows in none/basic, invalid-bearer requests in none, valid USER/ADMIN Basic access to user, and Basic challenge behavior. Basic admin role decisions are now verified in S3; every JWT cell remains future work. S1’s status-only response is historical, replaced by S2’s Basic entry point.
 
 Run all tests over real embedded Tomcat with SpringBootTest(RANDOM_PORT) + RestAssured. Mode-specific contexts must be isolated. Status codes below assume the indicated identity is supplied with the authentication mechanism of that mode.
 
@@ -71,3 +71,20 @@ Final `mvn verify` on 2026-10-31: 21 integration + 9 unit cases, zero failures/e
 | `invalidBasicAuthenticationReturnsChallengeWithoutApplicationHandler` | 4: wrong password, unknown user, malformed Basic header, public invalid Basic; 401/challenge/no cookie, safe error fields, no REQUEST principal observation |
 
 Remaining cases: NoneSecurityIT 3; RequestTraceIT 4; PlainMvcIT 3; ErrorPathIT 2; SecurityModeConfigTest 7 unit cases; TraceEventSinkTest 2 unit cases. Basic entry-point sendError now renders via permitted ERROR dispatch; “without application handler” does not mean absence of Boot's error controller. USER access to admin is not yet constrained by a role matcher. Authenticated isolation, ADMIN 403, and detailed security diagnostics remain P2.S3. [Walkthrough and actual output](learning/P2.S2-WALKTHROUGH.md).
+
+## P2.S3 — role authorization, diagnostics, and isolation executed
+
+`mvn verify` on 2026-10-31 passed 27 integration + 9 unit cases, zero failures/errors/skips (JDK 24/release 21). BasicSecurityIT now has 15 cases: its existing 9 authentication cases plus these 6. All 12 other none/P1 integration cases and 9 unit cases remain green.
+
+| New BasicSecurityIT method | Observed result |
+|---|---|
+| `userCannotAccessAdminAndReceives403WithoutChallenge` | USER/admin 403 JSON, no challenge/cookie, authenticated→denied events, no original MVC handler |
+| `adminCanAccessAdmin` | ADMIN/admin 200 exact JSON and correct identity |
+| `authenticatedRequestDoesNotAuthenticateNextAnonymousRequest` | ADMIN/user 200 then anonymous/user 401; distinct IDs, no session dependency |
+| `concurrentRequestsKeepAuthenticatedIdentitiesSeparate` | Concurrent USER/user and ADMIN/admin succeed with independent principals, authorities, IDs, and traces |
+| `authenticatedMissingRoutePreserves404ThroughErrorDispatch` | Authenticated missing route remains 404 with original path after ERROR rendering, no challenge |
+| `directErrorRequestRequiresAuthentication` | Initial anonymous `/error` returns 401/challenge despite internal ERROR permission |
+
+Every Basic trace assertion also checks that the worker-thread context contains no authentication after the real security proxy returns. A defensive test clear runs only after recording the observation. Events distinguish early credential failure (challenge only), anonymous authorization failure, authenticated role denial, and allowed MVC execution. Production REQUEST traces still omit ERROR callbacks; no claims about full async timelines are made. Earlier step counts/policies remain historical, not the current contract.
+
+The Basic bearer-only wrong-scheme cell remains a planned comparative case rather than a claimed executed result; all JWT cells remain planned. See [actual trace and test inventory](learning/P2.S3-WALKTHROUGH.md).

@@ -1,6 +1,6 @@
 # Understanding the Plain MVC, Basic, and JWT Flows
 
-This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1 and P2.S1–S2 are verified. Basic credentials are implemented; ADMIN authorization and JWT remain planned.
+This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1 and P2 are verified. Basic authentication and ADMIN authorization are implemented; JWT remains planned.
 
 ## The shared foundation
 
@@ -24,7 +24,7 @@ P2.S2 enables Basic with BCrypt-backed in-memory identities and a shared Basic c
 
 A `DaoAuthenticationProvider` obtains the user through `InMemoryUserDetailsManager` and checks the supplied password using a `PasswordEncoder`. Successful authentication makes the identity and authorities available through the `SecurityContext`. Authorization then decides whether that identity may access the requested endpoint.
 
-The intended policy permits public access, requires authentication for `/api/user`, and requires ADMIN for `/api/admin`. Missing or invalid credentials on protected resources produce 401, with an appropriate Basic challenge. ADMIN enforcement and USER 403 on admin remain P2.S3; today either authenticated identity can access both protected endpoints. Authentication establishes identity; authorization evaluates permission.
+The intended policy permits public access, requires authentication for `/api/user`, and requires ADMIN for `/api/admin`. Missing or invalid credentials on protected resources produce 401, with an appropriate Basic challenge. USER receives 403 on admin without a new challenge; ADMIN receives 200. Both identities can access user because it requires authentication. Authentication establishes identity; authorization evaluates permission.
 
 Basic encodes credentials rather than encrypting them, so transport protection matters. With the planned stateless configuration, requests authenticate independently instead of relying on a login session. Not every request executes a successful password check: absent headers, invalid credentials, and public access follow different branches.
 
@@ -42,4 +42,4 @@ Invalid tokens produce 401; authenticated callers lacking permission receive 403
 
 ## The practical difference
 
-Plain MVC teaches request dispatch without identity checks. Basic repeatedly checks credentials; JWT checks a signed bearer credential after initial issuance. Both secured modes retain MVC and distinguish authentication from authorization. JWT adds cryptographic trust and claim validation, while moving password checking out of ordinary protected requests. See [P2.S2 evidence](learning/P2.S2-WALKTHROUGH.md) for authentication, isolation, and denial traces.
+Plain MVC teaches request dispatch without identity checks. Basic repeatedly checks credentials; JWT checks a signed bearer credential after initial issuance. Both secured modes retain MVC and distinguish authentication from authorization. JWT adds cryptographic trust and claim validation, while moving password checking out of ordinary protected requests. See [P2.S3 evidence](learning/P2.S3-WALKTHROUGH.md) for role denial, context cleanup, concurrent identity isolation, and actual security events.
