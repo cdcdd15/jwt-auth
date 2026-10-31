@@ -1,6 +1,6 @@
 # Understanding the Plain MVC, Basic, and JWT Flows
 
-This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1/P2 HTTP and P3.S1 signing tests are verified. Basic authentication/ADMIN authorization are implemented; JWT HTTP remains planned.
+This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1/P2 and P3.S1–S2 are verified. JWT validation now works; local login issuance remains planned.
 
 ## The shared foundation
 
@@ -32,7 +32,7 @@ Basic encodes credentials rather than encrypting them, so transport protection m
 
 JWT introduces two logically separate operations. First, the planned local POST `/auth/login` endpoint checks username and password through the authentication infrastructure. After success, `NimbusJwtEncoder` signs a token using an RSA private key. This demonstration endpoint is not an OAuth2 grant endpoint or authorization server.
 
-Second, the client presents that token in an `Authorization: Bearer` header. Spring Security’s built-in `BearerTokenAuthenticationFilter` submits it for authentication. `JwtAuthenticationProvider` delegates decoding and verification to `NimbusJwtDecoder`.
+Second, now implemented in P3.S2 with test-issued tokens, the client presents a token in an `Authorization: Bearer` header. Spring Security’s built-in `BearerTokenAuthenticationFilter` submits it for authentication. `JwtAuthenticationProvider` delegates decoding and verification to `NimbusJwtDecoder`.
 
 The decoder must enforce RS256, verify the signature with the RSA public key, and validate required claims, including issuer, audience, and timestamps. These are distinct checks: a correct signature does not establish that a token targets this API or remains valid now.
 
@@ -42,4 +42,4 @@ Invalid tokens produce 401; authenticated callers lacking permission receive 403
 
 ## The practical difference
 
-Plain MVC teaches request dispatch without identity checks. Basic repeatedly checks credentials; JWT checks a signed bearer credential after initial issuance. Both secured modes retain MVC and distinguish authentication from authorization. JWT adds cryptographic trust and claim validation, while moving password checking out of ordinary protected requests. See [P2.S3 evidence](learning/P2.S3-WALKTHROUGH.md) for role denial, context cleanup, concurrent identity isolation, and actual security events.
+Plain MVC teaches request dispatch without identity checks. Basic repeatedly checks credentials; JWT checks a signed bearer credential after initial issuance. Both secured modes retain MVC and distinguish authentication from authorization. JWT adds cryptographic trust and claim validation, while moving password checking out of ordinary protected requests. See [Basic evidence](learning/P2.S3-WALKTHROUGH.md) and [JWT validation evidence](learning/P3.S2-WALKTHROUGH.md) for implemented behavior and actual events.

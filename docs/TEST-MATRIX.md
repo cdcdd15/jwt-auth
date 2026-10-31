@@ -1,10 +1,10 @@
-# HTTP Integration Test Matrix — P1/P2 HTTP and P3.S1 crypto verified; JWT HTTP/comparison planned
+# HTTP Integration Test Matrix — P1/P2 and P3.S1–S2 verified; issuance/P4/comparison planned
 
-Current verified checkpoint: **P3.S1**, with 27 real HTTP integration cases and 13 unit cases passing on JDK 24 with release 21. None has no security registration/identity beans. Basic verifies USER/admin 403, ADMIN/admin 200, valid user access for both identities, anonymous public 200, missing/invalid credentials 401 with challenges, fixed security events, context cleanup, identity isolation, and preserved error rendering. JWT signing/verification now has 4 unit cases; JWT HTTP mode remains unimplemented. See [P2 HTTP evidence](learning/P2.S3-WALKTHROUGH.md) and [P3.S1 crypto evidence](learning/P3.S1-WALKTHROUGH.md).
+Current verified checkpoint: **P3.S2**, with 35 real HTTP integration cases and 25 unit cases passing on JDK 24/release 21. JWT now validates test-issued USER/ADMIN tokens, rejects signature/expiry/issuer/audience failures, permits anonymous public, and rejects Basic-only authentication. All none/basic regressions pass. No runtime issuer or login mapping exists. See [current JWT evidence](learning/P3.S2-WALKTHROUGH.md).
 
 ## Target matrix for completed modes — not all cells executed
 
-The table describes the completed project contract. Current coverage includes the three anonymous rows in none/basic, invalid-bearer requests in none, valid USER/ADMIN Basic access to user, and Basic challenge behavior. Basic admin role decisions are now verified in S3; every JWT cell remains future work. S1’s status-only response is historical, replaced by S2’s Basic entry point.
+The table describes the completed project contract. Current coverage includes the three anonymous rows in none/basic, invalid-bearer requests in none, valid USER/ADMIN Basic access to user, and Basic challenge behavior. Basic admin role decisions are now verified in S3; JWT USER/user and ADMIN/admin plus anonymous public and Basic-only rejection now have S2 evidence; missing-bearer and insufficient-role JWT cases remain P4 work. S1’s status-only response is historical, replaced by S2’s Basic entry point.
 
 Run all tests over real embedded Tomcat with SpringBootTest(RANDOM_PORT) + RestAssured. Mode-specific contexts must be isolated. Status codes below assume the indicated identity is supplied with the authentication mechanism of that mode.
 
@@ -101,3 +101,16 @@ The Basic bearer-only wrong-scheme cell remains a planned comparative case rathe
 | `changedPayloadCannotVerifyOriginalSignature` | Verification false after replacing payload without re-signing |
 
 No new HTTP test or token-acceptance status is claimed. No current-time/issuer/audience validation or JWT SecurityContext population is implemented. Keys stay in test memory; complete tokens/private material are not logged. Existing suites retain their P2.S3 counts; the four crypto cases increase unit cases from 9 to 13. [Claim policy for future runtime enforcement](JWT-CLAIM-CONTRACT.md), [actual output and source map](learning/P3.S1-WALKTHROUGH.md).
+
+## P3.S2 — Resource Server JWT HTTP validation executed
+
+Final `mvn verify` on 2026-10-31: 35 integration + 25 unit cases, zero failures/errors/skips, JDK 24/release 21. `JwtValidationIT` adds 8 real embedded-Tomcat cases; all prior 27 none/basic HTTP cases remain green. Test signing uses private keys only in memory; the runtime loads a temporary public PEM through its actual key configuration and validates time against a fixed test Clock.
+
+| JwtValidationIT method | Cases and assertions |
+|---|---|
+| `publicEndpointDoesNotRequireToken` | 1: public 200 exact map/anonymous trace; live bearer chain without Basic; no JwtEncoder bean or login mapping |
+| `validTokenReachesExpectedEndpoint` | 2: USER/user and ADMIN/admin 200, JSON exact map, no cookie, authenticated MVC trace |
+| `invalidTokenReturns401BeforeApplicationHandler` | 4: different signing key, expired beyond skew, wrong issuer, wrong audience → 401/Bearer challenge/no cookie; only outer trace events |
+| `basicCredentialsCannotAuthenticateJwtMode` | 1: Basic-only protected access → 401/Bearer challenge with anonymous downstream trace |
+
+New unit checks: JwtClaimContractValidatorTest 8 (valid normalized map, five invalid shapes/values, missing/empty roles as candidates); JwtDecoderConfigTest 3 (missing/invalid/weak public key). Updated SecurityModeConfigTest 8 accepts jwt; existing RsaJwtTest 4 and TraceEventSinkTest 2 also pass, making 25 unit cases. These normalized-map examples are not the full raw malformed-claim matrix. Missing bearer, role-denial/no-role HTTP, future nbf, wrong algorithm, malformed token, timestamp boundaries, and detailed JWT cleanup diagnostics remain P4. Earlier “JWT unimplemented” statements are historical and superseded here. [Actual traces and complete commentary](learning/P3.S2-WALKTHROUGH.md).

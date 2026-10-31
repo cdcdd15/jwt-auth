@@ -17,17 +17,17 @@ class SecurityModeConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"none", "basic"})
+    @ValueSource(strings = {"none", "basic", "jwt"})
     void acceptsImplementedModes(String mode) {
         assertThatCode(() -> new SecurityModeConfig(
             new MockEnvironment().withProperty("app.security-mode", mode))).doesNotThrowAnyException();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"jwt", "typo", "none,basic", ""})
+    @ValueSource(strings = {"unsupported", "typo", "none,basic", ""})
     void rejectsUnsupportedOrCombinedModes(String mode) {
         assertThatThrownBy(() -> new SecurityModeConfig(
             new MockEnvironment().withProperty("app.security-mode", mode)))
-            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("must be none or basic");
+            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("must be none, basic, or jwt");
     }
 }
