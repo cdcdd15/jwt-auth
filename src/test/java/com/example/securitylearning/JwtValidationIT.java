@@ -49,7 +49,7 @@ import static org.hamcrest.Matchers.startsWith;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = "app.security-mode=jwt")
-@Import(JwtValidationIT.FixedTimeConfiguration.class)
+@Import({JwtValidationIT.FixedTimeConfiguration.class, JwtValidationIT.IdentityProbe.class})
 class JwtValidationIT {
 
     private static final Instant NOW = Instant.parse("2030-01-01T12:00:00Z");
@@ -132,6 +132,83 @@ class JwtValidationIT {
             .extract().header(TraceEventSink.HEADER);
         assertTrace(id, List.of("filter.entry", "security.anonymous",
             "security.authorization.exit", "filter.exit"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"USER", "ADMIN", "missing", "empty", "OTHER"})
+    void validatedRolesBecomeRequestAuthorities(String role) {
+        var response = given().baseUri("http://localhost").port(port)
+            .header("Authorization", "Bearer " + roleToken(role))
+            .when().get("/test/identity");
+        response.then().statusCode(200).header("Set-Cookie", nullValue())
+            .body("name", equalTo("role-subject"))
+            .body("authorities", equalTo(role.equals("missing") || role.equals("empty")
+                ? List.of() : List.of("ROLE_" + role)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"USER:user:200", "USER:admin:403", "ADMIN:user:200", "ADMIN:admin:200",
+        "missing:user:200", "missing:admin:403", "empty:user:200", "empty:admin:403", "OTHER:admin:403"})
+    void endpointPolicyDistinguishesAuthenticationFromAdminRole(String scenario) {
+        String[] parts = scenario.split(":");
+        int status = Integer.parseInt(parts[2]);
+        var response = given().baseUri("http://localhost").port(port)
+            .header("Authorization", "Bearer " + roleToken(parts[0]))
+            .when().get("/api/" + parts[1]);
+        response.then().statusCode(status).header("Set-Cookie", nullValue());
+        if (status == 200) {
+            response.then().body("", equalTo(Map.of("message", parts[1])));
+        } else {
+            response.then().header("WWW-Authenticate", org.hamcrest.Matchers.containsString("insufficient_scope"));
+        }
+        assertTrace(response.header(TraceEventSink.HEADER), status == 200
+            ? List.of("filter.entry", "security.authenticated", "interceptor.preHandle", "controller." + parts[1],
+                "interceptor.postHandle", "interceptor.afterCompletion", "security.authorization.exit", "filter.exit")
+            : List.of("filter.entry", "security.authenticated", "security.authorization.exit", "filter.exit"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"user", "admin"})
+    void missingBearerReturns401BeforeMvc(String endpoint) {
+        var response = given().baseUri("http://localhost").port(port).when().get("/api/" + endpoint);
+        response.then().statusCode(401).header("WWW-Authenticate", equalTo("Bearer"))
+            .header("Set-Cookie", nullValue());
+        assertTrace(response.header(TraceEventSink.HEADER), List.of("filter.entry", "security.anonymous",
+            "security.authorization.exit", "filter.exit"));
+    }
+
+    @Test
+    void bearerRequestDoesNotEstablishSessionAuthentication() {
+        var first = given().baseUri("http://localhost").port(port)
+            .header("Authorization", "Bearer " + roleToken("ADMIN"))
+            .when().get("/api/admin");
+        first.then().statusCode(200).header("Set-Cookie", nullValue());
+        given().baseUri("http://localhost").port(port).cookie("JSESSIONID", "untrusted-demo-session")
+            .when().get("/api/admin").then().statusCode(401)
+            .header("WWW-Authenticate", equalTo("Bearer")).header("Set-Cookie", nullValue());
+    }
+
+    private static String roleToken(String role) {
+        var jwk = new RSAKey.Builder((RSAPublicKey) SIGNING_KEYS.getPublic())
+            .privateKey((RSAPrivateKey) SIGNING_KEYS.getPrivate()).build();
+        var claims = JwtClaimsSet.builder().subject("role-subject").issuer(JwtClaimContractValidator.ISSUER)
+            .audience(List.of(JwtClaimContractValidator.AUDIENCE)).issuedAt(NOW).notBefore(NOW)
+            .expiresAt(NOW.plusSeconds(300));
+        if (!role.equals("missing")) {
+            claims.claim("roles", role.equals("empty") ? List.of() : List.of(role));
+        }
+        return new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(jwk))).encode(JwtEncoderParameters.from(
+            JwsHeader.with(SignatureAlgorithm.RS256).build(), claims.build())).getTokenValue();
+    }
+
+    @org.springframework.boot.test.context.TestComponent
+    @org.springframework.web.bind.annotation.RestController
+    static class IdentityProbe {
+        @org.springframework.web.bind.annotation.GetMapping("/test/identity")
+        Map<String, Object> identity(org.springframework.security.core.Authentication authentication) {
+            return Map.of("name", authentication.getName(), "authorities", authentication.getAuthorities().stream()
+                .map(org.springframework.security.core.GrantedAuthority::getAuthority).sorted().toList());
+        }
     }
 
     private void assertTrace(String id, List<String> expected) {

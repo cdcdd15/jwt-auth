@@ -4,7 +4,7 @@
 
 Build a compact, runnable, evidence-backed course explaining how HTTP requests move through Spring MVC and Spring Security. Learners must be able to connect observed behavior to application code and framework responsibilities, explain failures, and compare plain MVC, HTTP Basic, and RS256 JWT validation.
 
-This scope covers the complete existing roadmap, **P1.S1 through P5.S2**, including the final learning package and verification. It is not authorization to implement later steps. Implement one numbered step per request, then stop. As of 2026-11-01, P1–P3 are implemented and verified; P4 onward remains planned.
+This scope covers the complete existing roadmap, **P1.S1 through P5.S2**, including the final learning package and verification. It is not authorization to implement later steps. Implement one numbered step per request, then stop. As of 2026-11-01, P1–P3 and P4.S1 are implemented and verified; P4.S2 onward remains planned.
 
 [ROADMAP.md](../ROADMAP.md) controls sequence and completion status. Phase documents specify acceptance criteria. [LEARNING-SUPPORT-REQUIREMENTS.md](LEARNING-SUPPORT-REQUIREMENTS.md) defines teaching deliverables. [ROADMAP-REVIEW.md](ROADMAP-REVIEW.md) records recommended clarifications separately from completed work.
 
@@ -34,7 +34,7 @@ This scope covers the complete existing roadmap, **P1.S1 through P5.S2**, includ
 | P3.S1 | Local RSA foundation, JWT header/claims/signature anatomy, RS256 signing/verification tests | Implemented |
 | P3.S2 | Resource Server mode using test-issued tokens, decoder/validators, initial role conversion, valid and invalid token HTTP tests | Implemented |
 | P3.S3 | Local credential-to-token login and end-to-end use of issued tokens; bad credentials and safe token contents | Implemented |
-| P4.S1 | Final role conversion and authorization contract, anonymous/missing-token/insufficient-authority cases, statelessness | Planned |
+| P4.S1 | Final role conversion and authorization contract, anonymous/missing-token/insufficient-authority cases, statelessness | Implemented |
 | P4.S2 | Tampering, wrong key/algorithm, malformed/expired/future tokens, issuer/audience, missing claims, malformed roles, deterministic time | Planned |
 | P4.S3 | Actual security-filter ordering, correlated allowed/denied traces, authentication/authorization failure diagnostics, no secret leakage | Planned |
 | P5.S1 | Equivalent real HTTP requests across isolated modes; reproducible success/denial traces; three sequence diagrams and comparative tables | Planned |

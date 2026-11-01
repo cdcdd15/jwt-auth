@@ -1,6 +1,6 @@
 # Proposed Project Structure
 
-P1, P2, and P3.S1–S3 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
+P1–P3 and P4.S1 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
 
 ```text
 src/main/java/com/example/securitylearning/SecurityLearningApplication.java
@@ -25,7 +25,7 @@ src/test/java/com/example/securitylearning/NoneSecurityIT.java
 src/test/java/com/example/securitylearning/BasicSecurityIT.java  # includes test-only principal probe
 src/test/java/com/example/securitylearning/SecurityModeConfigTest.java
 src/test/java/com/example/securitylearning/security/RsaJwtTest.java
-src/test/java/com/example/securitylearning/JwtValidationIT.java
+src/test/java/com/example/securitylearning/JwtValidationIT.java  # includes isolated test-only identity probe
 src/test/java/com/example/securitylearning/JwtLoginIT.java
 src/test/java/com/example/securitylearning/support/JwtKeyFixture.java
 src/test/java/com/example/securitylearning/config/JwtIssuerConfigTest.java
@@ -44,6 +44,7 @@ docs/learning/P2.S3-WALKTHROUGH.md
 docs/learning/P3.S1-WALKTHROUGH.md
 docs/learning/P3.S2-WALKTHROUGH.md
 docs/learning/P3.S3-WALKTHROUGH.md
+docs/learning/P4.S1-WALKTHROUGH.md
 docs/JWT-CLAIM-CONTRACT.md
 ```
 

@@ -2,7 +2,16 @@
 
 **Objective:** solidify production-relevant validation behavior without implementing a custom bearer filter.
 
+**Status:** P4.S1 complete; P4.S2–S3 planned. No new production security path was needed.
+
 ## P4.S1 — Authentication conversion and authorization
+
+- [x] Verified 2026-11-01: `mvn verify` passed 61 HTTP integration + 29 unit cases, zero failures/errors/skips, 15.272 seconds (JDK 24/release 21).
+- `JwtValidationIT` adds 17 parameterized/test cases: five request-principal/authority checks, nine authorization cells, two missing-bearer cases, and one session-independence sequence.
+- Actual request authorities match ROLE_USER/ROLE_ADMIN/ROLE_OTHER; missing/empty roles authenticate with no authorities. USER, absent/empty roles and OTHER fail admin with 403/Bearer insufficient_scope. ADMIN accesses both routes; anonymous protected requests get 401/Bearer.
+- Existing conversion and policy were correct; production classes remain unchanged. Probe is test-only, explicitly imported, and excluded from ordinary component scanning.
+- [Detailed source explanation, actual traces, and request sequence](../learning/P4.S1-WALKTHROUGH.md). Full malformed-claim/time-boundary and diagnostic suites remain S2/S3.
+
 Refine the existing P3 mapping and its tests rather than introducing a second authentication path. Finalize roles-to-GrantedAuthority mapping (`roles: ["USER"]` → `ROLE_USER`) only after successful signature/claims validation. Test user endpoint, admin endpoint, anonymous requests, missing bearer header and valid token without sufficient role. Ensure statelessness and no server session dependency.
 **Learning:** JwtAuthenticationConverter, SecurityContextHolder, AuthorizationFilter, 401 vs 403.
 

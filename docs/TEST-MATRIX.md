@@ -1,10 +1,10 @@
-# HTTP Integration Test Matrix — P1–P3 verified; P4/comparison planned
+# HTTP Integration Test Matrix — P1–P3 and P4.S1 verified; remaining P4/comparison planned
 
-Current verified checkpoint: **P3.S3**, with 44 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. Local login issues RS256 tokens accepted by the Resource Server. None/basic regressions pass; login is absent in those modes. P4’s complete role/edge-case matrix remains planned. See [current evidence](learning/P3.S3-WALKTHROUGH.md).
+Current verified checkpoint: **P4.S1**, with 61 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. JWT conversion, role authorization, anonymous 401, missing/empty-role 200/403 and session-independent behavior now have real HTTP evidence. None/basic regressions pass. P4.S2’s complete negative-validation suite remains planned. See [current evidence](learning/P4.S1-WALKTHROUGH.md).
 
 ## Target matrix for completed modes — not all cells executed
 
-The table describes the completed project contract. Current coverage includes the three anonymous rows in none/basic, invalid-bearer requests in none, valid USER/ADMIN Basic access to user, and Basic challenge behavior. Basic admin role decisions are now verified in S3; JWT USER/user and ADMIN/admin plus anonymous public and Basic-only rejection now have S2 evidence; missing-bearer and insufficient-role JWT cases remain P4 work. S1’s status-only response is historical, replaced by S2’s Basic entry point.
+The table describes the completed project contract. Current coverage includes the three anonymous rows in none/basic, invalid-bearer requests in none, valid USER/ADMIN Basic access to user, and Basic challenge behavior. Basic admin role decisions are now verified in S3; JWT USER/user and ADMIN/admin plus anonymous public and Basic-only rejection now have S2 evidence; missing-bearer and insufficient-role JWT cases now have P4.S1 evidence. S1’s status-only response is historical, replaced by S2’s Basic entry point.
 
 Run all tests over real embedded Tomcat with SpringBootTest(RANDOM_PORT) + RestAssured. Mode-specific contexts must be isolated. Status codes below assume the indicated identity is supplied with the authentication mechanism of that mode.
 
@@ -23,7 +23,7 @@ Run all tests over real embedded Tomcat with SpringBootTest(RANDOM_PORT) + RestA
 
 `*` None ignores Authorization headers (invalid-bearer requests now verified for all three endpoints). In the completed Basic mode, bearer-only protected requests cannot authenticate and are expected to return 401; that exact scheme case is not yet tested in basic. Do not treat this table as a claim that arbitrary supplied invalid credentials are ignored on public routes.
 
-Public-route invalid Basic credentials are now verified as 401 in P2.S2. Missing-versus-malformed JWT role handling remains a P3.S2/P4.S1–S2 contract decision. `/api/user` requires authentication, not ROLE_USER; an authenticated ADMIN does not need an implicit USER role to use it. No role hierarchy is implied.
+Public-route invalid Basic credentials are now verified as 401 in P2.S2. Missing/empty JWT roles now have P4.S1 HTTP evidence; malformed roles remain P4.S2. `/api/user` requires authentication, not ROLE_USER; an authenticated ADMIN does not need an implicit USER role to use it. No role hierarchy is implied.
 
 Additional JWT tests: expired token, future not-before, wrong issuer, wrong audience, tampered signature, different signing key, unexpected algorithm, malformed token, missing roles, USER vs ADMIN role mapping. Use a controllable Clock or fixed test tokens, not Thread.sleep. Validate status, headers, response body, and observable trace when relevant.
 
@@ -130,3 +130,16 @@ Verified 2026-11-01: `mvn verify`, BUILD SUCCESS, 14.459 seconds; 44 HTTP + 29 u
 | `IssuerSecretHandlingTest` | 2 unit: record display redacted; temporary directory/files owner-only and removed |
 
 HTTP suite totals: BasicSecurityIT 16, NoneSecurityIT 4, JwtValidationIT 8, JwtLoginIT 7, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit suite totals: SecurityModeConfigTest 8, TraceEventSinkTest 2, RsaJwtTest 4, JwtClaimContractValidatorTest 8, JwtDecoderConfigTest 3, JwtIssuerConfigTest 2, IssuerSecretHandlingTest 2. Historical inventories above remain checkpoint evidence rather than current counts.
+
+## P4.S1 — conversion and authorization executed
+
+Final `mvn verify` on 2026-11-01: BUILD SUCCESS in 15.272 seconds, 61 HTTP + 29 unit cases, zero failures/errors/skips (JDK 24/release 21). A first sandboxed run failed because Mockito could not self-attach; the final run used the required process permissions.
+
+| New JwtValidationIT method | Cases / evidence |
+|---|---|
+| `validatedRolesBecomeRequestAuthorities` | 5: USER/ADMIN/OTHER → exact ROLE_* authority; missing/empty → none; actual request name equals subject |
+| `endpointPolicyDistinguishesAuthenticationFromAdminRole` | 9: USER/user 200, USER/admin 403, ADMIN/user and admin 200, missing/empty user 200 and admin 403, OTHER/admin 403; exact allowed/denied trace and no cookies |
+| `missingBearerReturns401BeforeMvc` | 2: user/admin 401 with plain Bearer challenge; no MVC events or session cookie |
+| `bearerRequestDoesNotEstablishSessionAuthentication` | 1: ADMIN bearer succeeds; later request without bearer but with arbitrary JSESSIONID fails 401; no session cookies |
+
+JwtValidationIT now has 25 cases, replacing its previous total of 8. All other S3 totals stay unchanged: BasicSecurityIT 16, NoneSecurityIT 4, JwtLoginIT 7, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit inventory remains 29. Test-only IdentityProbe is explicitly imported and excluded from component scanning. No production policy or custom filter is added. Missing/empty-role and role-denial statements in prior checkpoint sections are historical and superseded here; malformed roles, raw claims and timestamp boundaries remain P4.S2, expanded context diagnostics P4.S3.
