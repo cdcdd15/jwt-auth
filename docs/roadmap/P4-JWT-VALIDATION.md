@@ -2,7 +2,7 @@
 
 **Objective:** solidify production-relevant validation behavior without implementing a custom bearer filter.
 
-**Status:** P4.S1 complete; P4.S2–S3 planned. No new production security path was needed.
+**Status:** P4.S1–S2 complete; P4.S3 planned. S2 adds a strict JwtDecoder decorator inside the existing Resource Server authentication path; no custom bearer filter.
 
 ## P4.S1 — Authentication conversion and authorization
 
@@ -16,6 +16,13 @@ Refine the existing P3 mapping and its tests rather than introducing a second au
 **Learning:** JwtAuthenticationConverter, SecurityContextHolder, AuthorizationFilter, 401 vs 403.
 
 ## P4.S2 — Negative validation suite
+
+- [x] Verified 2026-11-01: `mvn verify` passed 106 HTTP integration + 29 unit cases, zero failures/errors/skips, 21.343 seconds (JDK 24/release 21).
+- `JwtNegativeValidationIT` adds 45 real HTTP cases: 34 malformed/unacceptable inputs, six exact timestamp-skew boundaries, five permitted-representation controls.
+- Initial tests exposed accepted numeric sub and null iat/nbf after library normalization. `StrictJwtDecoder` delegates verification/normalized validation to Nimbus first, then uses Nimbus to check original payload JSON types before returning the Jwt to the provider/converter.
+- Invalid inputs return 401/Bearer invalid_token before MVC; exp NOW−60 and nbf NOW+60 pass, one second farther fails. Missing optional dates/roles and single-string audience remain accepted.
+- [Current source commentary, actual traces, and case map](../learning/P4.S2-WALKTHROUGH.md). P4.S3 diagnostics remain unimplemented.
+
 Use the claim contract defined in P3; explicitly assert missing-versus-malformed claim outcomes and test time boundaries against the configured skew. Do not assume default validators enforce every application-required claim. Test tampered JWT, unknown RSA signing key, wrong algorithm (reject e.g. HS256), malformed token, expired token, future nbf, wrong issuer, wrong audience, missing mandatory claims, malformed roles claim. Use deterministic time handling; verify fail-closed behavior and error status. Never trust `alg` header without server-side algorithm allowlist.
 **Learning:** JWS signature, JWT claims validators, algorithm confusion prevention, error paths.
 

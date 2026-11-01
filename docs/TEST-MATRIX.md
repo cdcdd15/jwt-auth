@@ -1,6 +1,6 @@
-# HTTP Integration Test Matrix — P1–P3 and P4.S1 verified; remaining P4/comparison planned
+# HTTP Integration Test Matrix — P1–P3 and P4.S1–S2 verified; diagnostics/comparison planned
 
-Current verified checkpoint: **P4.S1**, with 61 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. JWT conversion, role authorization, anonymous 401, missing/empty-role 200/403 and session-independent behavior now have real HTTP evidence. None/basic regressions pass. P4.S2’s complete negative-validation suite remains planned. See [current evidence](learning/P4.S1-WALKTHROUGH.md).
+Current verified checkpoint: **P4.S2**, with 106 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. Negative token/claim inputs, exact timestamp boundaries and permitted raw forms now have real HTTP evidence. None/basic and issuer regressions pass. Expanded JWT diagnostics remain P4.S3. See [current evidence](learning/P4.S2-WALKTHROUGH.md).
 
 ## Target matrix for completed modes — not all cells executed
 
@@ -23,7 +23,7 @@ Run all tests over real embedded Tomcat with SpringBootTest(RANDOM_PORT) + RestA
 
 `*` None ignores Authorization headers (invalid-bearer requests now verified for all three endpoints). In the completed Basic mode, bearer-only protected requests cannot authenticate and are expected to return 401; that exact scheme case is not yet tested in basic. Do not treat this table as a claim that arbitrary supplied invalid credentials are ignored on public routes.
 
-Public-route invalid Basic credentials are now verified as 401 in P2.S2. Missing/empty JWT roles now have P4.S1 HTTP evidence; malformed roles remain P4.S2. `/api/user` requires authentication, not ROLE_USER; an authenticated ADMIN does not need an implicit USER role to use it. No role hierarchy is implied.
+Public-route invalid Basic credentials are now verified as 401 in P2.S2. Missing/empty JWT roles now have P4.S1 HTTP evidence; malformed-role rejection now has P4.S2 HTTP evidence. `/api/user` requires authentication, not ROLE_USER; an authenticated ADMIN does not need an implicit USER role to use it. No role hierarchy is implied.
 
 Additional JWT tests: expired token, future not-before, wrong issuer, wrong audience, tampered signature, different signing key, unexpected algorithm, malformed token, missing roles, USER vs ADMIN role mapping. Use a controllable Clock or fixed test tokens, not Thread.sleep. Validate status, headers, response body, and observable trace when relevant.
 
@@ -143,3 +143,15 @@ Final `mvn verify` on 2026-11-01: BUILD SUCCESS in 15.272 seconds, 61 HTTP + 29 
 | `bearerRequestDoesNotEstablishSessionAuthentication` | 1: ADMIN bearer succeeds; later request without bearer but with arbitrary JSESSIONID fails 401; no session cookies |
 
 JwtValidationIT now has 25 cases, replacing its previous total of 8. All other S3 totals stay unchanged: BasicSecurityIT 16, NoneSecurityIT 4, JwtLoginIT 7, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit inventory remains 29. Test-only IdentityProbe is explicitly imported and excluded from component scanning. No production policy or custom filter is added. Missing/empty-role and role-denial statements in prior checkpoint sections are historical and superseded here; malformed roles, raw claims and timestamp boundaries remain P4.S2, expanded context diagnostics P4.S3.
+
+## P4.S2 — raw negative validation and deterministic boundaries executed
+
+Final `mvn verify` on 2026-11-01: BUILD SUCCESS, 21.343 seconds, 106 HTTP + 29 unit cases, zero failures/errors/skips (JDK 24/release 21). JwtNegativeValidationIT adds 45 cases; all prior 61 HTTP cases and 29 unit cases remain green. Initial execution found three accepted malformed representations (numeric sub, null iat, null nbf); StrictJwtDecoder closes those gaps after Nimbus verification and before authentication conversion.
+
+| JwtNegativeValidationIT method | Cases / evidence |
+|---|---|
+| `invalidRawTokensFailClosedBeforeMvc` | 34: tampering, unknown key, HS256, malformed token; expired/future nbf/wrong issuer/audience; missing sub/iss/aud/exp; null sub/iss/aud/exp/iat/nbf/roles; numeric sub/iss/aud; textual exp/iat/nbf; boolean exp; blank sub; empty/mixed aud; scalar/object roles and numeric/null/blank role element. All 401 invalid_token, no cookie, outer-only trace |
+| `timestampSkewHasDeterministicBoundaries` | 6: exp NOW−61 →401, NOW−60/−59 →200; nbf NOW+61 →401, NOW+60/+59 →200; status/challenge or exact JSON, no cookie, appropriate trace |
+| `permittedRawRepresentationsRemainAuthenticated` | 5: single-string aud, missing iat/nbf/roles, empty roles →200 exact user JSON, no cookie, authenticated MVC trace |
+
+HTTP suite totals: JwtNegativeValidationIT 45, JwtValidationIT 25, JwtLoginIT 7, BasicSecurityIT 16, NoneSecurityIT 4, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit totals remain the P3.S3 inventory of 29. P4.S3 still owns enhanced diagnostics/context-isolation instrumentation. Prior statements that raw malformed claims and boundaries were pending describe earlier checkpoints and are superseded here.

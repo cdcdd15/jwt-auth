@@ -8,6 +8,7 @@ import java.time.Clock;
 import java.time.Duration;
 
 import com.example.securitylearning.security.JwtClaimContractValidator;
+import com.example.securitylearning.security.StrictJwtDecoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.security.converter.RsaKeyConverters;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtIssuerValidator;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
@@ -40,13 +42,13 @@ public class JwtDecoderConfig {
     }
 
     @Bean
-    NimbusJwtDecoder jwtDecoder(RSAPublicKey jwtVerificationKey, Clock clock) {
+    JwtDecoder jwtDecoder(RSAPublicKey jwtVerificationKey, Clock clock) {
         var decoder = NimbusJwtDecoder.withPublicKey(jwtVerificationKey)
             .signatureAlgorithm(SignatureAlgorithm.RS256).build();
         var timestamps = new JwtTimestampValidator(Duration.ofSeconds(60));
         timestamps.setClock(clock);
         decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(
             new JwtClaimContractValidator(), new JwtIssuerValidator(JwtClaimContractValidator.ISSUER), timestamps));
-        return decoder;
+        return new StrictJwtDecoder(decoder);
     }
 }
