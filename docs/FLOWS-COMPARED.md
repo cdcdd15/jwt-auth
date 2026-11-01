@@ -1,6 +1,6 @@
 # Understanding the Plain MVC, Basic, and JWT Flows
 
-This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1/P2 and P3.S1–S2 are verified. JWT validation now works; local login issuance remains planned.
+This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1–P3 are verified. JWT validation and local login issuance now work.
 
 ## The shared foundation
 
@@ -26,13 +26,13 @@ A `DaoAuthenticationProvider` obtains the user through `InMemoryUserDetailsManag
 
 The intended policy permits public access, requires authentication for `/api/user`, and requires ADMIN for `/api/admin`. Missing or invalid credentials on protected resources produce 401, with an appropriate Basic challenge. USER receives 403 on admin without a new challenge; ADMIN receives 200. Both identities can access user because it requires authentication. Authentication establishes identity; authorization evaluates permission.
 
-Basic encodes credentials rather than encrypting them, so transport protection matters. With the planned stateless configuration, requests authenticate independently instead of relying on a login session. Not every request executes a successful password check: absent headers, invalid credentials, and public access follow different branches.
+Basic encodes credentials rather than encrypting them, so transport protection matters. With the implemented stateless configuration, requests authenticate independently instead of relying on a login session. Not every request executes a successful password check: absent headers, invalid credentials, and public access follow different branches.
 
 ## JWT: issue once, verify subsequent requests
 
-JWT introduces two logically separate operations. First, the planned local POST `/auth/login` endpoint checks username and password through the authentication infrastructure. After success, `NimbusJwtEncoder` signs a token using an RSA private key. This demonstration endpoint is not an OAuth2 grant endpoint or authorization server.
+JWT introduces two logically separate operations. First, the implemented local POST `/auth/login` endpoint checks username and password through the authentication infrastructure. After success, `NimbusJwtEncoder` signs a token using an RSA private key. This demonstration endpoint is not an OAuth2 grant endpoint or authorization server.
 
-Second, now implemented in P3.S2 with test-issued tokens, the client presents a token in an `Authorization: Bearer` header. Spring Security’s built-in `BearerTokenAuthenticationFilter` submits it for authentication. `JwtAuthenticationProvider` delegates decoding and verification to `NimbusJwtDecoder`.
+Second, implemented with test-issued and login-issued tokens, the client presents a token in an `Authorization: Bearer` header. Spring Security’s built-in `BearerTokenAuthenticationFilter` submits it for authentication. `JwtAuthenticationProvider` delegates decoding and verification to `NimbusJwtDecoder`.
 
 The decoder must enforce RS256, verify the signature with the RSA public key, and validate required claims, including issuer, audience, and timestamps. These are distinct checks: a correct signature does not establish that a token targets this API or remains valid now.
 
@@ -43,3 +43,5 @@ Invalid tokens produce 401; authenticated callers lacking permission receive 403
 ## The practical difference
 
 Plain MVC teaches request dispatch without identity checks. Basic repeatedly checks credentials; JWT checks a signed bearer credential after initial issuance. Both secured modes retain MVC and distinguish authentication from authorization. JWT adds cryptographic trust and claim validation, while moving password checking out of ordinary protected requests. See [Basic evidence](learning/P2.S3-WALKTHROUGH.md) and [JWT validation evidence](learning/P3.S2-WALKTHROUGH.md) for implemented behavior and actual events.
+
+[Local issuance and credential flow evidence](learning/P3.S3-WALKTHROUGH.md).

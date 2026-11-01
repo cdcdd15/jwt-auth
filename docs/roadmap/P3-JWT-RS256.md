@@ -1,6 +1,6 @@
 # P3 — RS256 JWT foundation, validation-first, then issuance
 
-**Status:** P3.S1–S2 complete; P3.S3 planned. JWT runtime validation now works with a configured local public key; login issuance remains S3.
+**Status:** P3 complete. P3.S3 verified 2026-11-01: 44 HTTP integration + 29 unit cases passed in `mvn verify` (14.459 seconds, JDK 24/release 21). JWT startup now requires matching local public and private keys. P4 remains unimplemented.
 
 **Objective:** learn RS256 public/private key separation and Nimbus-backed JWT processing. Use Spring Security OAuth2 Resource Server for JWT validation, **not** an OAuth2 Authorization Server or grant flow.
 
@@ -18,6 +18,8 @@ Before S2, document a claim contract: required claim presence and types, optiona
 
 ## P3.S2 — Resource Server validates test-issued tokens
 
+Historical checkpoint: S3 adds the runtime encoder/login and changes fixtures to owner-only temporary public/private files. S2’s absence assertions below describe its original checkpoint, not current behavior.
+
 - [x] Verified 2026-10-31: `mvn verify` passed 35 HTTP integration + 25 unit cases, zero failures/errors/skips (JDK 24, release 21).
 - Resource Server starter replaces the test-only JOSE declaration; none/basic regression suites still pass. Mode selector now accepts jwt; Basic filter is absent in that chain.
 - Conditional decoder loads a local X.509 RSA public PEM via `app.jwt.public-key-path`, requires ≥2048 bits, uses RS256 only, and composes contract/issuer/timestamp validators with injected Clock and explicit 60-second skew.
@@ -29,6 +31,11 @@ Replace S1’s explicit test-scoped JOSE dependency with the OAuth2 Resource Ser
 **Learning:** BearerTokenAuthenticationFilter, JwtAuthenticationProvider, decoder, validators, JwtAuthenticationToken, SecurityContext.
 
 ## P3.S3 — Simple local login issuer
+
+- [x] Shared in-memory DaoAuthenticationProvider, dedicated login ProviderManager, JSON controller, matching PKCS8 signing key and NimbusJwtEncoder implemented only for jwt.
+- Valid USER/ADMIN login issues a 300-second RS256 token accepted over HTTP; wrong/unknown credentials return the same 401, malformed bodies return 400. None/basic have no login mapping.
+- Four additional unit cases check key mismatch/format, redacted record display, and temporary-key permissions/removal. No P4 edge-case expansion.
+- [Current source commentary, traces and test evidence](../learning/P3.S3-WALKTHROUGH.md).
 Add POST `/auth/login` with JSON username/password, validate via AuthenticationManager against in-memory users, issue RS256 JWT using `NimbusJwtEncoder`. Permit the local login endpoint only in jwt mode when introduced. Reuse the in-memory credential infrastructure deliberately without enabling Basic authentication on JWT-protected requests. Do not implement OAuth2 endpoints, grants, refresh tokens or consent. Test valid login returns token accepted by protected endpoint, bad credentials 401, no passwords/secrets in claims/logs.
 **Learning:** initial credential authentication vs later stateless bearer verification.
 

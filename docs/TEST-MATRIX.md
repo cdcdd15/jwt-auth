@@ -1,6 +1,6 @@
-# HTTP Integration Test Matrix — P1/P2 and P3.S1–S2 verified; issuance/P4/comparison planned
+# HTTP Integration Test Matrix — P1–P3 verified; P4/comparison planned
 
-Current verified checkpoint: **P3.S2**, with 35 real HTTP integration cases and 25 unit cases passing on JDK 24/release 21. JWT now validates test-issued USER/ADMIN tokens, rejects signature/expiry/issuer/audience failures, permits anonymous public, and rejects Basic-only authentication. All none/basic regressions pass. No runtime issuer or login mapping exists. See [current JWT evidence](learning/P3.S2-WALKTHROUGH.md).
+Current verified checkpoint: **P3.S3**, with 44 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. Local login issues RS256 tokens accepted by the Resource Server. None/basic regressions pass; login is absent in those modes. P4’s complete role/edge-case matrix remains planned. See [current evidence](learning/P3.S3-WALKTHROUGH.md).
 
 ## Target matrix for completed modes — not all cells executed
 
@@ -114,3 +114,19 @@ Final `mvn verify` on 2026-10-31: 35 integration + 25 unit cases, zero failures/
 | `basicCredentialsCannotAuthenticateJwtMode` | 1: Basic-only protected access → 401/Bearer challenge with anonymous downstream trace |
 
 New unit checks: JwtClaimContractValidatorTest 8 (valid normalized map, five invalid shapes/values, missing/empty roles as candidates); JwtDecoderConfigTest 3 (missing/invalid/weak public key). Updated SecurityModeConfigTest 8 accepts jwt; existing RsaJwtTest 4 and TraceEventSinkTest 2 also pass, making 25 unit cases. These normalized-map examples are not the full raw malformed-claim matrix. Missing bearer, role-denial/no-role HTTP, future nbf, wrong algorithm, malformed token, timestamp boundaries, and detailed JWT cleanup diagnostics remain P4. Earlier “JWT unimplemented” statements are historical and superseded here. [Actual traces and complete commentary](learning/P3.S2-WALKTHROUGH.md).
+
+## P3.S3 — local issuance executed
+
+Verified 2026-11-01: `mvn verify`, BUILD SUCCESS, 14.459 seconds; 44 HTTP + 29 unit cases, zero failures/errors/skips. The prior S2 encoder/login absence assertions are replaced by presence assertions; its fixtures now provide both key paths.
+
+| Test | Cases / observed result |
+|---|---|
+| `JwtLoginIT.loginIssuesSafeTokenAcceptedByProtectedEndpoint` | 2: USER/ADMIN login 200, no-store/no cookie, exact three response fields, seven safe claims, deterministic 300-second lifetime, trusted roles despite forged request roles; issued bearer gets user/admin 200 |
+| `JwtLoginIT.badCredentialsReturnGeneric401WithoutToken` | 2: wrong password/unknown user → identical 401 JSON, no token/challenge/cookie, rejection trace |
+| `JwtLoginIT.malformedLoginReturns400WithoutToken` | 3: missing username, empty password, invalid JSON → 400 without token or error-detail leaks |
+| `NoneSecurityIT.loginEndpointIsAbsentInNoneMode` | 1: POST login → 404 |
+| `BasicSecurityIT.loginEndpointIsAbsentInBasicMode` | 1: authenticated POST login → 404 |
+| `JwtIssuerConfigTest` | 2 unit: mismatched pair and invalid PKCS8 rejected |
+| `IssuerSecretHandlingTest` | 2 unit: record display redacted; temporary directory/files owner-only and removed |
+
+HTTP suite totals: BasicSecurityIT 16, NoneSecurityIT 4, JwtValidationIT 8, JwtLoginIT 7, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit suite totals: SecurityModeConfigTest 8, TraceEventSinkTest 2, RsaJwtTest 4, JwtClaimContractValidatorTest 8, JwtDecoderConfigTest 3, JwtIssuerConfigTest 2, IssuerSecretHandlingTest 2. Historical inventories above remain checkpoint evidence rather than current counts.

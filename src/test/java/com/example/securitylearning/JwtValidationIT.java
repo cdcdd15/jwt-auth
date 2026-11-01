@@ -1,15 +1,12 @@
 package com.example.securitylearning;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -56,8 +53,9 @@ import static org.hamcrest.Matchers.startsWith;
 class JwtValidationIT {
 
     private static final Instant NOW = Instant.parse("2030-01-01T12:00:00Z");
-    private static final KeyPair SIGNING_KEYS = RsaKeyGenerator.generateDevelopmentKeyPair();
-    private static final Path PUBLIC_KEY_FILE = writePublicKey();
+    private static final com.example.securitylearning.support.JwtKeyFixture KEY_FIXTURE =
+        new com.example.securitylearning.support.JwtKeyFixture();
+    private static final KeyPair SIGNING_KEYS = KEY_FIXTURE.keys();
 
     @LocalServerPort
     private int port;
@@ -73,12 +71,13 @@ class JwtValidationIT {
 
     @DynamicPropertySource
     static void publicKeyLocation(DynamicPropertyRegistry properties) {
-        properties.add("app.jwt.public-key-path", () -> PUBLIC_KEY_FILE.toString());
+        properties.add("app.jwt.public-key-path", () -> KEY_FIXTURE.publicPath().toString());
+        properties.add("app.jwt.private-key-path", () -> KEY_FIXTURE.privatePath().toString());
     }
 
     @AfterAll
     static void removePublicKeyFile() throws IOException {
-        Files.deleteIfExists(PUBLIC_KEY_FILE);
+        KEY_FIXTURE.close();
     }
 
     @Test
@@ -93,9 +92,9 @@ class JwtValidationIT {
             .map(filter -> filter.getClass().getSimpleName()).toList();
         assertThat(filters).contains("BearerTokenAuthenticationFilter", "AuthorizationFilter")
             .doesNotContain("BasicAuthenticationFilter");
-        assertThat(context.getBeansOfType(JwtEncoder.class)).isEmpty();
+        assertThat(context.getBeansOfType(JwtEncoder.class)).hasSize(1);
         assertThat(context.getBean(RequestMappingHandlerMapping.class).getHandlerMethods().keySet())
-            .noneMatch(mapping -> mapping.getPatternValues().contains("/auth/login"));
+            .anyMatch(mapping -> mapping.getPatternValues().contains("/auth/login"));
         System.out.println("JWT SECURITY FILTERS " + filters);
     }
 
@@ -153,17 +152,6 @@ class JwtValidationIT {
             .expiresAt(scenario.equals("expired") ? NOW.minusSeconds(120) : NOW.plusSeconds(300)).build();
         return encoder.encode(JwtEncoderParameters.from(
             JwsHeader.with(SignatureAlgorithm.RS256).type("JWT").build(), claims)).getTokenValue();
-    }
-
-    private static Path writePublicKey() {
-        try {
-            Path path = Files.createTempFile("jwt-verification-", ".pem");
-            String encoded = Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(SIGNING_KEYS.getPublic().getEncoded());
-            Files.writeString(path, "-----BEGIN PUBLIC KEY-----\n" + encoded + "\n-----END PUBLIC KEY-----\n");
-            return path;
-        } catch (IOException exception) {
-            throw new IllegalStateException("Cannot prepare public verification key fixture", exception);
-        }
     }
 
     @TestConfiguration(proxyBeanMethods = false)

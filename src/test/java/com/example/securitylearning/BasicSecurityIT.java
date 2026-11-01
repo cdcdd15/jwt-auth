@@ -224,6 +224,14 @@ class BasicSecurityIT {
             "security.challenge", "security.authorization.exit", "filter.exit"));
     }
 
+    @Test
+    void loginEndpointIsAbsentInBasicMode() {
+        given().baseUri("http://localhost").port(port).contentType(ContentType.JSON)
+            .auth().preemptive().basic("user", "user123")
+            .body(Map.of("username", "user", "password", "incorrect"))
+            .when().post("/auth/login").then().statusCode(404);
+    }
+
     private Response authenticatedGet(String username, String path) {
         return given().baseUri("http://localhost").port(port).accept(ContentType.JSON)
             .auth().preemptive().basic(username, username + "123").when().get(path);

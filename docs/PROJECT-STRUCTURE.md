@@ -1,10 +1,14 @@
 # Proposed Project Structure
 
-P1, P2, and P3.S1–S2 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
+P1, P2, and P3.S1–S3 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
 
 ```text
 src/main/java/com/example/securitylearning/SecurityLearningApplication.java
 src/main/java/com/example/securitylearning/api/DemoController.java
+src/main/java/com/example/securitylearning/api/AuthController.java
+src/main/java/com/example/securitylearning/config/InMemoryIdentityConfig.java
+src/main/java/com/example/securitylearning/config/JwtIssuerConfig.java
+src/main/java/com/example/securitylearning/security/JwtTokenService.java
 src/main/java/com/example/securitylearning/security/RsaKeyGenerator.java
 src/main/java/com/example/securitylearning/security/JwtClaimContractValidator.java
 src/main/java/com/example/securitylearning/config/JwtDecoderConfig.java
@@ -22,6 +26,10 @@ src/test/java/com/example/securitylearning/BasicSecurityIT.java  # includes test
 src/test/java/com/example/securitylearning/SecurityModeConfigTest.java
 src/test/java/com/example/securitylearning/security/RsaJwtTest.java
 src/test/java/com/example/securitylearning/JwtValidationIT.java
+src/test/java/com/example/securitylearning/JwtLoginIT.java
+src/test/java/com/example/securitylearning/support/JwtKeyFixture.java
+src/test/java/com/example/securitylearning/config/JwtIssuerConfigTest.java
+src/test/java/com/example/securitylearning/security/IssuerSecretHandlingTest.java
 src/test/java/com/example/securitylearning/security/JwtClaimContractValidatorTest.java
 src/test/java/com/example/securitylearning/config/JwtDecoderConfigTest.java
 src/test/java/com/example/securitylearning/RequestTraceIT.java
@@ -35,6 +43,7 @@ docs/learning/P2.S2-WALKTHROUGH.md
 docs/learning/P2.S3-WALKTHROUGH.md
 docs/learning/P3.S1-WALKTHROUGH.md
 docs/learning/P3.S2-WALKTHROUGH.md
+docs/learning/P3.S3-WALKTHROUGH.md
 docs/JWT-CLAIM-CONTRACT.md
 ```
 
@@ -58,7 +67,7 @@ jwt-auth/
 │       ├── P3-JWT-RS256.md
 │       ├── P4-JWT-VALIDATION.md
 │       └── P5-COMPARISON.md
-└── src/                          # P1/P2 complete; P3.S1–S2 validation foundation; application, tracing, mode configuration, and tests
+└── src/                          # P1/P2 complete; P3.S1–S3 validation foundation; application, tracing, mode configuration, and tests
 ```
 
 ## Target Java and test layout (mostly future work)

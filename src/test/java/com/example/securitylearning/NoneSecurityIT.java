@@ -3,6 +3,7 @@ package com.example.securitylearning;
 import java.util.Map;
 
 import jakarta.servlet.ServletContext;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,13 @@ class NoneSecurityIT {
 
     @Autowired
     private ServletContext servletContext;
+
+    @Test
+    void loginEndpointIsAbsentInNoneMode() {
+        given().baseUri("http://localhost").port(port).contentType("application/json")
+            .body(Map.of("username", "user", "password", "incorrect"))
+            .when().post("/auth/login").then().statusCode(404);
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"public", "user", "admin"})

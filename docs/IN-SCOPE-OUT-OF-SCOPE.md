@@ -4,14 +4,14 @@
 
 Build a compact, runnable, evidence-backed course explaining how HTTP requests move through Spring MVC and Spring Security. Learners must be able to connect observed behavior to application code and framework responsibilities, explain failures, and compare plain MVC, HTTP Basic, and RS256 JWT validation.
 
-This scope covers the complete existing roadmap, **P1.S1 through P5.S2**, including the final learning package and verification. It is not authorization to implement later steps. Implement one numbered step per request, then stop. As of 2026-10-31, P1, P2, and P3.S1–S2 are implemented and verified; P3.S3 onward remains planned.
+This scope covers the complete existing roadmap, **P1.S1 through P5.S2**, including the final learning package and verification. It is not authorization to implement later steps. Implement one numbered step per request, then stop. As of 2026-11-01, P1–P3 are implemented and verified; P4 onward remains planned.
 
 [ROADMAP.md](../ROADMAP.md) controls sequence and completion status. Phase documents specify acceptance criteria. [LEARNING-SUPPORT-REQUIREMENTS.md](LEARNING-SUPPORT-REQUIREMENTS.md) defines teaching deliverables. [ROADMAP-REVIEW.md](ROADMAP-REVIEW.md) records recommended clarifications separately from completed work.
 
 ## In scope: architecture and behavior
 
 - Java 21 compilation target, Spring Boot 3.x, Spring MVC, Maven, embedded Tomcat, and Spring Security 6.x when introduced. Record the actual runtime used; compilation for Java 21 does not prove execution on it.
-- One application with mutually exclusive `none`, `basic`, and `jwt` modes once mode selection is introduced. Separate application contexts/configurations for mode-specific HTTP tests. The single property `app.security-mode` accepts none/basic/jwt and defaults to none. JWT requires `app.jwt.public-key-path`; the runtime currently loads public material only.
+- One application with mutually exclusive `none`, `basic`, and `jwt` modes once mode selection is introduced. Separate application contexts/configurations for mode-specific HTTP tests. The single property `app.security-mode` accepts none/basic/jwt and defaults to none. JWT requires `app.jwt.public-key-path` and matching PKCS8 `app.jwt.private-key-path`; verification and issuance use separate key responsibilities.
 - `none`: genuinely no invocation of Spring Security's servlet filter infrastructure. Initially security dependencies are absent; since P2.S1, explicit conditional bean/servlet registration isolation preserves this behavior; security libraries remain present. `permitAll()` alone is insufficient.
 - Three shared GET endpoints: `/api/public`, `/api/user`, `/api/admin`, with deterministic JSON. In the completed secured modes, public is permitted, user requires authentication, and admin requires ADMIN. P2.S2 implements credentials, and P2.S3 now enforces ADMIN on admin access. In plain mode, all three are accessible without credentials.
 - Basic authentication with in-memory users, BCrypt password checking, and explicit authentication/authorization behavior. No persistent user management.
@@ -33,7 +33,7 @@ This scope covers the complete existing roadmap, **P1.S1 through P5.S2**, includ
 | P2.S3 | Admin authorization, USER denial, 401 challenge versus 403, sanitized security flow, complete P2 walkthroughs | Implemented |
 | P3.S1 | Local RSA foundation, JWT header/claims/signature anatomy, RS256 signing/verification tests | Implemented |
 | P3.S2 | Resource Server mode using test-issued tokens, decoder/validators, initial role conversion, valid and invalid token HTTP tests | Implemented |
-| P3.S3 | Local credential-to-token login and end-to-end use of issued tokens; bad credentials and safe token contents | Planned |
+| P3.S3 | Local credential-to-token login and end-to-end use of issued tokens; bad credentials and safe token contents | Implemented |
 | P4.S1 | Final role conversion and authorization contract, anonymous/missing-token/insufficient-authority cases, statelessness | Planned |
 | P4.S2 | Tampering, wrong key/algorithm, malformed/expired/future tokens, issuer/audience, missing claims, malformed roles, deterministic time | Planned |
 | P4.S3 | Actual security-filter ordering, correlated allowed/denied traces, authentication/authorization failure diagnostics, no secret leakage | Planned |

@@ -14,12 +14,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,6 +26,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "app.security-mode", havingValue = "basic")
 @EnableWebSecurity
+@Import(InMemoryIdentityConfig.class)
 public class BasicSecurityConfig {
 
     @Bean
@@ -58,25 +55,6 @@ public class BasicSecurityConfig {
                 .requestMatchers("/api/admin").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .build();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    UserDetailsService users(PasswordEncoder encoder) {
-        return new InMemoryUserDetailsManager(
-            User.withUsername("user").password(encoder.encode("user123")).roles("USER").build(),
-            User.withUsername("admin").password(encoder.encode("admin123")).roles("ADMIN").build());
-    }
-
-    @Bean
-    DaoAuthenticationProvider basicAuthenticationProvider(UserDetailsService users, PasswordEncoder encoder) {
-        var provider = new DaoAuthenticationProvider(users);
-        provider.setPasswordEncoder(encoder);
-        return provider;
     }
 
     @Bean

@@ -1,6 +1,6 @@
 # Local JWT claim contract
 
-**Status:** Defined in P3.S1; baseline runtime enforcement implemented in P3.S2. Real HTTP tests now cover valid USER/ADMIN tokens and signature/expiry/issuer/audience rejection. Unit tests cover representative normalized schema checks. P4 completes raw-token normalization, role-denial, malformed-claim, and time-boundary evidence. No runtime issuer exists until P3.S3. This document is an application contract, not a claim that Nimbus defaults enforce it automatically.
+**Status:** Defined in P3.S1; baseline runtime enforcement implemented in P3.S2. Real HTTP tests now cover valid USER/ADMIN tokens and signature/expiry/issuer/audience rejection. Unit tests cover representative normalized schema checks. P4 completes raw-token normalization, role-denial, malformed-claim, and time-boundary evidence. P3.S3 implements the local issuer: roles come only from authenticated authorities, iat/nbf use the injected clock truncated to seconds, exp is 300 seconds later, and the runtime header uses kid `local-issuer`. This document is an application contract, not a claim that Nimbus defaults enforce it automatically.
 
 ## Header and trust boundary
 
@@ -30,6 +30,6 @@ Local issuer lifetime: 300 seconds. Validation clock skew: 60 seconds. Use an in
 
 ## Authentication and authorization follow validation
 
-A valid signature proves integrity against the trusted public key, not correct issuer/audience/time, authenticated context creation, or endpoint permission. Nimbus verification alone creates no Spring SecurityContext. P3.S2 now uses Resource Server's built-in BearerTokenAuthenticationFilter, JwtAuthenticationProvider, NimbusJwtDecoder, and a converter. P3.S3 then adds local credential-to-token issuance. No OAuth2 grant/authorization server or external IdP is required.
+A valid signature proves integrity against the trusted public key, not correct issuer/audience/time, authenticated context creation, or endpoint permission. Nimbus verification alone creates no Spring SecurityContext. P3.S2 now uses Resource Server's built-in BearerTokenAuthenticationFilter, JwtAuthenticationProvider, NimbusJwtDecoder, and a converter. P3.S3 now adds local credential-to-token issuance. See [the current walkthrough](learning/P3.S3-WALKTHROUGH.md). No OAuth2 grant/authorization server or external IdP is required.
 
 Never include passwords, private keys, or other secrets in claims. Base64URL is readable encoding, not encryption. Token values must not appear in logs or learning traces. See [S1 signing evidence](learning/P3.S1-WALKTHROUGH.md) and [S2 runtime validation evidence](learning/P3.S2-WALKTHROUGH.md).
