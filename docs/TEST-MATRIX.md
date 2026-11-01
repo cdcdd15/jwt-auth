@@ -1,10 +1,10 @@
-# HTTP Integration Test Matrix — P1–P4 verified; final comparison planned
+# HTTP Integration Test Matrix — P1–P4 and P5.S1 verified; final audit planned
 
-Current verified checkpoint: **P4.S3**, with 114 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. JWT diagnostics now distinguish configured order from actual filter entries, early rejection from role denial, and validate context cleanup, sequential/concurrent identities and secret-free output. None/basic regressions pass. P5 remains planned. See [current evidence](learning/P4.S3-WALKTHROUGH.md).
+Current verified checkpoint: **P5.S1**, with 153 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. One shared 13-row comparison contract now runs in none/basic/jwt isolated contexts (39 cases). Mode-specific deeper coverage remains intact. P5.S2 final guide/audit remains planned. See [matrix, three diagrams and actual traces](learning/P5.S1-WALKTHROUGH.md).
 
-## Target matrix for completed modes — not all cells executed
+## Shared completed-mode matrix — executed in P5.S1
 
-The table describes the completed project contract. Current coverage includes the three anonymous rows in none/basic, invalid-bearer requests in none, valid USER/ADMIN Basic access to user, and Basic challenge behavior. Basic admin role decisions are now verified in S3; JWT USER/user and ADMIN/admin plus anonymous public and Basic-only rejection now have S2 evidence; missing-bearer and insufficient-role JWT cases now have P4.S1 evidence. S1’s status-only response is historical, replaced by S2’s Basic entry point.
+The table describes the executed shared comparison contract, supplemented by mode-specific cases. P5.S1 runs all rows below in each mode. Basic S1’s status-only response remains historical, replaced by the completed challenge behavior. Login absence in basic is checked with valid Basic credentials so authorization does not hide the missing mapping.
 
 Run all tests over real embedded Tomcat with SpringBootTest(RANDOM_PORT) + RestAssured. Mode-specific contexts must be isolated. Status codes below assume the indicated identity is supplied with the authentication mechanism of that mode.
 
@@ -18,10 +18,13 @@ Run all tests over real embedded Tomcat with SpringBootTest(RANDOM_PORT) + RestA
 | GET /api/admin as ADMIN | 200 | 200 | 200 |
 | GET /api/user with Basic credentials | 200 | 200 | 401 |
 | GET /api/user with invalid Bearer JWT | 200* | 401* | 401 |
-| POST /auth/login valid credentials | not present | not present | 200 + token |
-| POST /auth/login invalid credentials | not present | not present | 401 |
+| POST /auth/login valid credentials | 404 | 404 with valid Basic | 200 + token |
+| POST /auth/login invalid credentials | 404 | 404 with valid Basic | 401 |
+| GET /api/public with invalid Basic | 200 | 401 | 200 |
+| GET /api/public with malformed Bearer | 200 | 200 | 401 |
+| GET /api/not-mapped with native authentication | 404 | 404 | 404 |
 
-`*` None ignores Authorization headers (invalid-bearer requests now verified for all three endpoints). In the completed Basic mode, bearer-only protected requests cannot authenticate and are expected to return 401; that exact scheme case is not yet tested in basic. Do not treat this table as a claim that arbitrary supplied invalid credentials are ignored on public routes.
+`*` None ignores Authorization headers (invalid-bearer requests now verified for all three endpoints). Basic bearer-only protected requests cannot authenticate and now return 401 in the shared comparison. Do not treat this table as a claim that arbitrary supplied invalid credentials are ignored on public routes.
 
 Public-route invalid Basic credentials are now verified as 401 in P2.S2. Missing/empty JWT roles now have P4.S1 HTTP evidence; malformed-role rejection now has P4.S2 HTTP evidence. `/api/user` requires authentication, not ROLE_USER; an authenticated ADMIN does not need an implicit USER role to use it. No role hierarchy is implied.
 
@@ -168,3 +171,11 @@ Final `mvn verify`, 2026-11-01: BUILD SUCCESS, 23.245 seconds; 114 HTTP + 29 uni
 | `tracesAndCapturedOutputExcludeCredentialsAndKeyMaterial` | 1: bearer API request and real JSON login; sink and captured output contain neither complete bearer value, development password nor private-key PEM marker |
 
 HTTP totals: JwtDiagnosticsIT 8, JwtNegativeValidationIT 45, JwtValidationIT 25, JwtLoginIT 7, BasicSecurityIT 16, NoneSecurityIT 4, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit inventory remains 29. Probe/decorator/spy configuration is test-only, not packaged application behavior. Callback traces remain REQUEST-only; no async or load-test claim. Historical pending-diagnostics and two-event JWT rejection excerpts above are superseded by this checkpoint.
+
+## P5.S1 — shared comparative HTTP contract executed
+
+Final `mvn verify`, 2026-11-01: BUILD SUCCESS in 29.739 seconds; 153 HTTP + 29 unit cases, zero failures/errors/skips (JDK 24/release 21). `AbstractSecurityComparison.equivalentRequestsExposeModeDifferences` runs 13 scenarios in each of NoneComparisonIT, BasicComparisonIT and JwtComparisonIT: 39 new cases. No production Java changes.
+
+The shared rows are anonymous public/user/admin, native USER/user, USER/admin, ADMIN/admin, Basic/user, invalid-bearer/user, valid/invalid JSON credential login, public-invalid-Basic, public-invalid-bearer, and native-authenticated missing route. Each checks status/no cookie, appropriate body/challenge, correlation and callback invariants. None additionally asserts absent proxy and security events; secured modes assert one proxy. Basic login rows carry valid Basic authentication before asserting 404. Public invalid Basic gives none/basic/jwt 200/401/200; public invalid bearer gives 200/200/401. Missing authenticated routes give 404 in all three.
+
+HTTP suite totals: NoneComparisonIT 13, BasicComparisonIT 13, JwtComparisonIT 13, JwtDiagnosticsIT 8, JwtNegativeValidationIT 45, JwtValidationIT 25, JwtLoginIT 7, BasicSecurityIT 16, NoneSecurityIT 4, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit inventory remains 29. Existing ErrorPathIT provides none-mode 404/500 dispatch evidence; comparison adds no synthetic secured-mode exception controller. [Current code map and diagrams](learning/P5.S1-WALKTHROUGH.md). Earlier untested wrong-scheme/comparison statements above are historical checkpoint notes, superseded here.

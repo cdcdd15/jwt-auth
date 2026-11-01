@@ -1,6 +1,6 @@
 # Proposed Project Structure
 
-P1–P4 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
+P1–P4 and P5.S1 now implement the files listed below. The larger layout remains a **target**, not a claim that future classes exist.
 
 ```text
 src/main/java/com/example/securitylearning/SecurityLearningApplication.java
@@ -21,6 +21,10 @@ src/main/java/com/example/securitylearning/tracing/TraceEventSink.java
 src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java
 src/main/java/com/example/securitylearning/tracing/SecurityTraceFilter.java
 src/main/java/com/example/securitylearning/tracing/MvcTraceInterceptor.java
+src/test/java/com/example/securitylearning/AbstractSecurityComparison.java
+src/test/java/com/example/securitylearning/NoneComparisonIT.java
+src/test/java/com/example/securitylearning/BasicComparisonIT.java
+src/test/java/com/example/securitylearning/JwtComparisonIT.java
 src/test/java/com/example/securitylearning/PlainMvcIT.java
 src/test/java/com/example/securitylearning/NoneSecurityIT.java
 src/test/java/com/example/securitylearning/BasicSecurityIT.java  # includes test-only principal probe
@@ -50,6 +54,7 @@ docs/learning/P3.S3-WALKTHROUGH.md
 docs/learning/P4.S1-WALKTHROUGH.md
 docs/learning/P4.S2-WALKTHROUGH.md
 docs/learning/P4.S3-WALKTHROUGH.md
+docs/learning/P5.S1-WALKTHROUGH.md
 docs/JWT-CLAIM-CONTRACT.md
 ```
 
@@ -99,7 +104,10 @@ src/
     ├── BasicSecurityIT.java
     ├── JwtLoginIT.java
     ├── JwtValidationIT.java
-    └── SecurityComparisonIT.java
+    ├── AbstractSecurityComparison.java
+    ├── NoneComparisonIT.java
+    ├── BasicComparisonIT.java
+    └── JwtComparisonIT.java
 ```
 
 **JWT architecture:** use Spring Security's built-in `BearerTokenAuthenticationFilter`, `JwtAuthenticationProvider`, and `NimbusJwtDecoder`; create a `JwtAuthenticationConverter` configuration as necessary. The built-in filter is framework code, not a project class. Add `JwtKeyConfig`/`JwtDecoderConfig` as appropriate. Keep target class names flexible when framework-accurate alternatives are better.
