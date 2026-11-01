@@ -27,9 +27,9 @@ Scope: [in scope / out of scope](docs/IN-SCOPE-OUT-OF-SCOPE.md), covering P1.S1 
   - [x] P4.S1 — Authentication conversion and authorization; verified 2026-11-01: 61 HTTP integration + 29 unit cases passed, zero failures/errors/skips (JDK 24, release 21). [Walkthrough](docs/learning/P4.S1-WALKTHROUGH.md).
   - [x] P4.S2 — Negative validation suite and strict raw-claim checks; verified 2026-11-01: 106 HTTP integration + 29 unit cases passed, zero failures/errors/skips (JDK 24, release 21). [Walkthrough](docs/learning/P4.S2-WALKTHROUGH.md).
   - [x] P4.S3 — Filter chain and error diagnostics; verified 2026-11-01: 114 HTTP integration + 29 unit cases passed, zero failures/errors/skips (JDK 24, release 21). [Walkthrough](docs/learning/P4.S3-WALKTHROUGH.md).
-- [ ] P5 — Comparison and learning package. See `docs/roadmap/P5-COMPARISON.md`.
+- [x] P5 — Comparison and learning package. See `docs/roadmap/P5-COMPARISON.md`.
   - [x] P5.S1 — Comparative runtime tests and diagrams; verified 2026-11-01: 153 HTTP integration + 29 unit cases passed, zero failures/errors/skips (JDK 24, release 21). [Walkthrough](docs/learning/P5.S1-WALKTHROUGH.md).
-  - [ ] P5.S2 — Learning package, review and final verification.
+  - [x] P5.S2 — Complete guide, code/documentation and secret audit; final `mvn clean verify` on Java 21.0.8 passed 153 HTTP integration + 29 unit cases, zero failures/errors/skips (2026-11-01). [Walkthrough](docs/learning/P5.S2-WALKTHROUGH.md), [complete guide](docs/learning/COMPLETE-GUIDE.md).
 
 ## Mandatory step exit gate
 1. Implementation meets step scope and avoids future steps.

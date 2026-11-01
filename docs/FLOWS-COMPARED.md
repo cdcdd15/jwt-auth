@@ -1,6 +1,6 @@
 # Understanding the Plain MVC, Basic, and JWT Flows
 
-This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1–P4 and P5.S1 are verified. JWT validation and issuance work.
+This guide compares plain MVC, HTTP Basic authentication, and RS256 JWT authentication in the same application at different learning stages. Plain MVC explains HTTP processing; Basic adds password-based authentication; JWT separates initial credential authentication from subsequent bearer-token verification. P1–P5 are verified on Java21. JWT validation and issuance work.
 
 ## The shared foundation
 
@@ -44,4 +44,4 @@ Invalid tokens produce 401; authenticated callers lacking permission receive 403
 
 Plain MVC teaches request dispatch without identity checks. Basic repeatedly checks credentials; JWT checks a signed bearer credential after initial issuance. Both secured modes retain MVC and distinguish authentication from authorization. JWT adds cryptographic trust and claim validation, while moving password checking out of ordinary protected requests. See [Basic evidence](learning/P2.S3-WALKTHROUGH.md) and [JWT validation evidence](learning/P3.S2-WALKTHROUGH.md) for implemented behavior and actual events.
 
-[Issuance](learning/P3.S3-WALKTHROUGH.md), [validation](learning/P4.S2-WALKTHROUGH.md), [diagnostics](learning/P4.S3-WALKTHROUGH.md), and [the comparative matrix/diagrams](learning/P5.S1-WALKTHROUGH.md) provide evidence.
+[Issuance](learning/P3.S3-WALKTHROUGH.md), [validation](learning/P4.S2-WALKTHROUGH.md), [diagnostics](learning/P4.S3-WALKTHROUGH.md), [matrix/diagrams](learning/P5.S1-WALKTHROUGH.md), and [the complete guide](learning/COMPLETE-GUIDE.md) provide final evidence.

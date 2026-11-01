@@ -1,6 +1,6 @@
-# HTTP Integration Test Matrix — P1–P4 and P5.S1 verified; final audit planned
+# HTTP Integration Test Matrix — P1–P5 verified on Java21
 
-Current verified checkpoint: **P5.S1**, with 153 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. One shared 13-row comparison contract now runs in none/basic/jwt isolated contexts (39 cases). Mode-specific deeper coverage remains intact. P5.S2 final guide/audit remains planned. See [matrix, three diagrams and actual traces](learning/P5.S1-WALKTHROUGH.md).
+Current verified checkpoint: **P5.S2**, final `mvn clean verify` on **Java21.0.8** passed **153 real HTTP integration + 29 unit cases**, zero failures/errors/skips (2026-11-01, 29.403 seconds). All fourteen steps are complete. [Final audit](learning/P5.S2-WALKTHROUGH.md) lists the exact report-derived method inventory and runtime commands; [complete guide](learning/COMPLETE-GUIDE.md) maps current application code and framework flow. Older counts/pending statements below remain historical checkpoints.
 
 ## Shared completed-mode matrix — executed in P5.S1
 
@@ -179,3 +179,9 @@ Final `mvn verify`, 2026-11-01: BUILD SUCCESS in 29.739 seconds; 153 HTTP + 29 u
 The shared rows are anonymous public/user/admin, native USER/user, USER/admin, ADMIN/admin, Basic/user, invalid-bearer/user, valid/invalid JSON credential login, public-invalid-Basic, public-invalid-bearer, and native-authenticated missing route. Each checks status/no cookie, appropriate body/challenge, correlation and callback invariants. None additionally asserts absent proxy and security events; secured modes assert one proxy. Basic login rows carry valid Basic authentication before asserting 404. Public invalid Basic gives none/basic/jwt 200/401/200; public invalid bearer gives 200/200/401. Missing authenticated routes give 404 in all three.
 
 HTTP suite totals: NoneComparisonIT 13, BasicComparisonIT 13, JwtComparisonIT 13, JwtDiagnosticsIT 8, JwtNegativeValidationIT 45, JwtValidationIT 25, JwtLoginIT 7, BasicSecurityIT 16, NoneSecurityIT 4, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit inventory remains 29. Existing ErrorPathIT provides none-mode 404/500 dispatch evidence; comparison adds no synthetic secured-mode exception controller. [Current code map and diagrams](learning/P5.S1-WALKTHROUGH.md). Earlier untested wrong-scheme/comparison statements above are historical checkpoint notes, superseded here.
+
+## P5.S2 — final Java21 acceptance and learning audit
+
+No new tests or production behavior: the existing 153 HTTP + 29 unit cases were rebuilt and executed using JetBrains Java21.0.8 and Maven3.9.12 via `mvn clean verify`. BUILD SUCCESS, 29.403 seconds, zero failures/errors/skips. The prior JDK24/release21 runtime gap is closed. Suite totals remain the P5.S1 inventory. The exact method/count inventory comes from fresh Surefire/Failsafe XML in [P5.S2](learning/P5.S2-WALKTHROUGH.md#exact-executed-test-inventory).
+
+All eighteen production source files/methods/meaningful blocks are indexed in COMPLETE-GUIDE with current range notes and links to detailed walkthroughs. Final secret scans found no complete-token/private-PEM literals in current tracked files or thirteen reachable revisions, no tracked private-key/environment paths, and no packaged PEM/test fixtures. Log scans additionally exclude known demo passwords/Basic payloads. No unimplemented roadmap feature remains; async/load/production identity features remain excluded rather than missing course steps.
