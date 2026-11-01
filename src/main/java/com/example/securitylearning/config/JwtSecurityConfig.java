@@ -16,6 +16,10 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
+import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
 @Configuration(proxyBeanMethods = false)
@@ -36,6 +40,20 @@ public class JwtSecurityConfig {
     @Bean
     SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http, JwtDecoder decoder,
                                                JwtAuthenticationConverter converter, TraceEventSink sink) throws Exception {
+        var bearerEntryPoint = new BearerTokenAuthenticationEntryPoint();
+        var bearerDeniedHandler = new BearerTokenAccessDeniedHandler();
+        AuthenticationEntryPoint entryPoint = (request, response, exception) -> {
+            if (request.getDispatcherType() == DispatcherType.REQUEST) {
+                sink.record(request, "security.challenge");
+            }
+            bearerEntryPoint.commence(request, response, exception);
+        };
+        AccessDeniedHandler deniedHandler = (request, response, exception) -> {
+            if (request.getDispatcherType() == DispatcherType.REQUEST) {
+                sink.record(request, "security.denied");
+            }
+            bearerDeniedHandler.handle(request, response, exception);
+        };
         return http
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .requestCache(AbstractHttpConfigurer::disable)
@@ -43,7 +61,9 @@ public class JwtSecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .logout(AbstractHttpConfigurer::disable)
-            .oauth2ResourceServer(resource -> resource.jwt(jwt -> jwt.decoder(decoder)
+            .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(entryPoint).accessDeniedHandler(deniedHandler))
+            .oauth2ResourceServer(resource -> resource.authenticationEntryPoint(entryPoint).accessDeniedHandler(deniedHandler)
+                .jwt(jwt -> jwt.decoder(decoder)
                 .jwtAuthenticationConverter(converter)))
             .addFilterAfter(new SecurityTraceFilter(sink), AnonymousAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize

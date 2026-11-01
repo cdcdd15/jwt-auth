@@ -79,7 +79,7 @@ class JwtNegativeValidationIT {
             .header("Authorization", "Bearer " + token).when().get("/api/user");
         response.then().statusCode(401).header("WWW-Authenticate", containsString("invalid_token"))
             .header("Set-Cookie", nullValue());
-        assertTrace(response.header(TraceEventSink.HEADER), scenario, List.of("filter.entry", "filter.exit"));
+        assertTrace(response.header(TraceEventSink.HEADER), scenario, List.of("filter.entry", "security.challenge", "filter.exit"));
     }
 
     @ParameterizedTest
@@ -98,7 +98,7 @@ class JwtNegativeValidationIT {
             response.then().header("WWW-Authenticate", containsString("invalid_token"));
         }
         assertTrace(response.header(TraceEventSink.HEADER), scenario, status == 401
-            ? List.of("filter.entry", "filter.exit") : successTrace());
+            ? List.of("filter.entry", "security.challenge", "filter.exit") : successTrace());
     }
 
     @ParameterizedTest

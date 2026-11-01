@@ -23,10 +23,10 @@ Scope: [in scope / out of scope](docs/IN-SCOPE-OUT-OF-SCOPE.md), covering P1.S1 
   - [x] P3.S1 — RSA key material and JWT anatomy; verified 2026-10-31: 27 HTTP integration + 13 unit cases passed, including 4 new crypto cases (JDK 24, release 21). [Walkthrough](docs/learning/P3.S1-WALKTHROUGH.md).
   - [x] P3.S2 — Resource Server validates test-issued tokens; verified 2026-10-31: 35 HTTP integration + 25 unit cases passed (JDK 24, release 21). [Walkthrough](docs/learning/P3.S2-WALKTHROUGH.md).
   - [x] P3.S3 — Simple local login issuer; verified 2026-11-01: 44 HTTP integration + 29 unit cases passed, zero failures/errors/skips (JDK 24, release 21). [Walkthrough](docs/learning/P3.S3-WALKTHROUGH.md).
-- [ ] P4 — JWT integration and edge cases. See `docs/roadmap/P4-JWT-VALIDATION.md`.
+- [x] P4 — JWT integration and edge cases. See `docs/roadmap/P4-JWT-VALIDATION.md`.
   - [x] P4.S1 — Authentication conversion and authorization; verified 2026-11-01: 61 HTTP integration + 29 unit cases passed, zero failures/errors/skips (JDK 24, release 21). [Walkthrough](docs/learning/P4.S1-WALKTHROUGH.md).
   - [x] P4.S2 — Negative validation suite and strict raw-claim checks; verified 2026-11-01: 106 HTTP integration + 29 unit cases passed, zero failures/errors/skips (JDK 24, release 21). [Walkthrough](docs/learning/P4.S2-WALKTHROUGH.md).
-  - [ ] P4.S3 — Filter chain and error diagnostics.
+  - [x] P4.S3 — Filter chain and error diagnostics; verified 2026-11-01: 114 HTTP integration + 29 unit cases passed, zero failures/errors/skips (JDK 24, release 21). [Walkthrough](docs/learning/P4.S3-WALKTHROUGH.md).
 - [ ] P5 — Comparison and learning package: P5.S1, P5.S2. See `docs/roadmap/P5-COMPARISON.md`.
 
 ## Mandatory step exit gate

@@ -1,6 +1,6 @@
-# HTTP Integration Test Matrix — P1–P3 and P4.S1–S2 verified; diagnostics/comparison planned
+# HTTP Integration Test Matrix — P1–P4 verified; final comparison planned
 
-Current verified checkpoint: **P4.S2**, with 106 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. Negative token/claim inputs, exact timestamp boundaries and permitted raw forms now have real HTTP evidence. None/basic and issuer regressions pass. Expanded JWT diagnostics remain P4.S3. See [current evidence](learning/P4.S2-WALKTHROUGH.md).
+Current verified checkpoint: **P4.S3**, with 114 real HTTP integration cases and 29 unit cases passing on JDK 24/release 21. JWT diagnostics now distinguish configured order from actual filter entries, early rejection from role denial, and validate context cleanup, sequential/concurrent identities and secret-free output. None/basic regressions pass. P5 remains planned. See [current evidence](learning/P4.S3-WALKTHROUGH.md).
 
 ## Target matrix for completed modes — not all cells executed
 
@@ -155,3 +155,16 @@ Final `mvn verify` on 2026-11-01: BUILD SUCCESS, 21.343 seconds, 106 HTTP + 29 u
 | `permittedRawRepresentationsRemainAuthenticated` | 5: single-string aud, missing iat/nbf/roles, empty roles →200 exact user JSON, no cookie, authenticated MVC trace |
 
 HTTP suite totals: JwtNegativeValidationIT 45, JwtValidationIT 25, JwtLoginIT 7, BasicSecurityIT 16, NoneSecurityIT 4, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit totals remain the P3.S3 inventory of 29. P4.S3 still owns enhanced diagnostics/context-isolation instrumentation. Prior statements that raw malformed claims and boundaries were pending describe earlier checkpoints and are superseded here.
+
+## P4.S3 — diagnostics and identity isolation executed
+
+Final `mvn verify`, 2026-11-01: BUILD SUCCESS, 23.245 seconds; 114 HTTP + 29 unit cases, zero failures/errors/skips (JDK 24/release 21). JwtDiagnosticsIT adds eight cases; all prior 106 HTTP cases remain passing. Updated trace expectations add challenge to early/anonymous JWT rejection and denied to authenticated role failure; HTTP contracts remain unchanged.
+
+| JwtDiagnosticsIT method | Cases / evidence |
+|---|---|
+| `diagnosticsDistinguishAuthenticationAndAuthorization` | 5: anonymous public 200, anonymous protected 401, malformed bearer 401, USER/admin 403, valid USER/user 200; configured order vs observed real filter entries; failure markers and MVC reachability; no cookie; cleared context |
+| `authenticatedThenAnonymousRequestsRemainIndependent` | 1: ADMIN/user then anonymous/user; distinct IDs, trusted first identity, no later authenticated MVC identity, cleanup true |
+| `concurrentBearerIdentitiesStayCorrelatedAndSeparate` | 1: concurrent USER/user and ADMIN/admin 200 with independent identity/authority/controller events and empty post-proxy contexts |
+| `tracesAndCapturedOutputExcludeCredentialsAndKeyMaterial` | 1: bearer API request and real JSON login; sink and captured output contain neither complete bearer value, development password nor private-key PEM marker |
+
+HTTP totals: JwtDiagnosticsIT 8, JwtNegativeValidationIT 45, JwtValidationIT 25, JwtLoginIT 7, BasicSecurityIT 16, NoneSecurityIT 4, PlainMvcIT 3, RequestTraceIT 4, ErrorPathIT 2. Unit inventory remains 29. Probe/decorator/spy configuration is test-only, not packaged application behavior. Callback traces remain REQUEST-only; no async or load-test claim. Historical pending-diagnostics and two-event JWT rejection excerpts above are superseded by this checkpoint.

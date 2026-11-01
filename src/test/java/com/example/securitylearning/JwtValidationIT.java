@@ -120,7 +120,7 @@ class JwtValidationIT {
             .when().get("/api/user").then().statusCode(401)
             .header("WWW-Authenticate", startsWith("Bearer"))
             .header("Set-Cookie", nullValue()).extract().header(TraceEventSink.HEADER);
-        assertTrace(id, List.of("filter.entry", "filter.exit"));
+        assertTrace(id, List.of("filter.entry", "security.challenge", "filter.exit"));
     }
 
     @Test
@@ -130,7 +130,7 @@ class JwtValidationIT {
             .when().get("/api/user").then().statusCode(401)
             .header("WWW-Authenticate", startsWith("Bearer"))
             .extract().header(TraceEventSink.HEADER);
-        assertTrace(id, List.of("filter.entry", "security.anonymous",
+        assertTrace(id, List.of("filter.entry", "security.anonymous", "security.challenge",
             "security.authorization.exit", "filter.exit"));
     }
 
@@ -164,7 +164,7 @@ class JwtValidationIT {
         assertTrace(response.header(TraceEventSink.HEADER), status == 200
             ? List.of("filter.entry", "security.authenticated", "interceptor.preHandle", "controller." + parts[1],
                 "interceptor.postHandle", "interceptor.afterCompletion", "security.authorization.exit", "filter.exit")
-            : List.of("filter.entry", "security.authenticated", "security.authorization.exit", "filter.exit"));
+            : List.of("filter.entry", "security.authenticated", "security.denied", "security.authorization.exit", "filter.exit"));
     }
 
     @ParameterizedTest
@@ -173,7 +173,7 @@ class JwtValidationIT {
         var response = given().baseUri("http://localhost").port(port).when().get("/api/" + endpoint);
         response.then().statusCode(401).header("WWW-Authenticate", equalTo("Bearer"))
             .header("Set-Cookie", nullValue());
-        assertTrace(response.header(TraceEventSink.HEADER), List.of("filter.entry", "security.anonymous",
+        assertTrace(response.header(TraceEventSink.HEADER), List.of("filter.entry", "security.anonymous", "security.challenge",
             "security.authorization.exit", "filter.exit"));
     }
 
