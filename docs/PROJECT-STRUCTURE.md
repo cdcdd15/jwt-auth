@@ -1,5 +1,7 @@
 # Implemented project structure
 
+> Current migration checkpoint: [J1.S2](learning/J1.S2-WALKTHROUGH.md) makes JWT unconditional on Java17. None/basic configurations, mode selection and cross-mode suites are retired; 94 HTTP + 23 unit cases pass. Earlier three-mode descriptions below are historical and will be replaced in J3. The migration roadmap supersedes conflicting historical requirements.
+
 > JWT-only migration checkpoint: [J1.S1](learning/J1.S1-WALKTHROUGH.md) now requires Java17 and passed 153 HTTP + 29 unit cases on Temurin17.0.21. Three-mode behavior remains until J1.S2; earlier Java21 instructions/results below are historical. [The migration roadmap](../ROADMAP.md) is authoritative.
 
 All fourteen steps P1.S1–P5.S2 are complete. This inventory describes actual files, not proposed classes. [COMPLETE-GUIDE](learning/COMPLETE-GUIDE.md) contains the current production source/method audit; [final verification](learning/P5.S2-WALKTHROUGH.md) covers Java21 and the executed suites.
@@ -10,12 +12,10 @@ All fourteen steps P1.S1–P5.S2 are complete. This inventory describes actual f
 src/main/java/com/example/securitylearning/SecurityLearningApplication.java
 src/main/java/com/example/securitylearning/api/AuthController.java
 src/main/java/com/example/securitylearning/api/DemoController.java
-src/main/java/com/example/securitylearning/config/BasicSecurityConfig.java
 src/main/java/com/example/securitylearning/config/InMemoryIdentityConfig.java
 src/main/java/com/example/securitylearning/config/JwtDecoderConfig.java
 src/main/java/com/example/securitylearning/config/JwtIssuerConfig.java
 src/main/java/com/example/securitylearning/config/JwtSecurityConfig.java
-src/main/java/com/example/securitylearning/config/SecurityModeConfig.java
 src/main/java/com/example/securitylearning/security/JwtClaimContractValidator.java
 src/main/java/com/example/securitylearning/security/JwtTokenService.java
 src/main/java/com/example/securitylearning/security/RsaKeyGenerator.java
@@ -25,20 +25,15 @@ src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java
 src/main/java/com/example/securitylearning/tracing/SecurityTraceFilter.java
 src/main/java/com/example/securitylearning/tracing/TraceConfiguration.java
 src/main/java/com/example/securitylearning/tracing/TraceEventSink.java
-src/test/java/com/example/securitylearning/AbstractSecurityComparison.java
-src/test/java/com/example/securitylearning/BasicComparisonIT.java
-src/test/java/com/example/securitylearning/BasicSecurityIT.java
 src/test/java/com/example/securitylearning/ErrorPathIT.java
-src/test/java/com/example/securitylearning/JwtComparisonIT.java
 src/test/java/com/example/securitylearning/JwtDiagnosticsIT.java
 src/test/java/com/example/securitylearning/JwtLoginIT.java
 src/test/java/com/example/securitylearning/JwtNegativeValidationIT.java
 src/test/java/com/example/securitylearning/JwtValidationIT.java
-src/test/java/com/example/securitylearning/NoneComparisonIT.java
-src/test/java/com/example/securitylearning/NoneSecurityIT.java
-src/test/java/com/example/securitylearning/PlainMvcIT.java
+src/test/java/com/example/securitylearning/JwtMvcIT.java
+src/test/java/com/example/securitylearning/config/JwtStartupTest.java
+src/test/java/com/example/securitylearning/support/JwtTestTokens.java
 src/test/java/com/example/securitylearning/RequestTraceIT.java
-src/test/java/com/example/securitylearning/SecurityModeConfigTest.java
 src/test/java/com/example/securitylearning/config/JwtDecoderConfigTest.java
 src/test/java/com/example/securitylearning/config/JwtIssuerConfigTest.java
 src/test/java/com/example/securitylearning/security/IssuerSecretHandlingTest.java
@@ -55,6 +50,7 @@ Test-only fixtures, failing controller, MVC/context probes and filter-chain obse
 ```text
 docs/learning/COMPLETE-GUIDE.md
 docs/learning/J1.S1-WALKTHROUGH.md
+docs/learning/J1.S2-WALKTHROUGH.md
 docs/learning/P1.S1-WALKTHROUGH.md
 docs/learning/P1.S2-WALKTHROUGH.md
 docs/learning/P1.S3-WALKTHROUGH.md

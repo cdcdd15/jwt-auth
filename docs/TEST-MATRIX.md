@@ -1,5 +1,7 @@
 # HTTP Integration Test Matrix — P1–P5 verified on Java21
 
+> Current migration checkpoint: [J1.S2](learning/J1.S2-WALKTHROUGH.md) makes JWT unconditional on Java17. None/basic configurations, mode selection and cross-mode suites are retired; 94 HTTP + 23 unit cases pass. Earlier three-mode descriptions below are historical and will be replaced in J3. The migration roadmap supersedes conflicting historical requirements.
+
 > JWT-only migration checkpoint: [J1.S1](learning/J1.S1-WALKTHROUGH.md) now requires Java17 and passed 153 HTTP + 29 unit cases on Temurin17.0.21. Three-mode behavior remains until J1.S2; earlier Java21 instructions/results below are historical. [The migration roadmap](../ROADMAP.md) is authoritative.
 
 Current verified checkpoint: **P5.S2**, final `mvn clean verify` on **Java21.0.8** passed **153 real HTTP integration + 29 unit cases**, zero failures/errors/skips (2026-11-01, 29.403 seconds). All fourteen steps are complete. [Final audit](learning/P5.S2-WALKTHROUGH.md) lists the exact report-derived method inventory and runtime commands; [complete guide](learning/COMPLETE-GUIDE.md) maps current application code and framework flow. Older counts/pending statements below remain historical checkpoints.
@@ -187,3 +189,7 @@ HTTP suite totals: NoneComparisonIT 13, BasicComparisonIT 13, JwtComparisonIT 13
 No new tests or production behavior: the existing 153 HTTP + 29 unit cases were rebuilt and executed using JetBrains Java21.0.8 and Maven3.9.12 via `mvn clean verify`. BUILD SUCCESS, 29.403 seconds, zero failures/errors/skips. The prior JDK24/release21 runtime gap is closed. Suite totals remain the P5.S1 inventory. The exact method/count inventory comes from fresh Surefire/Failsafe XML in [P5.S2](learning/P5.S2-WALKTHROUGH.md#exact-executed-test-inventory).
 
 All eighteen production source files/methods/meaningful blocks are indexed in COMPLETE-GUIDE with current range notes and links to detailed walkthroughs. Final secret scans found no complete-token/private-PEM literals in current tracked files or thirteen reachable revisions, no tracked private-key/environment paths, and no packaged PEM/test fixtures. Log scans additionally exclude known demo passwords/Basic payloads. No unimplemented roadmap feature remains; async/load/production identity features remain excluded rather than missing course steps.
+
+## J1.S2 — unconditional JWT checkpoint
+
+Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips, 20.310 s, 2026-11-02. Active suite inventory and current method-to-code mapping are in [J1.S2](learning/J1.S2-WALKTHROUGH.md). Removed59 HTTP cases cover retired Basic/none/comparison contracts; removed8 unit cases covered the selector; added2 key-context cases prove required startup dependencies. MVC success/error/tracing coverage is adapted rather than dropped. Historical tables above are not the current application contract.

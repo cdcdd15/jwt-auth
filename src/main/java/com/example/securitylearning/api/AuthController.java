@@ -5,7 +5,6 @@ import java.util.Map;
 import com.example.securitylearning.security.JwtTokenService;
 import com.example.securitylearning.tracing.TraceEventSink;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@ConditionalOnProperty(name = "app.security-mode", havingValue = "jwt")
 public class AuthController {
 
     private final JwtTokenService tokens;

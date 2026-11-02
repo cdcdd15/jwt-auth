@@ -43,7 +43,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "app.security-mode=jwt")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(JwtNegativeValidationIT.FixedTimeConfiguration.class)
 class JwtNegativeValidationIT {
     private static final Instant NOW = Instant.parse("2030-01-01T12:00:00Z");

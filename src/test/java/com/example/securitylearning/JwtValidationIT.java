@@ -47,8 +47,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "app.security-mode=jwt")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({JwtValidationIT.FixedTimeConfiguration.class, JwtValidationIT.IdentityProbe.class})
 class JwtValidationIT {
 
@@ -93,6 +92,15 @@ class JwtValidationIT {
         assertThat(filters).contains("BearerTokenAuthenticationFilter", "AuthorizationFilter")
             .doesNotContain("BasicAuthenticationFilter");
         assertThat(context.getBeansOfType(JwtEncoder.class)).hasSize(1);
+        assertThat(context.getEnvironment().getProperty("app.security-mode")).isNull();
+        assertThat(context.getBeansOfType(org.springframework.security.web.SecurityFilterChain.class)).hasSize(1);
+        assertThat(context.getBeansOfType(FilterChainProxy.class)).hasSize(1);
+        assertThat(context.getBeansOfType(org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean.class)).hasSize(1);
+        var registrations = context.getBean(jakarta.servlet.ServletContext.class).getFilterRegistrations();
+        assertThat(registrations.values().stream()
+            .filter(registration -> registration.getClassName().contains("DelegatingFilterProxy")).count()).isEqualTo(1);
+
+
         assertThat(context.getBean(RequestMappingHandlerMapping.class).getHandlerMethods().keySet())
             .anyMatch(mapping -> mapping.getPatternValues().contains("/auth/login"));
         System.out.println("JWT SECURITY FILTERS " + filters);

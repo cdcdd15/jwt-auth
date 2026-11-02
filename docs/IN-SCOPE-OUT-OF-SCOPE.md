@@ -1,5 +1,7 @@
 # Project scope — Spring Security Learning
 
+> Current migration checkpoint: [J1.S2](learning/J1.S2-WALKTHROUGH.md) makes JWT unconditional on Java17. None/basic configurations, mode selection and cross-mode suites are retired; 94 HTTP + 23 unit cases pass. Earlier three-mode descriptions below are historical and will be replaced in J3. The migration roadmap supersedes conflicting historical requirements.
+
 ## Purpose and completion boundary
 
 Build a compact, runnable, evidence-backed course explaining how HTTP requests move through Spring MVC and Spring Security. Learners must be able to connect observed behavior to application code and framework responsibilities, explain failures, and compare plain MVC, HTTP Basic, and RS256 JWT validation.

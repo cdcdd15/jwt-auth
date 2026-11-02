@@ -3,7 +3,6 @@ package com.example.securitylearning.config;
 import com.example.securitylearning.tracing.SecurityTraceFilter;
 import com.example.securitylearning.tracing.TraceEventSink;
 import jakarta.servlet.DispatcherType;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +22,6 @@ import org.springframework.security.oauth2.server.resource.web.access.BearerToke
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "app.security-mode", havingValue = "jwt")
 @EnableWebSecurity
 public class JwtSecurityConfig {
 

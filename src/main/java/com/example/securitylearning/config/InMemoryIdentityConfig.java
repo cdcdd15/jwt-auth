@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-// Imported only by secured modes; deliberately not component-scanned.
+// Imported by the JWT issuer; deliberately not component-scanned.
 public class InMemoryIdentityConfig {
 
     @Bean

@@ -55,7 +55,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "app.security-mode=jwt")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(JwtDiagnosticsIT.ProbeConfiguration.class)
 @ExtendWith(OutputCaptureExtension.class)
 class JwtDiagnosticsIT {

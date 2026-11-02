@@ -10,7 +10,6 @@ import java.time.Duration;
 import com.example.securitylearning.security.JwtClaimContractValidator;
 import com.example.securitylearning.security.StrictJwtDecoder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.converter.RsaKeyConverters;
@@ -22,7 +21,6 @@ import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "app.security-mode", havingValue = "jwt")
 public class JwtDecoderConfig {
 
     @Bean

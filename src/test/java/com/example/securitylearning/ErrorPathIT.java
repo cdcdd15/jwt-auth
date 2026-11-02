@@ -1,5 +1,14 @@
 package com.example.securitylearning;
 
+import java.io.IOException;
+import com.example.securitylearning.support.JwtKeyFixture;
+import com.example.securitylearning.support.JwtTestTokens;
+import org.junit.jupiter.api.AfterAll;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+
+
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,10 +40,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "app.security-mode=none")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(ErrorPathIT.ErrorTestConfiguration.class)
 class ErrorPathIT {
+
+    private static final JwtKeyFixture KEYS = new JwtKeyFixture();
+    @Autowired
+    private JwtEncoder encoder;
+
+    @DynamicPropertySource
+    static void keyPaths(DynamicPropertyRegistry properties) {
+        properties.add("app.jwt.public-key-path", () -> KEYS.publicPath().toString());
+        properties.add("app.jwt.private-key-path", () -> KEYS.privatePath().toString());
+    }
+
+    @AfterAll
+    static void removeKeys() throws IOException {
+        KEYS.close();
+    }
+
 
     @LocalServerPort
     private int port;
@@ -54,8 +78,8 @@ class ErrorPathIT {
     void unmappedUrlReturns404ThroughResourceHandlerAndErrorDispatch() {
         Response response = get("/api/not-mapped");
         assertError(response, 404, "Not Found", "/api/not-mapped");
-        assertTrace(response, List.of("filter.entry", "interceptor.preHandle",
-            "interceptor.afterCompletion", "filter.exit"), List.of(
+        assertTrace(response, List.of("filter.entry", "security.authenticated", "interceptor.preHandle",
+            "interceptor.afterCompletion", "security.authorization.exit", "filter.exit"), List.of(
             "REQUEST:ResourceHttpRequestHandler:preHandle",
             "REQUEST:ResourceHttpRequestHandler:afterCompletion:none",
             "ERROR:BasicErrorController#error:preHandle",
@@ -67,8 +91,8 @@ class ErrorPathIT {
     void controllerExceptionReturns500AndNextRequestHasFreshTrace() {
         Response failed = get("/test/throw");
         assertError(failed, 500, "Internal Server Error", "/test/throw");
-        assertTrace(failed, List.of("filter.entry", "interceptor.preHandle",
-            "controller.throw", "interceptor.afterCompletion", "filter.exit"), List.of(
+        assertTrace(failed, List.of("filter.entry", "security.authenticated", "interceptor.preHandle",
+            "controller.throw", "interceptor.afterCompletion", "security.authorization.exit", "filter.exit"), List.of(
             "REQUEST:ThrowingController#fail:preHandle",
             "REQUEST:ThrowingController#fail:afterCompletion:IllegalStateException",
             "ERROR:BasicErrorController#error:preHandle",
@@ -80,15 +104,16 @@ class ErrorPathIT {
             .body("message", equalTo("public"));
         assertThat(successful.header(TraceEventSink.HEADER))
             .isNotEqualTo(failed.header(TraceEventSink.HEADER));
-        assertTrace(successful, List.of("filter.entry", "interceptor.preHandle",
+        assertTrace(successful, List.of("filter.entry", "security.authenticated", "interceptor.preHandle",
             "controller.public", "interceptor.postHandle", "interceptor.afterCompletion",
-            "filter.exit"), List.of("REQUEST:DemoController#publicEndpoint:preHandle",
+            "security.authorization.exit", "filter.exit"), List.of("REQUEST:DemoController#publicEndpoint:preHandle",
             "REQUEST:DemoController#publicEndpoint:postHandle",
             "REQUEST:DemoController#publicEndpoint:afterCompletion:none"));
     }
 
     private Response get(String path) {
         return given().baseUri("http://localhost").port(port).accept(ContentType.JSON)
+            .header("Authorization", "Bearer " + JwtTestTokens.admin(encoder))
             .when().get(path);
     }
 

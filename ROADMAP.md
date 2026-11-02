@@ -5,7 +5,7 @@
 | Step | Description | Status |
 |---|---|---|
 | J1.S1 | Migrate the build and source to Java 17 | Complete — verified 2026-11-02 |
-| J1.S2 | Make JWT unconditional and retire other modes | Planned |
+| J1.S2 | Make JWT unconditional and retire other modes | Complete — verified 2026-11-02 |
 | J1.S3 | Simplify the remaining JWT components | Planned |
 | J2.S1 | Consolidate login, authentication and authorization tests | Planned |
 | J2.S2 | Consolidate strict validation and key-failure evidence | Planned |
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** J1.S1 complete; J1.S2–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17; none/basic/jwt behavior remains until J1.S2. Branch `jwt-only` is selected.
+**Status:** J1.S1–J1.S2 complete; J1.S3–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -51,7 +51,9 @@ Verified 2026-11-02: `mvn clean verify` on Eclipse Temurin17.0.21 passed 153 HTT
 
 ### J1.S2 — Make JWT unconditional and retire other modes
 
-- [ ] Remove `BasicSecurityConfig`, `SecurityModeConfig`, the selector property and JWT-only conditional annotations.
+Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (20.310 s). Missing-key context startup fails without mode selection; real Tomcat reports one security chain/proxy registration. Retired mode/comparison suites are removed and MVC/error/tracing tests now use signed bearer credentials. [Walkthrough](docs/learning/J1.S2-WALKTHROUGH.md).
+
+- [x] Remove `BasicSecurityConfig`, `SecurityModeConfig`, the selector property and JWT-only conditional annotations.
 - Activate JWT security, local login, issuer and decoder unconditionally; review Boot exclusions and servlet registration for exactly one intended chain/proxy, with outer tracing preserved.
 - Remove none/basic-only suites, selector tests and cross-mode comparison scaffolding in this step so obsolete contracts do not leave the build broken. Remove mode properties from retained JWT test bootstraps.
 - Preserve useful MVC/error/tracing tests by adapting their immediate authentication/key prerequisites; later steps refine their JWT coverage.
