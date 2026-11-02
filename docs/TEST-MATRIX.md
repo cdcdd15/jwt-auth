@@ -1,5 +1,7 @@
 # HTTP Integration Test Matrix — P1–P5 verified on Java21
 
+> Current migration checkpoint: [J1.S3](learning/J1.S3-WALKTHROUGH.md) completes Phase J1. Credential configuration is scanned and owns the dedicated manager; issuer configuration owns only signing. The launcher keeps only the manual-proxy-related Boot exclusion. Java17 clean verification passed 94 HTTP + 23 unit cases; earlier source ownership descriptions below are historical pending J3.
+
 > Current migration checkpoint: [J1.S2](learning/J1.S2-WALKTHROUGH.md) makes JWT unconditional on Java17. None/basic configurations, mode selection and cross-mode suites are retired; 94 HTTP + 23 unit cases pass. Earlier three-mode descriptions below are historical and will be replaced in J3. The migration roadmap supersedes conflicting historical requirements.
 
 > JWT-only migration checkpoint: [J1.S1](learning/J1.S1-WALKTHROUGH.md) now requires Java17 and passed 153 HTTP + 29 unit cases on Temurin17.0.21. Three-mode behavior remains until J1.S2; earlier Java21 instructions/results below are historical. [The migration roadmap](../ROADMAP.md) is authoritative.
@@ -193,3 +195,7 @@ All eighteen production source files/methods/meaningful blocks are indexed in CO
 ## J1.S2 — unconditional JWT checkpoint
 
 Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips, 20.310 s, 2026-11-02. Active suite inventory and current method-to-code mapping are in [J1.S2](learning/J1.S2-WALKTHROUGH.md). Removed59 HTTP cases cover retired Basic/none/comparison contracts; removed8 unit cases covered the selector; added2 key-context cases prove required startup dependencies. MVC success/error/tracing coverage is adapted rather than dropped. Historical tables above are not the current application contract.
+
+## J1.S3 — simplified credential/signing/bootstrap ownership
+
+Java17 `mvn clean verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips, 20.665 s, 2026-11-02. Existing method inventory is unchanged. JwtValidationIT.publicEndpointDoesNotRequireToken additionally checks exactly one user source, password encoder, Dao provider and credential manager after configuration/backoff changes. Packaged library inventory is identical. [Current code/verification map](learning/J1.S3-WALKTHROUGH.md).

@@ -2,12 +2,9 @@ package com.example.securitylearning;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class,
-    SecurityFilterAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
+@SpringBootApplication(exclude = SecurityFilterAutoConfiguration.class)
 public class SecurityLearningApplication {
 
     public static void main(String[] args) {

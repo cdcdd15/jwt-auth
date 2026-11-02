@@ -92,6 +92,11 @@ class JwtValidationIT {
         assertThat(filters).contains("BearerTokenAuthenticationFilter", "AuthorizationFilter")
             .doesNotContain("BasicAuthenticationFilter");
         assertThat(context.getBeansOfType(JwtEncoder.class)).hasSize(1);
+        assertThat(context.getBeansOfType(org.springframework.security.core.userdetails.UserDetailsService.class)).hasSize(1);
+        assertThat(context.getBeansOfType(org.springframework.security.crypto.password.PasswordEncoder.class)).hasSize(1);
+        assertThat(context.getBeansOfType(org.springframework.security.authentication.dao.DaoAuthenticationProvider.class)).hasSize(1);
+        assertThat(context.getBeansOfType(org.springframework.security.authentication.AuthenticationManager.class)).hasSize(1);
+
         assertThat(context.getEnvironment().getProperty("app.security-mode")).isNull();
         assertThat(context.getBeansOfType(org.springframework.security.web.SecurityFilterChain.class)).hasSize(1);
         assertThat(context.getBeansOfType(FilterChainProxy.class)).hasSize(1);

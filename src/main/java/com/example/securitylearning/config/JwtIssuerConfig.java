@@ -13,22 +13,12 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.converter.RsaKeyConverters;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
 @Configuration(proxyBeanMethods = false)
-@Import(InMemoryIdentityConfig.class)
 public class JwtIssuerConfig {
-
-    @Bean
-    AuthenticationManager loginAuthenticationManager(DaoAuthenticationProvider provider) {
-        return new ProviderManager(provider);
-    }
 
     @Bean
     JwtEncoder jwtEncoder(@Value("${app.jwt.private-key-path}") String path, RSAPublicKey publicKey) throws IOException {

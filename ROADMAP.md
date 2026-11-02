@@ -6,7 +6,7 @@
 |---|---|---|
 | J1.S1 | Migrate the build and source to Java 17 | Complete — verified 2026-11-02 |
 | J1.S2 | Make JWT unconditional and retire other modes | Complete — verified 2026-11-02 |
-| J1.S3 | Simplify the remaining JWT components | Planned |
+| J1.S3 | Simplify the remaining JWT components | Complete — verified 2026-11-02 |
 | J2.S1 | Consolidate login, authentication and authorization tests | Planned |
 | J2.S2 | Consolidate strict validation and key-failure evidence | Planned |
 | J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | Planned |
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** J1.S1–J1.S2 complete; J1.S3–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
+**Status:** Phase J1 complete; J2.S1–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -62,7 +62,9 @@ Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero fa
 
 ### J1.S3 — Simplify the remaining JWT components
 
-- [ ] Retain and simplify the in-memory credential/provider configuration, dedicated login manager, BCrypt, Nimbus encoder/decoder, strict claim guard and role converter.
+Verified 2026-11-02: Java17 `mvn clean verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (20.665 s). Credential beans and the dedicated manager now belong to scanned InMemoryIdentityConfig; the issuer owns signing only. Unnecessary launcher exclusions/direct Security starter declaration removed; explicit proxy ownership remains. Packaged library inventory is identical and singleton/HTTP regressions pass. [Walkthrough](docs/learning/J1.S3-WALKTHROUGH.md).
+
+- [x] Retain and simplify the in-memory credential/provider configuration, dedicated login manager, BCrypt, Nimbus encoder/decoder, strict claim guard and role converter.
 - Remove leftover mode-specific branches, imports, redundant wiring and abstractions; avoid unrelated renaming or feature expansion.
 - Preserve the three API endpoints, JSON token response, fixed issuer/audience, 300-second lifetime, explicit 60-second skew and fail-closed key loading.
 - Keep handler responses and tracing behavior intact while eliminating unnecessary configuration left by the original isolation mechanism.
