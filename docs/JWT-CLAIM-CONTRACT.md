@@ -35,3 +35,7 @@ A valid signature proves integrity against the trusted public key, not correct i
 Never include passwords, private keys, or other secrets in claims. Base64URL is readable encoding, not encryption. Token values must not appear in logs or learning traces. See [S1 signing evidence](learning/P3.S1-WALKTHROUGH.md) and [S2 runtime validation evidence](learning/P3.S2-WALKTHROUGH.md).
 
 P4.S2 fixed-clock HTTP evidence: exp exactly NOW−60 seconds and nbf exactly NOW+60 seconds are accepted under the explicit 60-second skew; exp NOW−61 and nbf NOW+61 are rejected. Present null dates are invalid, distinct from omitted optional dates. These second-resolution boundaries reflect the installed timestamp validator; no sleeping is used.
+
+## JWT-only migration: J2.S2 evidence
+
+Java17 tests now explicitly reject boolean iat/nbf and a mixed string/number roles array through the actual raw-token HTTP pipeline. Invalid tampered/HS256/malformed bearer values also receive401 on public, because authentication precedes permitAll authorization. Successful controls include multiple audiences containing the required API audience, omitted iat and nbf together, and future descriptive iat before exp. These tests preserve the existing contract; no future-iat/max-age policy is added. Exact±60-second skew acceptance and±61-second rejection remain verified without sleeps. [Current validation/key walkthrough](learning/J2.S2-WALKTHROUGH.md).

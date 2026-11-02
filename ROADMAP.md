@@ -8,7 +8,7 @@
 | J1.S2 | Make JWT unconditional and retire other modes | Complete — verified 2026-11-02 |
 | J1.S3 | Simplify the remaining JWT components | Complete — verified 2026-11-02 |
 | J2.S1 | Consolidate login, authentication and authorization tests | Complete — verified 2026-11-02 |
-| J2.S2 | Consolidate strict validation and key-failure evidence | Planned |
+| J2.S2 | Consolidate strict validation and key-failure evidence | Complete — verified 2026-11-02 |
 | J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | Planned |
 | J3.S1 | Replace obsolete course documentation | Planned |
 | J3.S2 | Assemble the complete JWT learning guide | Planned |
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** Phase J1 and J2.S1 complete; J2.S2–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
+**Status:** Phase J1 and J2.S1–J2.S2 complete; J2.S3–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -86,7 +86,9 @@ Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero fa
 
 ### J2.S2 — Consolidate strict validation and key-failure evidence
 
-- [ ] Retain raw-token tests for tampering, unknown RSA key, wrong algorithm, malformed serialization, issuer/audience and required claims.
+Verified 2026-11-02: Java17 `mvn clean verify` passed103 HTTP +31 unit/context cases, zero failures/errors/skips (24.470 s). Raw-token suite54 includes public-route failures and accepted representations; key-context suite10 covers nine startup failures and a successful pair. Exact skew boundaries and focused parser/fixture tests retained. No production change. [Walkthrough](docs/learning/J2.S2-WALKTHROUGH.md).
+
+- [x] Retain raw-token tests for tampering, unknown RSA key, wrong algorithm, malformed serialization, issuer/audience and required claims.
 - Preserve original JSON type checks, including numeric subject and explicit null timestamps, and malformed-versus-missing role behavior.
 - Verify exact expiration/not-before boundaries against the controlled clock and configured skew, alongside permitted optional-claim/audience representations.
 - Retain focused key-format, key-strength, matching-pair and startup failure checks; keep private fixture files owner-only and cleaned up.

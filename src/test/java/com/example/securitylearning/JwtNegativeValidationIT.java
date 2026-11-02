@@ -70,7 +70,7 @@ class JwtNegativeValidationIT {
     @ValueSource(strings = {"tampered", "unknown-key", "hs256", "malformed", "expired", "future-nbf", "issuer", "audience",
         "missing-sub", "missing-iss", "missing-aud", "missing-exp", "null-sub", "null-iss", "null-aud", "null-exp",
         "null-iat", "null-nbf", "null-roles", "number-sub", "number-iss", "number-aud", "text-exp", "text-iat", "text-nbf",
-        "boolean-exp", "blank-sub", "empty-aud", "mixed-aud", "scalar-roles", "object-roles", "number-role", "null-role", "blank-role"})
+        "boolean-exp", "boolean-iat", "boolean-nbf", "mixed-roles", "blank-sub", "empty-aud", "mixed-aud", "scalar-roles", "object-roles", "number-role", "null-role", "blank-role"})
     void invalidRawTokensFailClosedBeforeMvc(String scenario) throws Exception {
         var claims = claims();
         alter(claims, scenario);
@@ -80,6 +80,17 @@ class JwtNegativeValidationIT {
         response.then().statusCode(401).header("WWW-Authenticate", containsString("invalid_token"))
             .header("Set-Cookie", nullValue());
         assertTrace(response.header(TraceEventSink.HEADER), scenario, List.of("filter.entry", "security.challenge", "filter.exit"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"tampered", "hs256", "malformed"})
+    void invalidBearerFailsBeforePublicAuthorization(String scenario) throws Exception {
+        var response = given().baseUri("http://localhost").port(port)
+            .header("Authorization", "Bearer " + signed(claims(), scenario)).when().get("/api/public");
+        response.then().statusCode(401).header("WWW-Authenticate", containsString("invalid_token"))
+            .header("Set-Cookie", nullValue());
+        assertTrace(response.header(TraceEventSink.HEADER), "public-" + scenario,
+            List.of("filter.entry", "security.challenge", "filter.exit"));
     }
 
     @ParameterizedTest
@@ -93,7 +104,8 @@ class JwtNegativeValidationIT {
             .header("Authorization", "Bearer " + signed(claims, "valid")).when().get("/api/user");
         response.then().statusCode(status).header("Set-Cookie", nullValue());
         if (status == 200) {
-            response.then().body("", equalTo(Map.of("message", "user")));
+            response.then().contentType("application/json").header("WWW-Authenticate", nullValue())
+                .body("", equalTo(Map.of("message", "user")));
         } else {
             response.then().header("WWW-Authenticate", containsString("invalid_token"));
         }
@@ -102,17 +114,25 @@ class JwtNegativeValidationIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"single-audience", "missing-iat", "missing-nbf", "missing-roles", "empty-roles"})
+    @ValueSource(strings = {"single-audience", "missing-iat", "missing-nbf", "missing-roles", "empty-roles",
+        "multiple-audiences", "missing-both-dates", "future-iat"})
     void permittedRawRepresentationsRemainAuthenticated(String scenario) throws Exception {
         var claims = claims();
         switch (scenario) {
             case "single-audience" -> claims.put("aud", JwtClaimContractValidator.AUDIENCE);
+            case "multiple-audiences" -> claims.put("aud", List.of("another-api", JwtClaimContractValidator.AUDIENCE));
+            case "missing-both-dates" -> {
+                claims.remove("iat");
+                claims.remove("nbf");
+            }
+            case "future-iat" -> claims.put("iat", NOW.plusSeconds(60).getEpochSecond());
             case "empty-roles" -> claims.put("roles", List.of());
             default -> claims.remove(scenario.substring("missing-".length()));
         }
         var response = given().baseUri("http://localhost").port(port)
             .header("Authorization", "Bearer " + signed(claims, "valid")).when().get("/api/user");
-        response.then().statusCode(200).body("", equalTo(Map.of("message", "user")))
+        response.then().statusCode(200).contentType("application/json").header("WWW-Authenticate", nullValue())
+            .body("", equalTo(Map.of("message", "user")))
             .header("Set-Cookie", nullValue());
         assertTrace(response.header(TraceEventSink.HEADER), scenario, successTrace());
     }
@@ -147,6 +167,9 @@ class JwtNegativeValidationIT {
                 case "text-iat" -> claims.put("iat", "1893499200");
                 case "text-nbf" -> claims.put("nbf", "1893499200");
                 case "boolean-exp" -> claims.put("exp", true);
+                case "boolean-iat" -> claims.put("iat", true);
+                case "boolean-nbf" -> claims.put("nbf", true);
+                case "mixed-roles" -> claims.put("roles", List.of("USER", 42));
                 case "blank-sub" -> claims.put("sub", " ");
                 case "empty-aud" -> claims.put("aud", List.of());
                 case "mixed-aud" -> claims.put("aud", List.of(JwtClaimContractValidator.AUDIENCE, 42));

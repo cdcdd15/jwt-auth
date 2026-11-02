@@ -1,5 +1,7 @@
 # HTTP Integration Test Matrix — P1–P5 verified on Java21
 
+> Current migration checkpoint: [J2.S2](learning/J2.S2-WALKTHROUGH.md) verifies54 negative/control HTTP cases and10 key-context cases, including public invalid-bearer rejection and nine key failures. Java17 clean verification passes103 HTTP +31 unit/context cases. Production unchanged; earlier method ranges/counts below remain historical pending J3.
+
 > Current migration checkpoint: [J2.S1](learning/J2.S1-WALKTHROUGH.md) consolidates login12 and authorization23 HTTP cases. JwtValidationIT is now JwtAuthorizationIT; redundant JwtMvcIT is retired. Negative validation remains in JwtNegativeValidationIT. Java17 verification passes94 HTTP +23 unit cases; older suite names/counts below are historical pending J3.
 
 > Current migration checkpoint: [J1.S3](learning/J1.S3-WALKTHROUGH.md) completes Phase J1. Credential configuration is scanned and owns the dedicated manager; issuer configuration owns only signing. The launcher keeps only the manual-proxy-related Boot exclusion. Java17 clean verification passed 94 HTTP + 23 unit cases; earlier source ownership descriptions below are historical pending J3.
@@ -216,3 +218,9 @@ Java17 `mvn verify`:94 HTTP +23 unit cases, zero failures/errors/skips, 21.234 s
 | ErrorPathIT |2 unchanged authenticated404/500 dispatch cases |
 
 The unit inventory remains23. Exact executed method names, current source commentary, transfer mapping and real traces are in [J2.S1](learning/J2.S1-WALKTHROUGH.md). Historical suite names/totals above are not the current ownership map.
+
+## J2.S2 — strict validation and key-failure consolidation
+
+Java17 `mvn clean verify`:103 HTTP +31 unit/context cases, zero failures/errors/skips, 24.470 s, 2026-11-02. JwtNegativeValidationIT now owns54 (37 protected invalid,3 public invalid,6 deterministic skew,8 permitted forms). JwtStartupTest now owns10 (9 bad configurations and1 matching control). Existing focused parser, RSA, normalized-schema and private-fixture tests remain. Other HTTP suites remain JwtAuthorizationIT23, JwtLoginIT12, JwtDiagnosticsIT8, RequestTraceIT4 and ErrorPathIT2.
+
+New raw checks cover boolean optional dates and mixed roles; accepted controls cover multiple audiences, missing both dates and descriptive future iat. The key matrix distinguishes absent properties/files, invalid PEM, weak public/private keys and mismatched pairs, with targeted cause assertions. [Exact method inventory, fixture boundaries and actual traces](learning/J2.S2-WALKTHROUGH.md). No production feature or J2.S3 instrumentation change.

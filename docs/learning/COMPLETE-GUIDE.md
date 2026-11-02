@@ -1,5 +1,7 @@
 # Complete Spring MVC and Spring Security learning guide
 
+> Current migration checkpoint: [J2.S2](J2.S2-WALKTHROUGH.md) verifies54 negative/control HTTP cases and10 key-context cases, including public invalid-bearer rejection and nine key failures. Java17 clean verification passes103 HTTP +31 unit/context cases. Production unchanged; earlier method ranges/counts below remain historical pending J3.
+
 > Current migration checkpoint: [J2.S1](J2.S1-WALKTHROUGH.md) consolidates login12 and authorization23 HTTP cases. JwtValidationIT is now JwtAuthorizationIT; redundant JwtMvcIT is retired. Negative validation remains in JwtNegativeValidationIT. Java17 verification passes94 HTTP +23 unit cases; older suite names/counts below are historical pending J3.
 
 > Current migration checkpoint: [J1.S3](J1.S3-WALKTHROUGH.md) completes Phase J1. Credential configuration is scanned and owns the dedicated manager; issuer configuration owns only signing. The launcher keeps only the manual-proxy-related Boot exclusion. Java17 clean verification passed 94 HTTP + 23 unit cases; earlier source ownership descriptions below are historical pending J3.
