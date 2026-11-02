@@ -7,7 +7,7 @@
 | J1.S1 | Migrate the build and source to Java 17 | Complete — verified 2026-11-02 |
 | J1.S2 | Make JWT unconditional and retire other modes | Complete — verified 2026-11-02 |
 | J1.S3 | Simplify the remaining JWT components | Complete — verified 2026-11-02 |
-| J2.S1 | Consolidate login, authentication and authorization tests | Planned |
+| J2.S1 | Consolidate login, authentication and authorization tests | Complete — verified 2026-11-02 |
 | J2.S2 | Consolidate strict validation and key-failure evidence | Planned |
 | J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | Planned |
 | J3.S1 | Replace obsolete course documentation | Planned |
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** Phase J1 complete; J2.S1–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
+**Status:** Phase J1 and J2.S1 complete; J2.S2–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -75,7 +75,9 @@ Verified 2026-11-02: Java17 `mvn clean verify` passed 94 HTTP + 23 unit cases, z
 
 ### J2.S1 — Consolidate login, authentication and authorization tests
 
-- [ ] Consolidate retained HTTP coverage around public, user, admin and local login endpoints rather than historical mode comparisons.
+Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (21.234 s). JwtLoginIT now owns12 cases including issued-token public/user/admin and eight malformed-login shapes; JwtAuthorizationIT owns23 authentication/role/infrastructure cases. Redundant JwtMvcIT and duplicated old validation cases retired with explicit coverage mapping; production and negative-validation code unchanged. [Walkthrough](docs/learning/J2.S1-WALKTHROUGH.md).
+
+- [x] Consolidate retained HTTP coverage around public, user, admin and local login endpoints rather than historical mode comparisons.
 - Verify valid USER/ADMIN login, trusted claim contents, issued-token use, generic bad-credential 401 and malformed-body 400.
 - Verify anonymous access, correct bearer use, Basic-only rejection, role conversion, USER/admin denial and ADMIN access.
 - Preserve absent/empty roles as valid authentication without ADMIN permission, and prove no session-cookie authentication dependency.

@@ -1,5 +1,7 @@
 # Implemented project structure
 
+> Current migration checkpoint: [J2.S1](learning/J2.S1-WALKTHROUGH.md) consolidates login12 and authorization23 HTTP cases. JwtValidationIT is now JwtAuthorizationIT; redundant JwtMvcIT is retired. Negative validation remains in JwtNegativeValidationIT. Java17 verification passes94 HTTP +23 unit cases; older suite names/counts below are historical pending J3.
+
 > Current migration checkpoint: [J1.S3](learning/J1.S3-WALKTHROUGH.md) completes Phase J1. Credential configuration is scanned and owns the dedicated manager; issuer configuration owns only signing. The launcher keeps only the manual-proxy-related Boot exclusion. Java17 clean verification passed 94 HTTP + 23 unit cases; earlier source ownership descriptions below are historical pending J3.
 
 > Current migration checkpoint: [J1.S2](learning/J1.S2-WALKTHROUGH.md) makes JWT unconditional on Java17. None/basic configurations, mode selection and cross-mode suites are retired; 94 HTTP + 23 unit cases pass. Earlier three-mode descriptions below are historical and will be replaced in J3. The migration roadmap supersedes conflicting historical requirements.
@@ -31,8 +33,7 @@ src/test/java/com/example/securitylearning/ErrorPathIT.java
 src/test/java/com/example/securitylearning/JwtDiagnosticsIT.java
 src/test/java/com/example/securitylearning/JwtLoginIT.java
 src/test/java/com/example/securitylearning/JwtNegativeValidationIT.java
-src/test/java/com/example/securitylearning/JwtValidationIT.java
-src/test/java/com/example/securitylearning/JwtMvcIT.java
+src/test/java/com/example/securitylearning/JwtAuthorizationIT.java
 src/test/java/com/example/securitylearning/config/JwtStartupTest.java
 src/test/java/com/example/securitylearning/support/JwtTestTokens.java
 src/test/java/com/example/securitylearning/RequestTraceIT.java
@@ -54,6 +55,7 @@ docs/learning/COMPLETE-GUIDE.md
 docs/learning/J1.S1-WALKTHROUGH.md
 docs/learning/J1.S2-WALKTHROUGH.md
 docs/learning/J1.S3-WALKTHROUGH.md
+docs/learning/J2.S1-WALKTHROUGH.md
 docs/learning/P1.S1-WALKTHROUGH.md
 docs/learning/P1.S2-WALKTHROUGH.md
 docs/learning/P1.S3-WALKTHROUGH.md

@@ -1,5 +1,7 @@
 # HTTP Integration Test Matrix — P1–P5 verified on Java21
 
+> Current migration checkpoint: [J2.S1](learning/J2.S1-WALKTHROUGH.md) consolidates login12 and authorization23 HTTP cases. JwtValidationIT is now JwtAuthorizationIT; redundant JwtMvcIT is retired. Negative validation remains in JwtNegativeValidationIT. Java17 verification passes94 HTTP +23 unit cases; older suite names/counts below are historical pending J3.
+
 > Current migration checkpoint: [J1.S3](learning/J1.S3-WALKTHROUGH.md) completes Phase J1. Credential configuration is scanned and owns the dedicated manager; issuer configuration owns only signing. The launcher keeps only the manual-proxy-related Boot exclusion. Java17 clean verification passed 94 HTTP + 23 unit cases; earlier source ownership descriptions below are historical pending J3.
 
 > Current migration checkpoint: [J1.S2](learning/J1.S2-WALKTHROUGH.md) makes JWT unconditional on Java17. None/basic configurations, mode selection and cross-mode suites are retired; 94 HTTP + 23 unit cases pass. Earlier three-mode descriptions below are historical and will be replaced in J3. The migration roadmap supersedes conflicting historical requirements.
@@ -199,3 +201,18 @@ Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips, 
 ## J1.S3 — simplified credential/signing/bootstrap ownership
 
 Java17 `mvn clean verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips, 20.665 s, 2026-11-02. Existing method inventory is unchanged. JwtValidationIT.publicEndpointDoesNotRequireToken additionally checks exactly one user source, password encoder, Dao provider and credential manager after configuration/backoff changes. Packaged library inventory is identical. [Current code/verification map](learning/J1.S3-WALKTHROUGH.md).
+
+## J2.S1 — consolidated JWT-only HTTP contract
+
+Java17 `mvn verify`:94 HTTP +23 unit cases, zero failures/errors/skips, 21.234 s, 2026-11-02. Production code is unchanged. JwtAuthorizationIT replaces JwtValidationIT and owns23 cases; JwtLoginIT owns12; the duplicate JwtMvcIT class is deleted. Four duplicate invalid-token invocations remain covered by existing JwtNegativeValidationIT scenarios; no negative-suite case changes. Nine removed duplicate invocations are balanced by nine targeted authorization/Basic/malformed-login additions, while returned-token endpoint loops expand the actual HTTP requests within each identity case.
+
+| Active suite | Cases / current responsibility |
+|---|---|
+| JwtLoginIT |12: trusted USER/ADMIN login with returned tokens on public/user/admin and bearer-free follow-up, two generic credential failures, eight malformed request shapes |
+| JwtAuthorizationIT |23: public/infrastructure1, Basic-only protected2, authority probe5, role/route matrix12, anonymous protected2, no-session sequence1 |
+| JwtNegativeValidationIT |45 unchanged raw invalid/accepted forms and exact time boundaries |
+| JwtDiagnosticsIT |8 unchanged real-filter/context/isolation/output cases |
+| RequestTraceIT |4 unchanged correlated successful/concurrent request cases |
+| ErrorPathIT |2 unchanged authenticated404/500 dispatch cases |
+
+The unit inventory remains23. Exact executed method names, current source commentary, transfer mapping and real traces are in [J2.S1](learning/J2.S1-WALKTHROUGH.md). Historical suite names/totals above are not the current ownership map.
