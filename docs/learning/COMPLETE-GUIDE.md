@@ -14,9 +14,9 @@ This guide describes the current unconditional JWT application, its entire produ
 | J2.S3 | Actual filter entries, lifecycle and identity isolation | [Walkthrough](J2.S3-WALKTHROUGH.md) |
 | J3.S1 | Current documentation contracts and extraction | [Walkthrough](J3.S1-WALKTHROUGH.md) |
 | J3.S2 | Complete current source/flow/test guide | [Walkthrough](J3.S2-WALKTHROUGH.md) |
-| J3.S3 | Final clean runtime/repository audit | Planned, walkthrough will be added when implemented |
+| J3.S3 | Final clean runtime/repository audit | [Walkthrough](J3.S3-WALKTHROUGH.md) |
 
-All nine step slots are present without fabricating the ninth walkthrough or completion. The final audit remains a separately requested step in [ROADMAP](../../ROADMAP.md).
+All nine walkthroughs are implemented. The [final audit](J3.S3-WALKTHROUGH.md) closes the [roadmap](../../ROADMAP.md) with clean Java17 verification and explicit evidence limits.
 
 ## Architecture and trust boundaries
 
@@ -441,7 +441,7 @@ Use JDK17 on a disposable branch and restore changes. Never enable header/body l
 - Follow the test-only error probe: authenticated throwing fixture gives500/ERROR callbacks, while anonymous access gives401 without those MVC callbacks. Do not move the fixture into production.
 - Compare invalid-bearer actual filter entries with the configured list: expect bearer entry but no later observation/authorization entries, despite their membership.
 
-## Actual Java 17 verification
+## J3.S2 checkpoint verification
 
 Executed 2026-11-02 with Maven3.9.12 and Eclipse Temurin17.0.21+9. Surefire/Failsafe report properties confirm test JVM17.0.21. Command:
 
@@ -450,7 +450,7 @@ J3_JAVA17_HOME="$(cat /private/tmp/jwt-auth-jdk17-home.txt)"
 env JAVA_HOME="$J3_JAVA17_HOME" PATH="$J3_JAVA17_HOME/bin:$PATH" mvn verify > /tmp/jwt-auth-j3s2-verify.log 2>&1
 ```
 
-The temporary JDK/checksum setup is described in J1.S1. Use your installed JDK17 rather than depending on this temporary path. Actual result: **BUILD SUCCESS**, **25.502 seconds**, **110 HTTP +31 unit/context cases**, zero failures/errors/skips. This documentation-only step changes no production/test code or dependencies. It verifies the current teaching contracts; J3.S3's final clean build and repository/history/package audit remain pending.
+The temporary JDK/checksum setup is described in J1.S1. Use your installed JDK17 rather than depending on this temporary path. Actual result: **BUILD SUCCESS**, **25.502 seconds**, **110 HTTP +31 unit/context cases**, zero failures/errors/skips. This documentation-only step changes no production/test code or dependencies. It verifies the current teaching contracts; The subsequent [J3.S3 final audit](J3.S3-WALKTHROUGH.md) records clean verification and repository/history/package results.
 
 | Suite | Cases | Failures/errors/skips |
 |---|---:|---|
@@ -500,4 +500,4 @@ SECURITY-BEFORE-ERROR 1274fc0b-a32d-4ba6-8515-2f3e385b4145 [filter.entry, securi
 
 An early invalid bearer lacks security state, authorization-exit and MVC markers because later filters are not reached. A denied authenticated request has state/denied/unwind but no MVC. Login credential failure reaches MVC and its local resolver, different from bearer rejection. A successful login has nine markers including issuance; successful resource requests have eight. Controller500's original REQUEST skips postHandle but its ERROR dispatch renders normally. Cleanup is observed on the server thread before test defensive clear; this does not isolate one library cleanup instruction or guarantee arbitrary future code. Cookie absence and fresh-request/overlap checks are bounded statelessness evidence. Snapshot capacity/immutability are unit evidence, not load/async/distributed guarantees.
 
-The guide covers all current source blocks and HTTP method contracts. It is not full branch coverage of third-party libraries. No final history/secret/package audit is claimed here. Stop at J3.S2 and request J3.S3 separately.
+The guide covers all current source blocks and HTTP method contracts. It is not full branch coverage of third-party libraries. The [final audit](J3.S3-WALKTHROUGH.md) now records110HTTP+31unit/context cases in26.226seconds, JDK21/24 rejection, fail-closed packaged startup and scoped repository/history/package checks. All nine steps are complete; no further step is implied.

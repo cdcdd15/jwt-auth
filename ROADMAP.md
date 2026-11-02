@@ -12,7 +12,7 @@
 | J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | ✅ |
 | J3.S1 | Replace obsolete course documentation | ✅ |
 | J3.S2 | Assemble the complete JWT learning guide | ✅ |
-| J3.S3 | Final Java 17 verification and repository audit | ⏳ |
+| J3.S3 | Final Java 17 verification and repository audit | ✅ |
 
 Update this table and the corresponding checkbox only after the step is verified. Branch creation remains a separate, user-owned manual prerequisite.
 
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** Phases J1–J2 and J3.S1–J3.S2 complete; J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
+**Status:** All nine steps J1.S1–J3.S3 complete. No further implementation step is planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -133,7 +133,9 @@ Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, 
 
 ### J3.S3 — Final Java 17 verification and repository audit
 
-- [ ] Run `mvn clean verify` on actual JDK 17 and record Maven/JDK/vendor/framework versions, exact command, test names/counts and actual outcomes.
+Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (26.226 s). JDK21/24 validation rejected; packaged missing-key startup failed closed. Package/source/history/log and documentation audits passed, with explicit pattern-scan limits and one harmless parser PEM-format hint documented. [Final walkthrough](docs/learning/J3.S3-WALKTHROUGH.md).
+
+- [x] Run `mvn clean verify` on actual JDK 17 and record Maven/JDK/vendor/framework versions, exact command, test names/counts and actual outcomes.
 - Recheck unconditional startup, one security chain/proxy registration, fail-closed keys, Basic rejection and preserved endpoint/trace contracts using automated evidence.
 - Scan working/tracked content, relevant Git history and verification logs for secret patterns; verify ignored private-key paths and absence of packaged keys/test fixtures.
 - Audit remaining Java-version settings, removed-mode references, links, diagrams, source ranges and final documentation consistency.

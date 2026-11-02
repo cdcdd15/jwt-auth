@@ -54,11 +54,11 @@ TraceConfiguration registers outer REQUEST tracing at HIGHEST_PRECEDENCE+10, bef
 - Root README: build/start/endpoint instructions. AGENTS: working agreement. ROADMAP: nine-step specification and progress.
 - Scope, learning requirements and claim contract: current constraints and acceptance.
 - TEST-MATRIX: current coverage. This file: actual inventory.
-- learning/README: existing walkthroughs and explicitly pending steps.
+- learning/README: all nine implemented walkthroughs.
 - learning/JWT-FOUNDATIONS: retained MVC, credential, JWT, tracing and error explanations with current sources.
 - learning/COMPLETE-GUIDE: complete current production source/block audit, request sequences, test mapping, interview questions and actual evidence.
 - J walkthroughs: immutable execution evidence with superseded source/count notes where appropriate.
 
 The original course documents are removed from this branch; recover them through master/Git history. No private keys belong in src/main/resources. Local development files belong under ignored /.local-keys; tests create and clean their own owner-only temporary files.
 
-J3.S2 source/flow audit: [complete guide](learning/COMPLETE-GUIDE.md) and [walkthrough](learning/J3.S2-WALKTHROUGH.md). All 16 production files and21 HTTP test methods are covered; final repository audit remains J3.S3.
+J3.S2 source/flow audit: [complete guide](learning/COMPLETE-GUIDE.md) and [walkthrough](learning/J3.S2-WALKTHROUGH.md). All 16 production files and21 HTTP test methods are covered; the [J3.S3 final audit](learning/J3.S3-WALKTHROUGH.md) is complete.

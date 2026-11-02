@@ -14,8 +14,8 @@ Use JDK 17 throughout. Begin with [application setup](../../README.md), [scope](
 | J2.S3 | Diagnostics, lifecycle and identity isolation | [Walkthrough](J2.S3-WALKTHROUGH.md) |
 | J3.S1 | Documentation replacement and extraction | [Walkthrough](J3.S1-WALKTHROUGH.md) |
 | J3.S2 | Complete source-guide assembly | [Walkthrough](J3.S2-WALKTHROUGH.md) |
-| J3.S3 | Final JDK 17 repository audit | Planned, no walkthrough yet |
+| J3.S3 | Final JDK 17 repository audit | [Walkthrough](J3.S3-WALKTHROUGH.md) |
 
 J walkthroughs retain actual checkpoint results, including historical suite names and counts. They are not all current source contracts. Current case ownership lives in the test matrix; current wiring lives in project structure/foundations and J1.S3. The original course is recoverable through master/Git history, not required reading on this branch.
 
-The [complete guide](COMPLETE-GUIDE.md) now audits every current production class/block and connects the request sequences to executed tests. Follow the [roadmap](../../ROADMAP.md) one numbered step at a time. Do not infer that planned artifacts exist or that the final audit has run.
+The [complete guide](COMPLETE-GUIDE.md) now audits every current production class/block and connects the request sequences to executed tests. All nine [roadmap](../../ROADMAP.md) steps are complete. The final walkthrough records actual checks and scoped limitations; no further step is implied.

@@ -1,6 +1,6 @@
 # Project scope through J3.S3
 
-The objective is to learn Spring HTTP and security internals from a small runnable Java 17 JWT application and executed evidence. [ROADMAP](../ROADMAP.md) defines nine migration steps; one step is authorized per request. J1/J2 are complete. J3 replaces documentation, assembles a complete source guide, then performs the final audit. Documentation cleanup does not authorize new product features.
+The objective is to learn Spring HTTP and security internals from a small runnable Java 17 JWT application and executed evidence. [ROADMAP](../ROADMAP.md) defines nine migration steps; one step is authorized per request. All nine steps are complete. J3 replaced documentation, assembled the complete source guide and performed the final audit. Documentation cleanup does not authorize new product features.
 
 ## In scope
 
@@ -16,7 +16,7 @@ The objective is to learn Spring HTTP and security internals from a small runnab
 | Lifecycle evidence | Correlated bounded immutable REQUEST snapshots, real filter entry observations, separate test-only ERROR probes, context cleanup and overlapping identity isolation |
 | Verification | Real HTTP RANDOM_PORT RestAssured/Failsafe; focused unit/context tests; deterministic clock and generated temporary keys |
 | Learning | Per-step explanations, Mermaid sequences, actual sanitized traces, claim contract, test map and source references |
-| Final planned delivery | J3.S2 has delivered the [production source/guide audit](learning/COMPLETE-GUIDE.md); J3.S3 will run clean JDK 17 verification, repository/history/log/package checks and records limitations |
+| Final delivery | J3.S2 has delivered the [production source/guide audit](learning/COMPLETE-GUIDE.md); [J3.S3](learning/J3.S3-WALKTHROUGH.md) completed clean JDK 17 verification and repository/history/log/package checks with recorded limitations |
 
 ## Out of scope
 
