@@ -1,12 +1,14 @@
 # Codex Working Agreement
 
-1. Read `README.md`, `ROADMAP.md`, `docs/LEARNING-SUPPORT-REQUIREMENTS.md`, `docs/PROJECT-STRUCTURE.md` and the active `docs/roadmap/P*.md` before changing code.
-2. Implement **one numbered step** at a time. Do not preemptively implement future phases or broaden scope.
-3. Before coding, state the intended classes, test cases, and how the step will be verified. Keep changes minimal and inspect existing code first.
-4. Preserve the `none`, `basic`, and `jwt` behavior contracts. Never treat `permitAll()` as proof that Spring Security is absent in `none` mode.
-5. No OAuth2 authorization flow, authorization server, grant types, redirect login, external IdP, database, Docker, or frontend. For JWT use the built-in Spring Security Resource Server integration with Nimbus and RS256; no custom bearer authentication filter.
-6. Tests must exercise real HTTP via embedded Tomcat, RANDOM_PORT, RestAssured. Use isolated Spring application contexts per mode. Unit tests supplement integration tests, not replace them.
-7. Every step requires learning documentation with class/method/line-level commentary, request sequence, actual framework behavior, failure branches, tests, and a trace-to-code map. Follow `docs/LEARNING-SUPPORT-REQUIREMENTS.md`.
-8. Run `mvn verify` (or explain precisely why it cannot run); never claim a test passed without executing it. Include test names and results in handoff.
-9. Never log passwords, complete bearer tokens, or private keys. Use local development keys only, exclude private keys from version control, and never put a production secret in configuration.
-10. Update `ROADMAP.md` checkboxes and the current phase document only after verification. Stop at the requested step and summarize changed files, observed behavior, tests, documentation, and next step.
+1. Read `README.md`, `ROADMAP.md`, `docs/LEARNING-SUPPORT-REQUIREMENTS.md`, `docs/PROJECT-STRUCTURE.md` and the requested step's section in `ROADMAP.md` before edits. The root roadmap is the active specification.
+2. Implement **one numbered step** per request. Do not implement later steps or broaden scope. State intended classes, test cases and verification before coding; inspect existing source first.
+3. Use **JDK 17 only** for Maven, compilation, tests and application execution. Keep compiler release 17 and Maven Enforcer `[17,18)`. A newer JDK targeting release 17 is insufficient.
+4. JWT security is unconditional. Preserve local JSON login and public/user/admin contracts, stateless context handling and bounded sanitized tracing. `permitAll()` retains security processing. No security-mode selector, unsecured fallback or HTTP Basic authentication implementation is allowed.
+5. Use built-in Spring Security Resource Server bearer authentication, Nimbus and RS256. Preserve dedicated credential authentication, BCrypt, strict raw/normalized claim validation and signing/public-verification separation. No custom bearer authentication filter or replacement cryptographic parser.
+6. No OAuth2 authorization flow, authorization server, grants, redirects, external IdP, database, refresh/revocation system, Docker or frontend. Scope is defined in `docs/IN-SCOPE-OUT-OF-SCOPE.md` through J3.S3.
+7. Tests must exercise real HTTP via embedded Tomcat, `@SpringBootTest(RANDOM_PORT)`, RestAssured and Failsafe. Isolate contexts where configurations differ. Unit/context tests supplement HTTP evidence.
+8. Every step requires `docs/learning/<step>-WALKTHROUGH.md`: meaningful class/method/block explanations, annotations, actual request sequence, failure branches, diagrams, sanitized evidence, trace-to-code mapping, questions and exercises. Follow the learning-support requirements. Preserve checkpoint evidence while clearly identifying current contracts.
+9. Run `mvn verify` on JDK 17, or identify precisely why it cannot run. Report actual suite names/counts and failures/errors/skips. Never claim inferred or unexecuted success. `mvn package` does not run Failsafe's verification gate.
+10. Never log passwords, complete bearer tokens or private keys. Use development keys only; keep private keys outside version control and application resources. Keep test fixtures/probes out of the executable jar.
+11. Update roadmap status/checkmarks only after verification. Stop at the requested step and report changed/deleted files, observed behavior, tests, learning artifacts and the next step. Do not create a commit unless requested.
+12. The original course belongs on `master` and in Git history. Retained J1/J2 walkthroughs describe migration checkpoints, not selectable application configurations. Do not restore obsolete course documents on this branch.

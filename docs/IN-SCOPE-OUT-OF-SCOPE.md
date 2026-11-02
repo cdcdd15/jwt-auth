@@ -1,76 +1,38 @@
-# Project scope — Spring Security Learning
+# Project scope through J3.S3
 
-> Current migration checkpoint: [J1.S2](learning/J1.S2-WALKTHROUGH.md) makes JWT unconditional on Java17. None/basic configurations, mode selection and cross-mode suites are retired; 94 HTTP + 23 unit cases pass. Earlier three-mode descriptions below are historical and will be replaced in J3. The migration roadmap supersedes conflicting historical requirements.
+The objective is to learn Spring HTTP and security internals from a small runnable Java 17 JWT application and executed evidence. [ROADMAP](../ROADMAP.md) defines nine migration steps; one step is authorized per request. J1/J2 are complete. J3 replaces documentation, assembles a complete source guide, then performs the final audit. Documentation cleanup does not authorize new product features.
 
-## Purpose and completion boundary
+## In scope
 
-Build a compact, runnable, evidence-backed course explaining how HTTP requests move through Spring MVC and Spring Security. Learners must be able to connect observed behavior to application code and framework responsibilities, explain failures, and compare plain MVC, HTTP Basic, and RS256 JWT validation.
-
-This scope covers the complete existing roadmap, **P1.S1 through P5.S2**, including the final learning package and verification. It is not authorization to implement later steps. Implement one numbered step per request, then stop. As of 2026-11-01, all fourteen steps P1.S1–P5.S2 are implemented and verified, including actual Java21 execution. See [the complete guide](learning/COMPLETE-GUIDE.md) and [final audit](learning/P5.S2-WALKTHROUGH.md).
-
-[ROADMAP.md](../ROADMAP.md) controls sequence and completion status. Phase documents specify acceptance criteria. [LEARNING-SUPPORT-REQUIREMENTS.md](LEARNING-SUPPORT-REQUIREMENTS.md) defines teaching deliverables. [ROADMAP-REVIEW.md](ROADMAP-REVIEW.md) records recommended clarifications separately from completed work.
-
-## In scope: architecture and behavior
-
-- Java 21 compilation target, Spring Boot 3.x, Spring MVC, Maven, embedded Tomcat, and Spring Security 6.x when introduced. Record the actual runtime used; compilation for Java 21 does not prove execution on it.
-- One application with mutually exclusive `none`, `basic`, and `jwt` modes once mode selection is introduced. Separate application contexts/configurations for mode-specific HTTP tests. The single property `app.security-mode` accepts none/basic/jwt and defaults to none. JWT requires `app.jwt.public-key-path` and matching PKCS8 `app.jwt.private-key-path`; verification and issuance use separate key responsibilities.
-- `none`: genuinely no invocation of Spring Security's servlet filter infrastructure. Initially security dependencies are absent; since P2.S1, explicit conditional bean/servlet registration isolation preserves this behavior; security libraries remain present. `permitAll()` alone is insufficient.
-- Three shared GET endpoints: `/api/public`, `/api/user`, `/api/admin`, with deterministic JSON. In the completed secured modes, public is permitted, user requires authentication, and admin requires ADMIN. P2.S2 implements credentials, and P2.S3 now enforces ADMIN on admin access. In plain mode, all three are accessible without credentials.
-- Basic authentication with in-memory users, BCrypt password checking, and explicit authentication/authorization behavior. No persistent user management.
-- A local POST `/auth/login` demonstration in JWT mode, introduced only at P3.S3. It checks credentials and issues a signed token; it does not implement an OAuth2 grant.
-- JWT validation through Spring Security OAuth2 Resource Server, `BearerTokenAuthenticationFilter`, `JwtAuthenticationProvider`, and Nimbus-backed encoding/decoding. RS256 only; private-key signing and public-key verification remain distinct.
-- Explicit issuer, audience, time, algorithm, and application-required claim validation as defined in [the P3.S1 contract](JWT-CLAIM-CONTRACT.md) (baseline enforcement is implemented in P3.S2; complete P4 negative/boundary evidence is verified); trusted role-to-authority conversion; positive and negative test evidence.
-- Stateless secured API behavior, context population during processing, cleanup afterward, authentication challenges, and the distinction between 401 and 403.
-- Local development key handling and test-generated keys. Private material is excluded from version control; passwords, complete bearer tokens, and private keys never appear in traces.
-
-## In scope: complete phase deliverables
-
-| Step | Included implementation or learning outcome | Status |
-|---|---|---|
-| P1.S1 | Boot/Maven bootstrap, three REST endpoints, real HTTP assertions, Surefire/Failsafe configuration, entry-point/MVC/JSON explanations | Implemented |
-| P1.S2 | Explicit servlet filter and MVC interceptor registration, correlated bounded event sink, successful-request ordering and request isolation | Implemented |
-| P1.S3 | Unmapped URL and thrown-controller-exception tests; observed callback/dispatch behavior; complete P1 teaching material | Implemented |
-| P2.S1 | Security chain, genuine plain-mode isolation, stateless configuration, public/protected behavior, servlet/security-chain explanation | Implemented |
-| P2.S2 | In-memory USER/ADMIN identities, BCrypt, Basic authentication, valid/invalid credentials, principal/context evidence | Implemented |
-| P2.S3 | Admin authorization, USER denial, 401 challenge versus 403, sanitized security flow, complete P2 walkthroughs | Implemented |
-| P3.S1 | Local RSA foundation, JWT header/claims/signature anatomy, RS256 signing/verification tests | Implemented |
-| P3.S2 | Resource Server mode using test-issued tokens, decoder/validators, initial role conversion, valid and invalid token HTTP tests | Implemented |
-| P3.S3 | Local credential-to-token login and end-to-end use of issued tokens; bad credentials and safe token contents | Implemented |
-| P4.S1 | Final role conversion and authorization contract, anonymous/missing-token/insufficient-authority cases, statelessness | Implemented |
-| P4.S2 | Tampering, wrong key/algorithm, malformed/expired/future tokens, issuer/audience, missing claims, malformed roles, deterministic time | Implemented |
-| P4.S3 | Actual security-filter ordering, correlated allowed/denied traces, authentication/authorization failure diagnostics, no secret leakage | Implemented |
-| P5.S1 | Equivalent real HTTP requests across isolated modes; reproducible success/denial traces; three sequence diagrams and comparative tables | Implemented |
-| P5.S2 | Complete code/documentation audit, `docs/learning/COMPLETE-GUIDE.md`, test cross-references, review questions/exercises, secret review, final `mvn verify`, accurate README/roadmap updates | Implemented |
-
-P3 introduces the minimal role conversion needed for valid token tests; P4 finalizes its edge cases and authorization evidence. P5 consolidates and audits existing behavior rather than introducing another authentication mechanism or product feature.
-
-## In scope: verification and learning artifacts
-
-Use JUnit 5, `@SpringBootTest(RANDOM_PORT)`, RestAssured, actual embedded Tomcat, and Maven Failsafe for HTTP integration tests. Unit tests supplement those tests when they check meaningful behavior. Run `mvn verify` for implementation steps and report executed test names, results, and precise blockers. Do not substitute MockMvc-only coverage or inferred success for real HTTP evidence.
-
-Every step has a walkthrough explaining implemented classes, methods, annotations, meaningful code blocks, dependency injection, framework-owned calls, request/response sequencing, relevant failures, and limitations. Include Mermaid diagrams, actual sanitized correlated traces when instrumentation exists, test-to-code mappings, at least three review questions, and two safe exercises. Test traceability can be a compact table rather than a repeated standalone integration-test tutorial.
-
-Maintain [FLOWS-COMPARED.md](FLOWS-COMPARED.md) as the shared flow comparison and [TEST-MATRIX.md](TEST-MATRIX.md) as the tested-versus-planned behavior index. Per-step evidence stays in walkthroughs; the final complete guide links the course together. Clearly distinguish observed calls/events from framework explanations and historical verification from current source references.
-
-## Out of scope through P5.S2
-
-| Area | Excluded work |
+| Area | Contract |
 |---|---|
-| OAuth2 identity platform | Authorization server, authorization-code/client-credentials or other grants, redirect login, consent, external identity providers, OIDC discovery integration |
-| Persistent application data | Database, JPA, migrations, persistent user/token repositories, registration, profile management, password reset |
-| Additional token systems | Refresh-token flows, revocation/blacklists, introspection services, alternative signing algorithms, production key rotation or remote JWKS distribution |
-| Custom security engine | Custom bearer authentication filter, replacement JWT parser/signature implementation, controller/interceptor-based substitutes for Spring Security authentication |
-| Frontend/browser application | UI, templates, frontend framework, browser login/session product, CORS feature development |
-| Deployment platform | Docker, Kubernetes, cloud deployment, production TLS/certificate infrastructure, secrets-manager integration |
-| Distributed architecture | Microservices, gateways, queues, caches, distributed tracing infrastructure, durable audit storage |
-| Additional runtime models | WebFlux/reactive stack, executable async/streaming/WebSocket lifecycle demonstrations; explain async limitations without implementing them |
-| Product hardening beyond the course | MFA, account lockout/rate-limiting systems, multi-tenancy, production monitoring, performance/load benchmarks |
-| Unplanned teaching expansion | New phases, alternative auth mechanisms, broad framework rewrites, unrelated service/repository abstractions |
+| Runtime/build | JDK 17 only, Spring Boot 3.x, MVC, embedded Tomcat, Maven compiler release 17 and Enforcer `[17,18)` |
+| HTTP | GET public/user/admin JSON and POST `/auth/login`; successful messages remain public/user/admin |
+| Credential authentication | Two local in-memory demonstration users, BCrypt, DaoAuthenticationProvider and a dedicated login ProviderManager |
+| Issuance | JSON login signs trusted identity/roles using NimbusJwtEncoder, local RSA private key, RS256, 300-second lifetime, no-store response |
+| Bearer authentication | Built-in BearerTokenAuthenticationFilter, JwtAuthenticationProvider, trusted local public key and Nimbus decoder |
+| Validation | Required claims, fixed issuer/audience, 60-second skew, original JSON types and normalized checks; fail-closed keys |
+| Authorization | Public and POST login permitted through security, user authenticated, admin requires ROLE_ADMIN, internal ERROR rendering permitted |
+| Lifecycle evidence | Correlated bounded immutable REQUEST snapshots, real filter entry observations, separate test-only ERROR probes, context cleanup and overlapping identity isolation |
+| Verification | Real HTTP RANDOM_PORT RestAssured/Failsafe; focused unit/context tests; deterministic clock and generated temporary keys |
+| Learning | Per-step explanations, Mermaid sequences, actual sanitized traces, claim contract, test map and source references |
+| Final planned delivery | J3.S2 completes the production source/guide audit; J3.S3 runs clean JDK 17 verification, repository/history/log/package checks and records limitations |
 
-Exclusion from implementation does not forbid a short explanation of a limitation. For example, explain TLS needs, browser-related CSRF risks, token expiry limitations, and async dispatch caveats without building those systems. CSRF disablement is a bounded API-demo choice, not proof that stateless Basic authentication is inherently CSRF-safe; see [Spring Security's CSRF guidance](https://docs.spring.io/spring-security/reference/6.5/servlet/exploits/csrf.html).
+## Out of scope
 
-## Definition of done for the entire project
+| Area | Excluded implementation |
+|---|---|
+| Other authentication modes | No selector, unsecured mode, HTTP Basic chain or cross-mode comparison scaffolding |
+| Identity platform | OAuth2 authorization server/grants, OIDC discovery, external IdP, redirect/consent login |
+| Persistence | Database, JPA, migrations, registration, password reset or persistent user/token storage |
+| Token products | Refresh/revocation/blacklist services, introspection, remote JWKS, production rotation, alternative signing algorithms |
+| Custom security engine | Custom bearer filter, replacement parser/signature engine, authentication performed by interceptors |
+| UI/deployment | Frontend, Docker, Kubernetes, cloud/TLS infrastructure or secrets-manager integration |
+| Other runtime models | Reactive/WebFlux, async/streaming/WebSocket experiments or distributed tracing |
+| Product expansion | MFA, lockout/rate limiting, multi-tenancy, load benchmarking or additional service/repository layers |
 
-All fourteen numbered steps meet their acceptance criteria; isolated mode suites and the comparison matrix pass real HTTP verification; allowed and denied paths are explainable from observed evidence; all meaningful application code is covered by current teaching material; the final complete guide exists; and no excluded feature has been added implicitly. Final handoff records runtime versions, exact results, remaining limitations, and secret-handling checks. Scope changes require an explicit user request and a corresponding roadmap update, not speculative implementation.
+Briefly explain limitations without implementing these systems. BCrypt is the existing local password-checking primitive, not a JWT signature algorithm. Stateless security does not prove universal browser CSRF safety or prevent arbitrary application code from creating a session. CSRF disablement is bounded to this non-browser demonstration.
 
-Final 2026-11-01 acceptance: all fourteen numbered steps complete; clean verification on Java21.0.8 passed 153 HTTP + 29 unit cases. Scope remains bounded here; no additional phase is implied.
+## Definition of done
+
+All nine roadmap steps must meet their acceptance criteria on JDK 17. A learner must be able to reconstruct credential authentication, bearer validation, authorization and MVC processing from current source and passing tests. J3.S3 alone closes the final audit. No feature beyond that step is implied. Secrets never belong in claims, traces or committed key files. See [claim contract](JWT-CLAIM-CONTRACT.md), [test matrix](TEST-MATRIX.md) and [learning requirements](LEARNING-SUPPORT-REQUIREMENTS.md).

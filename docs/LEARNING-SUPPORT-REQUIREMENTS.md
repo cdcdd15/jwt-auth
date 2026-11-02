@@ -1,37 +1,35 @@
-# Mandatory Complete Learning Support — Codex Directive
+# Mandatory learning support
 
-**Primary purpose:** This repository is a runnable, evidence-backed course on Spring HTTP processing and Spring Security internals, not merely a working demo. Documentation is a required artifact of EVERY implementation step.
+The project teaches Spring internals through executed HTTP evidence. Working code without its learning walkthrough is incomplete. [ROADMAP](../ROADMAP.md) is the active nine-step specification for Java 17 and unconditional JWT.
 
-## Documentation Codex must create and maintain
-For every step, add `docs/learning/<step-id>-WALKTHROUGH.md` (create folder when implementing). Explain:
-1. **Learning objectives and prerequisites:** what changes from the previous step and why.
-2. **Class-by-class explanation:** purpose, bean creation, interfaces, annotations, dependencies, injected collaborators, entry/exit points.
-3. **Line-by-line / block-by-block explanation:** cover every meaningful line of application code, imports where relevant, annotations, configuration expressions, method parameters, return values, and exception handling. Use short, numbered code excerpts or file:line references; do not paste unexplained large files. Explain framework-managed code that is not visible in the repo separately.
-4. **Exact request flow:** client → embedded Tomcat → servlet filter chain → Spring Security FilterChainProxy (when present) → DispatcherServlet → handler/controller, including response and exceptions. Mark which steps occur only in some modes.
-5. **Security-specific internals (when introduced by the current step; otherwise mark as future work):** Authentication vs Authorization; AuthenticationManager, Provider, UserDetailsService, PasswordEncoder, SecurityContext, EntryPoint/AccessDeniedHandler; JWT header/claims/signature; Nimbus decoder, validators, authentication converter, and RS256 public/private key separation.
-6. **Sequence diagram (Mermaid)** with concrete method/class names and clear failure branches.
-7. **Test-to-code traceability:** for every integration test, show request, expected status/body, classes reached, security decision, and assertions. Distinguish observable runtime evidence from assumptions about framework internals.
-8. **Runtime trace examples:** actual sanitized log/event sequences from passing tests, with correlation ID and order. Do not fabricate trace output.
-9. **Comparative notes:** what stayed the same and what changed versus previous security mode.
-10. **Questions and exercises:** at least three review questions and two safe hands-on modifications, with expected outcomes.
+## Required artifacts for every step
 
-## Accuracy and security rules
-- Explain that Spring Security's OAuth2 Resource Server is usable for bearer JWT validation without implementing an OAuth2 Authorization Server or any OAuth2 grant flow.
-- Do not claim Nimbus alone creates an authenticated SecurityContext; Spring Security does that after decoding and converting a validated token.
-- Do not call `permitAll` an absent security chain.
-- Separate signature verification, issuer/audience/timestamp validation, authentication creation, and authorization decisions.
-- Do not treat Base64URL payloads as encrypted; do not store secrets in JWT claims.
-- Verify filter order against the actual Spring Security runtime, not a generic diagram.
-- Record exact file paths and code references **after** implementation; never invent line numbers.
-- Never include passwords, signing private keys, or full tokens in traces.
+Create `docs/learning/<step>-WALKTHROUGH.md` immediately, including documentation-only steps. Explain:
 
-## Maintaining source references
+1. Objectives, prerequisites, scope and changes from the preceding checkpoint.
+2. Every changed class, method, annotation, constructor dependency, private helper, configuration lambda and meaningful line/block. For documentation-only steps, explain document ownership, the preserved source concepts and deletion/replacement mapping. Do not invent code changes.
+3. Concrete source links and accurate references checked against the current source. Distinguish framework-managed behavior from application code; avoid large unexplained code dumps.
+4. Client → Tomcat → servlet filters → DelegatingFilterProxy/FilterChainProxy → bearer authentication → authorization → DispatcherServlet → handler mapping/adapter → controller → message conversion → unwind. Explain early rejection and ordinary ERROR dispatch separately.
+5. Credential ProviderManager/DaoAuthenticationProvider/UserDetailsService/BCrypt versus bearer JwtAuthenticationProvider/Nimbus/strict decoder/converter. Explain who establishes and clears SecurityContext.
+6. Mermaid sequence diagrams with concrete classes/methods and failure branches. Avoid raw semicolons in sequence-message labels because supported IDE renderers may parse them as statement separators.
+7. A test-to-code table showing requests, expected status/body/headers, reached classes, security decisions and asserted evidence. Do not add a repeated standalone integration-test tutorial.
+8. Actual sanitized correlated output from passing tests, with order and evidence limits. Never fabricate runtime traces or infer every internal call from application markers.
+9. At least three review questions and two safe exercises with predicted results. Compare credential issuance with bearer verification or earlier migration checkpoints without presenting retired modes as supported configurations.
+10. Actual JDK/Maven command, suite names/counts, failures/errors/skips and precise blockers. Update progress only after execution.
 
-When a later step changes source files, refresh affected teaching references or explicitly label older excerpts and line numbers as historical and link to the current walkthrough. Keep a test-to-code traceability table without requiring a repeated standalone integration-test tutorial. Step walkthroughs are due at each step; phase-end audits consolidate them.
+## Technical accuracy
 
-Keep current summaries separate from historical checkpoint evidence. When behavior intentionally changes, update superseded test expectations and explain the transition in the new walkthrough; do not preserve an obsolete expectation as the permanent contract. A configured filter list, an observed invocation, and an ordered callback trace are different forms of evidence and must be labeled accordingly. Basic S1's no-challenge response is an intermediate contract, not the completed Basic behavior.
+- Resource Server JWT validation does not require an OAuth2 grant or authorization server.
+- Nimbus verifies/decodes; Spring Security creates the authenticated representation and request SecurityContext after validation/conversion.
+- Signature verification, algorithm restriction, normalized semantic checks, original JSON type checks, authentication and endpoint authorization are separate decisions.
+- `permitAll()` preserves security processing. A supplied invalid bearer can fail before public authorization.
+- Base64URL is readable encoding, not encryption. Do not include secrets in claims, traces or example tokens.
+- Configured filter membership/order, observed entry, application callback snapshots and test-only ERROR probes are different evidence types. Label each.
+- A finally/exit event is not proof of authorization success. No session cookie is bounded evidence, supplemented by context policy and fresh-request tests.
+- Production traces cover synchronous REQUEST dispatches. Test-only ERROR probes explain redispatch without appending to completed snapshots. Async/distributed tracing is excluded.
 
-## Cross-phase reference documents
-Update `docs/FLOWS-COMPARED.md` and `docs/TEST-MATRIX.md` as phases complete. Each should distinguish planned design from implemented and tested behavior. Final P5 produces a unified learning guide and side-by-side flow diagrams.
+## Maintenance and navigation
 
-**Acceptance rule:** A step without its detailed learning walkthrough is incomplete even if all code tests pass.
+[PROJECT-STRUCTURE](PROJECT-STRUCTURE.md) owns inventory; [TEST-MATRIX](TEST-MATRIX.md) owns current executed coverage; [JWT-CLAIM-CONTRACT](JWT-CLAIM-CONTRACT.md) owns token acceptance; [learning index](learning/README.md) owns step navigation. [JWT foundations](learning/JWT-FOUNDATIONS.md) preserves prerequisite MVC/security/source explanations extracted during documentation replacement. The complete source-guide audit is J3.S2; final repository audit is J3.S3.
+
+Retain earlier J walkthroughs as clearly labeled checkpoint records, including their actual historical counts and retired source names where needed to explain the migration. Current summary documents must give current contracts/counts only. Refresh moved source references or mark them superseded and link the current explanation. Remove links to deleted documents, check local links and parse Mermaid diagrams before claiming documentation verification. Preserve the original course through `master` and Git history rather than duplicating it here.

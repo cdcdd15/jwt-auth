@@ -1,41 +1,35 @@
 # Local JWT claim contract
 
-**Status:** Defined in P3.S1; baseline runtime enforcement implemented in P3.S2. Real HTTP tests now cover valid USER/ADMIN tokens and signature/expiry/issuer/audience rejection. Unit tests cover representative normalized schema checks. P4.S1–S2 now verify role denial, original JSON claim types, negative token inputs and exact timestamp-skew boundaries; P4.S3 now verifies sanitized failure diagnostics, configured versus observed filter order, and sequential/concurrent context isolation. [Current evidence](learning/P4.S3-WALKTHROUGH.md). P3.S3 implements the local issuer: roles come only from authenticated authorities, iat/nbf use the injected clock truncated to seconds, exp is 300 seconds later, and the runtime header uses kid `local-issuer`. This document is an application contract, not a claim that Nimbus defaults enforce it automatically.
+This is the implemented application contract, not a claim that Nimbus defaults enforce every rule. [J2.S2](learning/J2.S2-WALKTHROUGH.md) records raw-token/key evidence; [J2.S1](learning/J2.S1-WALKTHROUGH.md) records login/authorization and [J2.S3](learning/J2.S3-WALKTHROUGH.md) records lifecycle diagnostics. Java 17 and unconditional JWT apply.
 
-## Header and trust boundary
+## Header and trusted keys
 
-- Sign and accept RS256 only, using locally trusted RSA keys of at least 2048 bits. Configure the decoder's algorithm allowlist independently of the token's untrusted `alg` header.
-- The issuer emits `typ: JWT`. The S1 fixture uses `kid: local-test-key` to select its single in-memory JWK. `kid` is an identifier, not proof of trust and not a URL. Key rotation, remote key discovery, and JWKS hosting remain out of scope.
-- Private key material goes only to the signing side; verification receives only the public key. Do not serialize the private JWK into a token, response, trace, or committed file.
+Accept RS256 only using a locally configured RSA public key of at least 2048 bits. The decoder independently restricts algorithms; an untrusted header cannot choose another algorithm or key source. The local issuer signs with the matching PKCS8 private key and emits `typ: JWT`, `kid: local-issuer`. Tests can use a different fixture kid. Kid identifies a key; it is not proof of trust, a discovery URL or a required local validation claim. No remote JWKS or key rotation is implemented. Both keys are required at startup because this application also issues tokens. Missing/malformed/weak/mismatched keys fail closed.
 
 ## Claims
 
-| Claim | Issuer output / acceptance contract |
+| Claim | Acceptance and local issuance |
 |---|---|
-| `sub` | Required, nonblank string identifying the local principal; S1 example `user` |
-| `iss` | Required string, exactly `urn:spring-security-learning:local`; this identifier does not trigger IdP discovery |
-| `aud` | Required audience containing `spring-security-learning-api`; accept the standard single-string or array-of-strings JSON form and normalize appropriately |
-| `exp` | Required valid NumericDate; reject expiry outside the configured clock-skew tolerance |
-| `iat` | Issuer emits issuance NumericDate; optional on accepted tokens, but if present must have the correct type. It is descriptive issuance metadata, not a substitute for expiration or a separate maximum-token-age policy |
-| `nbf` | Issuer emits issuance time; optional on accepted tokens. When present, require valid NumericDate and reject tokens too far in the future after applying clock skew |
-| `roles` | Issuer emits a JSON array of unprefixed strings, e.g. `["USER"]`. Missing claim or an empty array means no role authorities. A present null, scalar, non-array, or array containing null/non-string/blank elements is malformed and must fail authentication |
+| `sub` | Required original nonblank JSON string. Issuer uses authenticated principal name |
+| `iss` | Required string exactly `urn:spring-security-learning:local`. This identifier triggers no network discovery |
+| `aud` | Required nonblank string or nonempty array of nonblank strings containing `spring-security-learning-api`. Additional audiences are permitted |
+| `exp` | Required NumericDate accepted by Nimbus and normalized to Instant, with expiration checking |
+| `iat` | Issuer emits now. Optional when accepted, but a present value must be numeric and parse successfully. Explicit null is invalid. No independent future-iat/maximum-age policy |
+| `nbf` | Issuer emits now. Optional when accepted, but a present value must be numeric, parse successfully and pass not-before checking. Explicit null is invalid |
+| `roles` | Issuer derives an array of unprefixed strings from authenticated ROLE_ authorities. Missing or empty array is valid with no authorities. Present null/scalar/non-array or null/non-string/blank array members fail authentication |
 
-NumericDate values represent seconds relative to the Unix epoch; Spring's decoded Java representation may be `Instant`. JSON parsing/type checks and application-required presence checks must be explicit. A timestamp validator checking a present value is not proof that it rejects a missing claim. The application validator checks normalized claim presence/types after Nimbus parsing and standard Spring conversion; it is not a raw JSON validator. P4.S2 adds StrictJwtDecoder: delegate RS256/normalized validation to Nimbus first, then inspect the verified payload using Nimbus’s JSON parser before returning to authentication conversion. This rejects original numeric sub and null optional dates that library normalization otherwise accepts. Missing iat remains permitted even if Spring synthesizes a normalized iat from exp. [Raw-input evidence](learning/P4.S2-WALKTHROUGH.md).
+NumericDate represents seconds since the Unix epoch, not milliseconds. The normalized validator checks required string/Instant/list representations and required audience. JwtIssuerValidator checks issuer equality; JwtTimestampValidator checks time. StrictJwtDecoder first delegates to Nimbus for trusted verification/normalized validation, then inspects original payload types using Nimbus SignedJWT parsing before returning the normalized Jwt. It guards distinctions normalization can erase, such as numeric subject becoming a string or null dates disappearing. It is a decorator, not a replacement cryptographic parser. Missing iat remains allowed even if normalization synthesizes an iat from exp.
 
-After signature/claims validation, map role names to `ROLE_` authorities. Unknown well-formed names confer no special USER/ADMIN rights; only `ROLE_ADMIN` satisfies admin access. There is no implied ADMIN→USER role hierarchy. An otherwise valid token without roles can authenticate for `/api/user` but must receive 403 on `/api/admin`. Malformed roles must produce 401 instead. The converter and authorization rules are present in S2, and missing/empty roles are accepted by the normalized validator unit checks; P4.S1 now verifies missing/empty-role HTTP outcomes: user 200, admin 403. Malformed-role HTTP rejection is now verified in P4.S2. A valid unknown role maps to its ROLE_ authority but grants no ADMIN permission. See [conversion and authorization evidence](learning/P4.S1-WALKTHROUGH.md).
+## Time and authorization
 
-## Time policy and test strategy
+Issuer lifetime is 300 seconds, with clock truncated to whole seconds. Validation uses an injected Clock and explicit 60-second skew. Fixed-clock HTTP tests accept exp exactly NOW−60 seconds and nbf exactly NOW+60, rejecting NOW−61/NOW+61 respectively. No sleeps are used. Future descriptive iat before exp and omitted iat/nbf are accepted controls; the boundary policy is not a claim of unlimited parser acceptance for arbitrary numbers.
 
-Local issuer lifetime: 300 seconds. Validation clock skew: 60 seconds. Use an injected/controlled validation clock for timestamp tests, with verified boundary cases in P4.S2; do not sleep or depend on the machine's current date. The S1 fixture fixes issuance at `2030-01-01T12:00:00Z`, sets nbf to that instant and exp 300 seconds later. S1 deliberately checks signature and serialized claims only: the fixture's future date is not evidence that a runtime decoder would currently accept it.
+After validation, JwtAuthenticationConverter maps roles to ROLE_ authorities. Only ROLE_ADMIN satisfies admin. ADMIN has no implied USER hierarchy; `/api/user` requires authentication rather than ROLE_USER. Missing/empty/unknown well-formed roles allow user access but do not grant admin. Malformed roles cause 401 before conversion, rather than an authorization 403.
 
-## Authentication and authorization follow validation
+Signature integrity alone does not prove issuer/audience/time/schema acceptance, establish SecurityContext or grant endpoint access. Spring Security performs authentication/context establishment and subsequent authorization. Missing bearer on protected routes yields 401 with a Bearer challenge. Invalid bearer yields 401 even on public routes because authentication runs first. Valid non-ADMIN admin access yields 403. HTTP Basic cannot authenticate protected routes.
 
-A valid signature proves integrity against the trusted public key, not correct issuer/audience/time, authenticated context creation, or endpoint permission. Nimbus verification alone creates no Spring SecurityContext. P3.S2 now uses Resource Server's built-in BearerTokenAuthenticationFilter, JwtAuthenticationProvider, NimbusJwtDecoder, and a converter. P3.S3 now adds local credential-to-token issuance. See [the current walkthrough](learning/P3.S3-WALKTHROUGH.md). No OAuth2 grant/authorization server or external IdP is required.
+## Issuance and secrets
 
-Never include passwords, private keys, or other secrets in claims. Base64URL is readable encoding, not encryption. Token values must not appear in logs or learning traces. See [S1 signing evidence](learning/P3.S1-WALKTHROUGH.md) and [S2 runtime validation evidence](learning/P3.S2-WALKTHROUGH.md).
+POST `/auth/login` authenticates local JSON credentials using DaoAuthenticationProvider and BCrypt, then signs trusted claims with NimbusJwtEncoder. Success returns accessToken/tokenType/expiresIn and no-store. Credential rejection is generic 401 JSON without a bearer challenge; malformed bodies are 400. Issuance does not install the credential result in the filter SecurityContext or create session authentication. No OAuth2 grant, authorization server or refresh endpoint exists.
 
-P4.S2 fixed-clock HTTP evidence: exp exactly NOW−60 seconds and nbf exactly NOW+60 seconds are accepted under the explicit 60-second skew; exp NOW−61 and nbf NOW+61 are rejected. Present null dates are invalid, distinct from omitted optional dates. These second-resolution boundaries reflect the installed timestamp validator; no sleeping is used.
-
-## JWT-only migration: J2.S2 evidence
-
-Java17 tests now explicitly reject boolean iat/nbf and a mixed string/number roles array through the actual raw-token HTTP pipeline. Invalid tampered/HS256/malformed bearer values also receive401 on public, because authentication precedes permitAll authorization. Successful controls include multiple audiences containing the required API audience, omitted iat and nbf together, and future descriptive iat before exp. These tests preserve the existing contract; no future-iat/max-age policy is added. Exact±60-second skew acceptance and±61-second rejection remain verified without sleeps. [Current validation/key walkthrough](learning/J2.S2-WALKTHROUGH.md).
+JWT payloads are Base64URL encoded and readable, not encrypted. Do not include passwords/private keys in claims or print complete tokens. [Scope](IN-SCOPE-OUT-OF-SCOPE.md) bounds this local teaching application; [foundations](learning/JWT-FOUNDATIONS.md) explains the source pipeline.

@@ -1,89 +1,62 @@
 # Implemented project structure
 
-> Current migration checkpoint: [J2.S3](learning/J2.S3-WALKTHROUGH.md) completes Phase J2 with exact branch traces, bounded overlapping worker identities, cleanup and security-before-MVC error evidence. Java17 clean verification passes110 HTTP +31 unit/context cases. Diagnostic13/error5/request-trace3 cases supersede older method counts below. Production unchanged; broad documentation replacement is J3.
+Java 17, Spring Boot MVC and unconditional Resource Server JWT security form the current application. [ROADMAP](../ROADMAP.md) owns progress; [learning index](learning/README.md) owns navigation. No selector or alternative security configuration exists.
 
-> Current migration checkpoint: [J2.S2](learning/J2.S2-WALKTHROUGH.md) verifies54 negative/control HTTP cases and10 key-context cases, including public invalid-bearer rejection and nine key failures. Java17 clean verification passes103 HTTP +31 unit/context cases. Production unchanged; earlier method ranges/counts below remain historical pending J3.
+## Production sources
 
-> Current migration checkpoint: [J2.S1](learning/J2.S1-WALKTHROUGH.md) consolidates login12 and authorization23 HTTP cases. JwtValidationIT is now JwtAuthorizationIT; redundant JwtMvcIT is retired. Negative validation remains in JwtNegativeValidationIT. Java17 verification passes94 HTTP +23 unit cases; older suite names/counts below are historical pending J3.
+- [SecurityLearningApplication.java](../src/main/java/com/example/securitylearning/SecurityLearningApplication.java) — Boot entry point, component scan and explicit proxy auto-registration exclusion.
+- [api/AuthController.java](../src/main/java/com/example/securitylearning/api/AuthController.java) — JSON login binding, no-store response and local authentication failure handling.
+- [api/DemoController.java](../src/main/java/com/example/securitylearning/api/DemoController.java) — Three deterministic message endpoints and controller trace markers.
+- [config/InMemoryIdentityConfig.java](../src/main/java/com/example/securitylearning/config/InMemoryIdentityConfig.java) — BCrypt, in-memory users, Dao provider and dedicated login manager.
+- [config/JwtDecoderConfig.java](../src/main/java/com/example/securitylearning/config/JwtDecoderConfig.java) — Local public key, UTC Clock, RS256 Nimbus and semantic/timestamp validators.
+- [config/JwtIssuerConfig.java](../src/main/java/com/example/securitylearning/config/JwtIssuerConfig.java) — Matching private key validation and Nimbus encoder.
+- [config/JwtSecurityConfig.java](../src/main/java/com/example/securitylearning/config/JwtSecurityConfig.java) — Converter, endpoint policy, standard bearer failure handlers and explicit servlet proxy.
+- [security/JwtClaimContractValidator.java](../src/main/java/com/example/securitylearning/security/JwtClaimContractValidator.java) — Normalized required/type/audience contract.
+- [security/JwtTokenService.java](../src/main/java/com/example/securitylearning/security/JwtTokenService.java) — Credential authentication, trusted claim building and signed token response.
+- [security/RsaKeyGenerator.java](../src/main/java/com/example/securitylearning/security/RsaKeyGenerator.java) — On-demand development RSA generation, no automatic file export.
+- [security/StrictJwtDecoder.java](../src/main/java/com/example/securitylearning/security/StrictJwtDecoder.java) — Original JSON type guard after trusted Nimbus validation.
+- [tracing/MvcTraceInterceptor.java](../src/main/java/com/example/securitylearning/tracing/MvcTraceInterceptor.java) — REQUEST-only MVC callbacks.
+- [tracing/RequestTraceFilter.java](../src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java) — Outer UUID and finally snapshot publication.
+- [tracing/SecurityTraceFilter.java](../src/main/java/com/example/securitylearning/tracing/SecurityTraceFilter.java) — Context observation before authorization, no authentication decisions.
+- [tracing/TraceConfiguration.java](../src/main/java/com/example/securitylearning/tracing/TraceConfiguration.java) — Sink/filter/interceptor registration.
+- [tracing/TraceEventSink.java](../src/main/java/com/example/securitylearning/tracing/TraceEventSink.java) — Request-local active lists and 128 immutable completed snapshots.
 
-> Current migration checkpoint: [J1.S3](learning/J1.S3-WALKTHROUGH.md) completes Phase J1. Credential configuration is scanned and owns the dedicated manager; issuer configuration owns only signing. The launcher keeps only the manual-proxy-related Boot exclusion. Java17 clean verification passed 94 HTTP + 23 unit cases; earlier source ownership descriptions below are historical pending J3.
+## Tests and fixtures
 
-> Current migration checkpoint: [J1.S2](learning/J1.S2-WALKTHROUGH.md) makes JWT unconditional on Java17. None/basic configurations, mode selection and cross-mode suites are retired; 94 HTTP + 23 unit cases pass. Earlier three-mode descriptions below are historical and will be replaced in J3. The migration roadmap supersedes conflicting historical requirements.
+All integration suites use actual random-port Tomcat HTTP and RestAssured. Configurations/probes differ by suite and use isolated contexts. Surefire owns *Test; Failsafe owns *IT. [TEST-MATRIX](TEST-MATRIX.md) records current counts and case ownership.
 
-> JWT-only migration checkpoint: [J1.S1](learning/J1.S1-WALKTHROUGH.md) now requires Java17 and passed 153 HTTP + 29 unit cases on Temurin17.0.21. Three-mode behavior remains until J1.S2; earlier Java21 instructions/results below are historical. [The migration roadmap](../ROADMAP.md) is authoritative.
+- [ErrorPathIT.java](../src/test/java/com/example/securitylearning/ErrorPathIT.java)
+- [JwtAuthorizationIT.java](../src/test/java/com/example/securitylearning/JwtAuthorizationIT.java)
+- [JwtDiagnosticsIT.java](../src/test/java/com/example/securitylearning/JwtDiagnosticsIT.java)
+- [JwtLoginIT.java](../src/test/java/com/example/securitylearning/JwtLoginIT.java)
+- [JwtNegativeValidationIT.java](../src/test/java/com/example/securitylearning/JwtNegativeValidationIT.java)
+- [RequestTraceIT.java](../src/test/java/com/example/securitylearning/RequestTraceIT.java)
+- [config/JwtDecoderConfigTest.java](../src/test/java/com/example/securitylearning/config/JwtDecoderConfigTest.java)
+- [config/JwtIssuerConfigTest.java](../src/test/java/com/example/securitylearning/config/JwtIssuerConfigTest.java)
+- [config/JwtStartupTest.java](../src/test/java/com/example/securitylearning/config/JwtStartupTest.java)
+- [security/IssuerSecretHandlingTest.java](../src/test/java/com/example/securitylearning/security/IssuerSecretHandlingTest.java)
+- [security/JwtClaimContractValidatorTest.java](../src/test/java/com/example/securitylearning/security/JwtClaimContractValidatorTest.java)
+- [security/RsaJwtTest.java](../src/test/java/com/example/securitylearning/security/RsaJwtTest.java)
+- [support/JwtKeyFixture.java](../src/test/java/com/example/securitylearning/support/JwtKeyFixture.java)
+- [support/JwtTestTokens.java](../src/test/java/com/example/securitylearning/support/JwtTestTokens.java)
+- [tracing/TraceEventSinkTest.java](../src/test/java/com/example/securitylearning/tracing/TraceEventSinkTest.java)
 
-All fourteen steps P1.S1–P5.S2 are complete. This inventory describes actual files, not proposed classes. [COMPLETE-GUIDE](learning/COMPLETE-GUIDE.md) contains the current production source/method audit; [final verification](learning/P5.S2-WALKTHROUGH.md) covers Java21 and the executed suites.
+ThrowingController, principal/ERROR probes, filter decorators and generated temporary key fixtures exist only under src/test. They are not product endpoints/infrastructure and are not packaged as application classes.
 
-## Java sources
+## Wiring and request path
 
-```text
-src/main/java/com/example/securitylearning/SecurityLearningApplication.java
-src/main/java/com/example/securitylearning/api/AuthController.java
-src/main/java/com/example/securitylearning/api/DemoController.java
-src/main/java/com/example/securitylearning/config/InMemoryIdentityConfig.java
-src/main/java/com/example/securitylearning/config/JwtDecoderConfig.java
-src/main/java/com/example/securitylearning/config/JwtIssuerConfig.java
-src/main/java/com/example/securitylearning/config/JwtSecurityConfig.java
-src/main/java/com/example/securitylearning/security/JwtClaimContractValidator.java
-src/main/java/com/example/securitylearning/security/JwtTokenService.java
-src/main/java/com/example/securitylearning/security/RsaKeyGenerator.java
-src/main/java/com/example/securitylearning/security/StrictJwtDecoder.java
-src/main/java/com/example/securitylearning/tracing/MvcTraceInterceptor.java
-src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java
-src/main/java/com/example/securitylearning/tracing/SecurityTraceFilter.java
-src/main/java/com/example/securitylearning/tracing/TraceConfiguration.java
-src/main/java/com/example/securitylearning/tracing/TraceEventSink.java
-src/test/java/com/example/securitylearning/ErrorPathIT.java
-src/test/java/com/example/securitylearning/JwtDiagnosticsIT.java
-src/test/java/com/example/securitylearning/JwtLoginIT.java
-src/test/java/com/example/securitylearning/JwtNegativeValidationIT.java
-src/test/java/com/example/securitylearning/JwtAuthorizationIT.java
-src/test/java/com/example/securitylearning/config/JwtStartupTest.java
-src/test/java/com/example/securitylearning/support/JwtTestTokens.java
-src/test/java/com/example/securitylearning/RequestTraceIT.java
-src/test/java/com/example/securitylearning/config/JwtDecoderConfigTest.java
-src/test/java/com/example/securitylearning/config/JwtIssuerConfigTest.java
-src/test/java/com/example/securitylearning/security/IssuerSecretHandlingTest.java
-src/test/java/com/example/securitylearning/security/JwtClaimContractValidatorTest.java
-src/test/java/com/example/securitylearning/security/RsaJwtTest.java
-src/test/java/com/example/securitylearning/support/JwtKeyFixture.java
-src/test/java/com/example/securitylearning/tracing/TraceEventSinkTest.java
-```
+The launcher excludes only SecurityFilterAutoConfiguration because JwtSecurityConfig explicitly owns servlet DelegatingFilterProxy registration. It does not disable all security auto-configuration. InMemoryIdentityConfig is scanned and owns credential authentication. JwtIssuerConfig owns signing, JwtDecoderConfig owns verification, and JwtSecurityConfig owns bearer conversion/policy. Both key paths are required unconditionally.
 
-Test-only fixtures, failing controller, MVC/context probes and filter-chain observers live under src/test and are not packaged in the application. The abstract comparison contract is inherited by three mode-specific IT bootstraps. Tests use separate Spring contexts and actual random-port Tomcat HTTP.
+TraceConfiguration registers outer REQUEST tracing at HIGHEST_PRECEDENCE+10, before the security proxy at -100 for REQUEST/ERROR. FilterChainProxy selects the configured chain. Built-in bearer authentication verifies and converts tokens before AuthorizationFilter applies policy. Allowed requests reach DispatcherServlet, mapping/adapter and controllers. Jackson writes JSON during response-body processing; interceptor completion and filter finally blocks unwind afterward. Boot ERROR rendering is allowed for internal ERROR dispatches, while a direct anonymous REQUEST to `/error` remains protected.
 
-## Learning package
+## Documentation ownership
 
-```text
-docs/learning/COMPLETE-GUIDE.md
-docs/learning/J1.S1-WALKTHROUGH.md
-docs/learning/J1.S2-WALKTHROUGH.md
-docs/learning/J1.S3-WALKTHROUGH.md
-docs/learning/J2.S1-WALKTHROUGH.md
-docs/learning/J2.S2-WALKTHROUGH.md
-docs/learning/J2.S3-WALKTHROUGH.md
-docs/learning/P1.S1-WALKTHROUGH.md
-docs/learning/P1.S2-WALKTHROUGH.md
-docs/learning/P1.S3-WALKTHROUGH.md
-docs/learning/P2.S1-WALKTHROUGH.md
-docs/learning/P2.S2-WALKTHROUGH.md
-docs/learning/P2.S3-WALKTHROUGH.md
-docs/learning/P3.S1-WALKTHROUGH.md
-docs/learning/P3.S2-WALKTHROUGH.md
-docs/learning/P3.S3-WALKTHROUGH.md
-docs/learning/P4.S1-WALKTHROUGH.md
-docs/learning/P4.S2-WALKTHROUGH.md
-docs/learning/P4.S3-WALKTHROUGH.md
-docs/learning/P5.S1-WALKTHROUGH.md
-docs/learning/P5.S2-WALKTHROUGH.md
-```
+- Root README: build/start/endpoint instructions. AGENTS: working agreement. ROADMAP: nine-step specification and progress.
+- Scope, learning requirements and claim contract: current constraints and acceptance.
+- TEST-MATRIX: current coverage. This file: actual inventory.
+- learning/README: existing walkthroughs and explicitly pending steps.
+- learning/JWT-FOUNDATIONS: retained MVC, credential, JWT, tracing and error explanations with current sources.
+- learning/COMPLETE-GUIDE: temporary navigation bridge until J3.S2 assembles the full source audit.
+- J walkthroughs: immutable execution evidence with superseded source/count notes where appropriate.
 
-Repository entry points are README.md, AGENTS.md and ROADMAP.md. docs/ contains IN-SCOPE-OUT-OF-SCOPE.md, ROADMAP-REVIEW.md, LEARNING-SUPPORT-REQUIREMENTS.md, FLOWS-COMPARED.md, TEST-MATRIX.md and JWT-CLAIM-CONTRACT.md; docs/roadmap/ retains the five completed phase specifications.
-
-## Architecture and lifecycle
-
-The launcher excludes Boot’s default security/user/proxy auto-configuration. Exact mode validation defaults to none; conditional Basic/JWT configurations explicitly enable security and register the servlet proxy. None creates no security proxy/chain or identity/encoder infrastructure despite security libraries being packaged. permitAll is not used as a replacement for absence.
-
-Basic and local JWT login explicitly import the shared plain identity configuration. JWT uses built-in BearerTokenAuthenticationFilter and JwtAuthenticationProvider with StrictJwtDecoder decorating NimbusJwtDecoder; Nimbus performs parsing/verification, the strict decorator preserves original JSON claim-type requirements. A separate local credential manager and NimbusJwtEncoder issue RS256 tokens. No custom bearer authentication filter, OAuth2 grant flow, external IdP or database exists.
-
-TraceConfiguration registers the outer REQUEST filter before the security proxy and installs the MVC interceptor. Active lists are request-local; the sink retains bounded immutable completed snapshots. ERROR-dispatch observations are separate test probes. Local private keys belong in ignored /.local-keys, never src/main/resources or version control. No application resource configuration/private-key resource is required for the default none mode.
+The original course documents are removed from this branch; recover them through master/Git history. No private keys belong in src/main/resources. Local development files belong under ignored /.local-keys; tests create and clean their own owner-only temporary files.

@@ -4,15 +4,15 @@
 
 | Step | Description | Status |
 |---|---|---|
-| J1.S1 | Migrate the build and source to Java 17 | Complete — verified 2026-11-02 |
-| J1.S2 | Make JWT unconditional and retire other modes | Complete — verified 2026-11-02 |
-| J1.S3 | Simplify the remaining JWT components | Complete — verified 2026-11-02 |
-| J2.S1 | Consolidate login, authentication and authorization tests | Complete — verified 2026-11-02 |
-| J2.S2 | Consolidate strict validation and key-failure evidence | Complete — verified 2026-11-02 |
-| J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | Complete — verified 2026-11-02 |
-| J3.S1 | Replace obsolete course documentation | Planned |
-| J3.S2 | Assemble the complete JWT learning guide | Planned |
-| J3.S3 | Final Java 17 verification and repository audit | Planned |
+| J1.S1 | Migrate the build and source to Java 17 | ✅ |
+| J1.S2 | Make JWT unconditional and retire other modes | ✅ |
+| J1.S3 | Simplify the remaining JWT components | ✅ |
+| J2.S1 | Consolidate login, authentication and authorization tests | ✅ |
+| J2.S2 | Consolidate strict validation and key-failure evidence | ✅ |
+| J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | ✅ |
+| J3.S1 | Replace obsolete course documentation | ✅ |
+| J3.S2 | Assemble the complete JWT learning guide | ⏳ |
+| J3.S3 | Final Java 17 verification and repository audit | ⏳ |
 
 Update this table and the corresponding checkbox only after the step is verified. Branch creation remains a separate, user-owned manual prerequisite.
 
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** Phases J1–J2 complete; J3.S1–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
+**Status:** Phases J1–J2 and J3.S1 complete; J3.S2–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -110,7 +110,9 @@ Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context c
 
 ### J3.S1 — Replace obsolete course documentation
 
-- [ ] Remove the former P1–P5 phase specifications, historical walkthroughs and cross-mode comparison documents from this branch after extracting explanations needed by the JWT-only learning path.
+Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (24.242 s). Replaced current contracts/inventory/index, extracted JWT foundations and removed21 obsolete course documents. Production/tests unchanged. [Walkthrough](docs/learning/J3.S1-WALKTHROUGH.md).
+
+- [x] Remove the former P1–P5 phase specifications, historical walkthroughs and cross-mode comparison documents from this branch after extracting explanations needed by the JWT-only learning path.
 - Rewrite README, AGENTS, scope, project structure and test matrix for unconditional JWT and Java 17. Preserve this roadmap, its progress and evidence.
 - Refresh learning-support requirements and the JWT claim contract; remove stale mode selectors, file links, commands and historical test-count claims from active documentation.
 - Keep the original course recoverable on `master` and through Git history rather than maintaining a second historical package on `jwt-only`.
@@ -141,4 +143,4 @@ Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context c
 
 Implement **one numbered step per request**, in order. Before editing code, read the working agreement, this roadmap and relevant current sources/documentation; state intended classes/tests. Each step delivers its learning explanation immediately rather than postponing it to J3. Refresh affected documentation or mark superseded references during the transition. Complete verification before checking off a step; do not claim unexecuted results.
 
-This user-requested migration supersedes older Java 21 and three-mode-preservation requirements on branch `jwt-only`. Existing AGENTS/phase documents remain historical where they conflict with this roadmap until J3.S1 replaces them; unrelated security, testing and teaching requirements still apply. This file is the active migration specification. Do not continue the completed P1–P5 sequence or create a branch automatically: branch creation remains the user's manual prerequisite.
+This user-requested migration supersedes older Java 21 and three-mode-preservation requirements on branch `jwt-only`. J3.S1 replaced the working agreement and removed obsolete phase documents; current security, testing and teaching requirements still apply. This file is the active migration specification. Do not continue the completed P1–P5 sequence or create a branch automatically: branch creation remains the user's manual prerequisite.
