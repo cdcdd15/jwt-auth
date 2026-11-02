@@ -1,5 +1,7 @@
 # Implemented project structure
 
+> Current migration checkpoint: [J2.S3](learning/J2.S3-WALKTHROUGH.md) completes Phase J2 with exact branch traces, bounded overlapping worker identities, cleanup and security-before-MVC error evidence. Java17 clean verification passes110 HTTP +31 unit/context cases. Diagnostic13/error5/request-trace3 cases supersede older method counts below. Production unchanged; broad documentation replacement is J3.
+
 > Current migration checkpoint: [J2.S2](learning/J2.S2-WALKTHROUGH.md) verifies54 negative/control HTTP cases and10 key-context cases, including public invalid-bearer rejection and nine key failures. Java17 clean verification passes103 HTTP +31 unit/context cases. Production unchanged; earlier method ranges/counts below remain historical pending J3.
 
 > Current migration checkpoint: [J2.S1](learning/J2.S1-WALKTHROUGH.md) consolidates login12 and authorization23 HTTP cases. JwtValidationIT is now JwtAuthorizationIT; redundant JwtMvcIT is retired. Negative validation remains in JwtNegativeValidationIT. Java17 verification passes94 HTTP +23 unit cases; older suite names/counts below are historical pending J3.
@@ -59,6 +61,7 @@ docs/learning/J1.S2-WALKTHROUGH.md
 docs/learning/J1.S3-WALKTHROUGH.md
 docs/learning/J2.S1-WALKTHROUGH.md
 docs/learning/J2.S2-WALKTHROUGH.md
+docs/learning/J2.S3-WALKTHROUGH.md
 docs/learning/P1.S1-WALKTHROUGH.md
 docs/learning/P1.S2-WALKTHROUGH.md
 docs/learning/P1.S3-WALKTHROUGH.md

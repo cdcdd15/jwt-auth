@@ -1,5 +1,7 @@
 # HTTP Integration Test Matrix — P1–P5 verified on Java21
 
+> Current migration checkpoint: [J2.S3](learning/J2.S3-WALKTHROUGH.md) completes Phase J2 with exact branch traces, bounded overlapping worker identities, cleanup and security-before-MVC error evidence. Java17 clean verification passes110 HTTP +31 unit/context cases. Diagnostic13/error5/request-trace3 cases supersede older method counts below. Production unchanged; broad documentation replacement is J3.
+
 > Current migration checkpoint: [J2.S2](learning/J2.S2-WALKTHROUGH.md) verifies54 negative/control HTTP cases and10 key-context cases, including public invalid-bearer rejection and nine key failures. Java17 clean verification passes103 HTTP +31 unit/context cases. Production unchanged; earlier method ranges/counts below remain historical pending J3.
 
 > Current migration checkpoint: [J2.S1](learning/J2.S1-WALKTHROUGH.md) consolidates login12 and authorization23 HTTP cases. JwtValidationIT is now JwtAuthorizationIT; redundant JwtMvcIT is retired. Negative validation remains in JwtNegativeValidationIT. Java17 verification passes94 HTTP +23 unit cases; older suite names/counts below are historical pending J3.
@@ -224,3 +226,9 @@ The unit inventory remains23. Exact executed method names, current source commen
 Java17 `mvn clean verify`:103 HTTP +31 unit/context cases, zero failures/errors/skips, 24.470 s, 2026-11-02. JwtNegativeValidationIT now owns54 (37 protected invalid,3 public invalid,6 deterministic skew,8 permitted forms). JwtStartupTest now owns10 (9 bad configurations and1 matching control). Existing focused parser, RSA, normalized-schema and private-fixture tests remain. Other HTTP suites remain JwtAuthorizationIT23, JwtLoginIT12, JwtDiagnosticsIT8, RequestTraceIT4 and ErrorPathIT2.
 
 New raw checks cover boolean optional dates and mixed roles; accepted controls cover multiple audiences, missing both dates and descriptive future iat. The key matrix distinguishes absent properties/files, invalid PEM, weak public/private keys and mismatched pairs, with targeted cause assertions. [Exact method inventory, fixture boundaries and actual traces](learning/J2.S2-WALKTHROUGH.md). No production feature or J2.S3 instrumentation change.
+
+## J2.S3 — exact diagnostics, bounded overlap and error boundaries
+
+Java17 `mvn clean verify`:110 HTTP +31 unit/context cases, zero failures/errors/skips, 26.261 s, 2026-11-02. JwtDiagnosticsIT13 (five branch traces, three sequential failure/success cleanup sequences, one barrier-backed concurrent USER/ADMIN identity case, four captured-output branches); ErrorPathIT5 (authenticated404/500 plus three anonymous error destinations rejected before MVC); RequestTraceIT3 (generated correlation/exact endpoint order/unknown-ID absence).
+
+The former weaker RequestTraceIT concurrency case is retired into the stronger overlapping diagnostic experiment. Sink capacity/immutability unit checks remain unchanged. Other HTTP totals are JwtAuthorizationIT23, JwtLoginIT12 and JwtNegativeValidationIT54. Production code and dependencies are unchanged. [Exact inventory, source map, bounded synchronization and actual traces](learning/J2.S3-WALKTHROUGH.md). Phase J2 is complete; J3 documentation replacement is next.

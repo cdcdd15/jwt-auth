@@ -9,7 +9,7 @@
 | J1.S3 | Simplify the remaining JWT components | Complete — verified 2026-11-02 |
 | J2.S1 | Consolidate login, authentication and authorization tests | Complete — verified 2026-11-02 |
 | J2.S2 | Consolidate strict validation and key-failure evidence | Complete — verified 2026-11-02 |
-| J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | Planned |
+| J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | Complete — verified 2026-11-02 |
 | J3.S1 | Replace obsolete course documentation | Planned |
 | J3.S2 | Assemble the complete JWT learning guide | Planned |
 | J3.S3 | Final Java 17 verification and repository audit | Planned |
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** Phase J1 and J2.S1–J2.S2 complete; J2.S3–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
+**Status:** Phases J1–J2 complete; J3.S1–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -97,7 +97,9 @@ Verified 2026-11-02: Java17 `mvn clean verify` passed103 HTTP +31 unit/context c
 
 ### J2.S3 — Consolidate diagnostics, lifecycle and isolation evidence
 
-- [ ] Retain configured-chain and observed-filter-entry checks, distinguishing early bearer rejection, anonymous challenge, authenticated role denial and successful MVC handoff.
+Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (26.261 s). Exact branch traces, three sequential cleanup branches, barrier-backed overlapping worker identities, four captured-output branches and anonymous security-before-error cases verified. Weaker duplicate request concurrency test consolidated into the diagnostic overlap case; sink bounds/immutability retained. No production change. [Walkthrough](docs/learning/J2.S3-WALKTHROUGH.md).
+
+- [x] Retain configured-chain and observed-filter-entry checks, distinguishing early bearer rejection, anonymous challenge, authenticated role denial and successful MVC handoff.
 - Verify correlated traces, server-thread post-proxy cleanup, authenticated-then-anonymous requests and concurrent identity separation.
 - Adapt useful ordinary 404/500 and servlet/MVC lifecycle tests to JWT security with explicit authentication prerequisites; keep throwing handlers and observation probes test-only.
 - Verify captured output and sink records omit passwords, full tokens and private material; preserve bounded immutable snapshots and REQUEST/ERROR scope distinctions.

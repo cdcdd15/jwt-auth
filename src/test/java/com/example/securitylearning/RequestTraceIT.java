@@ -11,11 +11,9 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import com.example.securitylearning.tracing.TraceEventSink;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,18 +56,6 @@ class RequestTraceIT {
         assertTrace(request(endpoint), endpoint);
     }
 
-    @Test
-    void concurrentRequestsKeepIndependentTraces() {
-        var publicRequest = CompletableFuture.supplyAsync(() -> request("public"));
-        var adminRequest = CompletableFuture.supplyAsync(() -> request("admin"));
-        String publicId = publicRequest.join();
-        String adminId = adminRequest.join();
-        assertThat(publicId).isNotEqualTo(adminId);
-        assertTrace(publicId, "public");
-        assertTrace(adminId, "admin");
-        assertThat(sink.events("unknown-id")).isEmpty();
-    }
-
     private String request(String endpoint) {
         return given()
             .baseUri("http://localhost")
@@ -91,6 +77,7 @@ class RequestTraceIT {
             "controller." + endpoint, "interceptor.postHandle",
             "interceptor.afterCompletion", "security.authorization.exit", "filter.exit");
         await().untilAsserted(() -> assertThat(sink.events(id)).isEqualTo(expected));
+        assertThat(sink.events("unknown-id")).isEmpty();
         System.out.println("TRACE " + id + " " + sink.events(id));
     }
 }

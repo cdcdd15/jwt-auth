@@ -2,10 +2,10 @@
 
 A Java 17 / Spring Boot 3.x learning application using unconditional Spring Security Resource Server JWT authentication with Nimbus and RS256, plus a local JSON credential-to-token issuer.
 
-**Migration status:** Phase J1 and J2.S1–J2.S2 complete on `jwt-only`. There is no security-mode selector or none/basic implementation. JWT security and local key loading are unconditional. See [the migration roadmap](ROADMAP.md) and [J1.S3](docs/learning/J1.S3-WALKTHROUGH.md). Credential authentication now has its own scanned configuration; signing configuration is separate. The old P1–P5 learning package remains historical until J3 replaces it.
+**Migration status:** Phases J1–J2 complete on `jwt-only`. There is no security-mode selector or none/basic implementation. JWT security and local key loading are unconditional. See [the migration roadmap](ROADMAP.md) and [J1.S3](docs/learning/J1.S3-WALKTHROUGH.md). Credential authentication now has its own scanned configuration; signing configuration is separate. The old P1–P5 learning package remains historical until J3 replaces it.
 
 ## Start here
-Implement one numbered migration step per request. J2.S3 is next and requires a separate request. Active requirements are Java17-only execution, built-in bearer authentication, strict validation and comprehensive per-step learning material. Historical three-mode preservation instructions are superseded by the migration roadmap.
+Implement one numbered migration step per request. J3.S1 is next and requires a separate request. Active requirements are Java17-only execution, built-in bearer authentication, strict validation and comprehensive per-step learning material. Historical three-mode preservation instructions are superseded by the migration roadmap.
 
 ## Constraints
 No OAuth2 authorization/grant flows, external identity provider, database, Docker, frontend, or custom JWT authentication filter. RS256 is mandatory. Use actual embedded Tomcat HTTP integration tests (`@SpringBootTest(RANDOM_PORT)` + RestAssured). JWT is the sole security configuration; HTTP Basic cannot authenticate protected routes.
@@ -24,7 +24,7 @@ mvn clean verify
 
 The actual J1.S1 run used checksum-verified Eclipse Temurin17.0.21+9 temporarily extracted at `/private/tmp/jwt-auth-jdk17/jdk-17.0.21+9/Contents/Home`. This path is temporary and may disappear; it is not a permanent JDK installation. No global Java or IDE setting was changed. Select an installed JDK17 in your IDE for project SDK and Maven runner as well.
 
-Verified 2026-11-02: Maven3.9.12, Java17.0.21, **103 HTTP + 31 unit/context cases**, zero failures/errors/skips, 24.470 s. Runtime dependencies remain Boot3.5.7, Framework6.2.12, Security6.5.6, Tomcat10.1.48 and Nimbus9.37.4. [J1.S1](docs/learning/J1.S1-WALKTHROUGH.md) records toolchain setup/runtime gating; [J2.S2](docs/learning/J2.S2-WALKTHROUGH.md) records current raw-token/key-startup evidence and verification; [J2.S1](docs/learning/J2.S1-WALKTHROUGH.md) explains login/authorization ownership; [J1.S3](docs/learning/J1.S3-WALKTHROUGH.md) explains production configuration ownership.
+Verified 2026-11-02: Maven3.9.12, Java17.0.21, **110 HTTP + 31 unit/context cases**, zero failures/errors/skips, 26.261 s. Runtime dependencies remain Boot3.5.7, Framework6.2.12, Security6.5.6, Tomcat10.1.48 and Nimbus9.37.4. [J1.S1](docs/learning/J1.S1-WALKTHROUGH.md) records toolchain setup/runtime gating; [J2.S3](docs/learning/J2.S3-WALKTHROUGH.md) records current diagnostic/lifecycle/isolation evidence and verification; [J2.S2](docs/learning/J2.S2-WALKTHROUGH.md) covers raw-token/key failures; [J2.S1](docs/learning/J2.S1-WALKTHROUGH.md) explains login/authorization ownership; [J1.S3](docs/learning/J1.S3-WALKTHROUGH.md) explains production configuration ownership.
 
 Run locally with `mvn spring-boot:run` or `"$JAVA_HOME/bin/java" -jar target/jwt-auth-0.0.1-SNAPSHOT.jar` after packaging, supplying both key paths as below. Default port is8080. No mode property is required. GET `/api/public` allows anonymous access **through the security chain**; `/api/user` requires a valid bearer; `/api/admin` additionally requires ADMIN. Successful bodies remain `{"message":"public"}`, `{"message":"user"}`, and `{"message":"admin"}`. Responses carry a server-generated `X-Correlation-ID`; bounded completed traces support tests/learning.
 

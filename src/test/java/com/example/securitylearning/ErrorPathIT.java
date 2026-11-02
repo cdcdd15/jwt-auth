@@ -20,6 +20,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestComponent;
@@ -39,6 +41,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(ErrorPathIT.ErrorTestConfiguration.class)
@@ -111,6 +114,20 @@ class ErrorPathIT {
             "REQUEST:DemoController#publicEndpoint:afterCompletion:none"));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"/api/not-mapped", "/test/throw", "/error"})
+    void anonymousRequestsFailSecurityBeforeApplicationErrors(String path) {
+        Response response = given().baseUri("http://localhost").port(port).accept(ContentType.JSON).when().get(path);
+        response.then().statusCode(401).header("WWW-Authenticate", equalTo("Bearer"))
+            .header("Set-Cookie", nullValue());
+        String id = response.header(TraceEventSink.HEADER);
+        assertThat(id).isNotBlank();
+        await().untilAsserted(() -> assertThat(sink.events(id)).containsExactly("filter.entry", "security.anonymous",
+            "security.challenge", "security.authorization.exit", "filter.exit"));
+        assertThat(probe.events).doesNotContainKey(id);
+        System.out.println("SECURITY-BEFORE-ERROR " + id + " " + sink.events(id));
+    }
+
     private Response get(String path) {
         return given().baseUri("http://localhost").port(port).accept(ContentType.JSON)
             .header("Authorization", "Bearer " + JwtTestTokens.admin(encoder))
@@ -119,6 +136,7 @@ class ErrorPathIT {
 
     private void assertError(Response response, int status, String error, String path) {
         response.then().statusCode(status).contentType(ContentType.JSON)
+            .header("WWW-Authenticate", nullValue()).header("Set-Cookie", nullValue())
             .body("status", equalTo(status)).body("error", equalTo(error))
             .body("path", equalTo(path));
         assertThat(response.jsonPath().getMap("")).doesNotContainKeys("exception", "trace", "message");
