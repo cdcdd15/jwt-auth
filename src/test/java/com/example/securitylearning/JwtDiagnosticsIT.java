@@ -128,7 +128,7 @@ class JwtDiagnosticsIT {
         if (status == 401) assertThat(response.header("WWW-Authenticate")).startsWith("Bearer");
         if (status == 403) assertThat(response.header("WWW-Authenticate")).contains("insufficient_scope");
         String id = completed(response);
-        List<String> configured = proxy.getFilterChains().getFirst().getFilters().stream()
+        List<String> configured = proxy.getFilterChains().get(0).getFilters().stream()
             .map(filter -> filter.getClass().getSimpleName()).toList();
         assertThat(configured).containsSubsequence("SecurityContextHolderFilter", "BearerTokenAuthenticationFilter",
             "AnonymousAuthenticationFilter", "SecurityTraceFilter", "ExceptionTranslationFilter", "AuthorizationFilter");

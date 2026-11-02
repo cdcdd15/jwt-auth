@@ -88,7 +88,7 @@ class JwtValidationIT {
         assertTrace(id, List.of("filter.entry", "security.anonymous", "interceptor.preHandle",
             "controller.public", "interceptor.postHandle", "interceptor.afterCompletion",
             "security.authorization.exit", "filter.exit"));
-        List<String> filters = proxy.getFilterChains().getFirst().getFilters().stream()
+        List<String> filters = proxy.getFilterChains().get(0).getFilters().stream()
             .map(filter -> filter.getClass().getSimpleName()).toList();
         assertThat(filters).contains("BearerTokenAuthenticationFilter", "AuthorizationFilter")
             .doesNotContain("BasicAuthenticationFilter");

@@ -1,5 +1,7 @@
 # Complete Spring MVC and Spring Security learning guide
 
+> JWT-only migration checkpoint: [J1.S1](J1.S1-WALKTHROUGH.md) now requires Java17 and passed 153 HTTP + 29 unit cases on Temurin17.0.21. Three-mode behavior remains until J1.S2; earlier Java21 instructions/results below are historical. [The migration roadmap](../../ROADMAP.md) is authoritative.
+
 ## Read and run the course
 
 The project compares one application in three mutually exclusive modes: none, basic, and jwt. Its purpose is to reconstruct request processing from code and observed HTTP behavior. It is a local learning application, not a production identity system. [Scope](../IN-SCOPE-OUT-OF-SCOPE.md) remains fixed through P5.S2: no database, frontend, Docker, OAuth2 grant or authorization server, external IdP, refresh/revocation system, or custom bearer authentication filter.

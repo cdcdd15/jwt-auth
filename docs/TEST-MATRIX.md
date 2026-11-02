@@ -1,5 +1,7 @@
 # HTTP Integration Test Matrix — P1–P5 verified on Java21
 
+> JWT-only migration checkpoint: [J1.S1](learning/J1.S1-WALKTHROUGH.md) now requires Java17 and passed 153 HTTP + 29 unit cases on Temurin17.0.21. Three-mode behavior remains until J1.S2; earlier Java21 instructions/results below are historical. [The migration roadmap](../ROADMAP.md) is authoritative.
+
 Current verified checkpoint: **P5.S2**, final `mvn clean verify` on **Java21.0.8** passed **153 real HTTP integration + 29 unit cases**, zero failures/errors/skips (2026-11-01, 29.403 seconds). All fourteen steps are complete. [Final audit](learning/P5.S2-WALKTHROUGH.md) lists the exact report-derived method inventory and runtime commands; [complete guide](learning/COMPLETE-GUIDE.md) maps current application code and framework flow. Older counts/pending statements below remain historical checkpoints.
 
 ## Shared completed-mode matrix — executed in P5.S1

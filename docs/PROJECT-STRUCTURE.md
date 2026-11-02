@@ -1,5 +1,7 @@
 # Implemented project structure
 
+> JWT-only migration checkpoint: [J1.S1](learning/J1.S1-WALKTHROUGH.md) now requires Java17 and passed 153 HTTP + 29 unit cases on Temurin17.0.21. Three-mode behavior remains until J1.S2; earlier Java21 instructions/results below are historical. [The migration roadmap](../ROADMAP.md) is authoritative.
+
 All fourteen steps P1.S1–P5.S2 are complete. This inventory describes actual files, not proposed classes. [COMPLETE-GUIDE](learning/COMPLETE-GUIDE.md) contains the current production source/method audit; [final verification](learning/P5.S2-WALKTHROUGH.md) covers Java21 and the executed suites.
 
 ## Java sources
@@ -52,6 +54,7 @@ Test-only fixtures, failing controller, MVC/context probes and filter-chain obse
 
 ```text
 docs/learning/COMPLETE-GUIDE.md
+docs/learning/J1.S1-WALKTHROUGH.md
 docs/learning/P1.S1-WALKTHROUGH.md
 docs/learning/P1.S2-WALKTHROUGH.md
 docs/learning/P1.S3-WALKTHROUGH.md

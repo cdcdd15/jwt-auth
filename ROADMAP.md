@@ -4,7 +4,7 @@
 
 | Step | Description | Status |
 |---|---|---|
-| J1.S1 | Migrate the build and source to Java 17 | Planned |
+| J1.S1 | Migrate the build and source to Java 17 | Complete — verified 2026-11-02 |
 | J1.S2 | Make JWT unconditional and retire other modes | Planned |
 | J1.S3 | Simplify the remaining JWT components | Planned |
 | J2.S1 | Consolidate login, authentication and authorization tests | Planned |
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** planning only. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. All remain unchecked. The existing application still targets Java 21 and supports three modes until the steps below change it.
+**Status:** J1.S1 complete; J1.S2–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17; none/basic/jwt behavior remains until J1.S2. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -40,7 +40,9 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 ### J1.S1 — Migrate the build and source to Java 17
 
-- [ ] Configure compiler release 17 and a Maven Java-version gate accepting only `[17,18)`.
+Verified 2026-11-02: `mvn clean verify` on Eclipse Temurin17.0.21 passed 153 HTTP + 29 unit cases, zero failures/errors/skips (29.550 seconds). JDK21 and JDK24 `mvn validate` attempts failed with the intended version message. Three test getFirst calls became get(0); application dependencies and security behavior remain unchanged. [Walkthrough](docs/learning/J1.S1-WALKTHROUGH.md).
+
+- [x] Configure compiler release 17 and a Maven Java-version gate accepting only `[17,18)`.
 - Replace post-Java-17 source/test APIs and language usage with Java 17 equivalents without changing behavior.
 - Review resolved dependencies and test instrumentation for actual JDK 17 compatibility; change only what verification requires.
 - Update active build instructions and record the selected JDK 17 vendor/version and exact command.
