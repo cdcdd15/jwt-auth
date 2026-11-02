@@ -1,6 +1,6 @@
 # Spring MVC and JWT foundations
 
-This document preserves prerequisites from the removed course: Boot/MVC response handling, filters versus interceptors, RSA/JWT anatomy, credential issuance, bearer verification, errors and bounded tracing. It describes the actual Java 17 JWT-only source, without requiring retired modes. [J1.S3](J1.S3-WALKTHROUGH.md) explains current configuration ownership; [J2.S1](J2.S1-WALKTHROUGH.md), [J2.S2](J2.S2-WALKTHROUGH.md) and [J2.S3](J2.S3-WALKTHROUGH.md) provide executed test/evidence detail. J3.S2 still owns the exhaustive source-guide audit.
+This document preserves prerequisites from the removed course: Boot/MVC response handling, filters versus interceptors, RSA/JWT anatomy, credential issuance, bearer verification, errors and bounded tracing. It describes the actual Java 17 JWT-only source, without requiring retired modes. [J1.S3](J1.S3-WALKTHROUGH.md) explains current configuration ownership; [J2.S1](J2.S1-WALKTHROUGH.md), [J2.S2](J2.S2-WALKTHROUGH.md) and [J2.S3](J2.S3-WALKTHROUGH.md) provide executed test/evidence detail. The [complete guide](COMPLETE-GUIDE.md) now supplies the exhaustive current source/block audit and test-to-code map.
 
 ## Boot, MVC and response handling
 

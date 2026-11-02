@@ -11,7 +11,7 @@
 | J2.S2 | Consolidate strict validation and key-failure evidence | ✅ |
 | J2.S3 | Consolidate diagnostics, lifecycle and isolation evidence | ✅ |
 | J3.S1 | Replace obsolete course documentation | ✅ |
-| J3.S2 | Assemble the complete JWT learning guide | ⏳ |
+| J3.S2 | Assemble the complete JWT learning guide | ✅ |
 | J3.S3 | Final Java 17 verification and repository audit | ⏳ |
 
 Update this table and the corresponding checkbox only after the step is verified. Branch creation remains a separate, user-owned manual prerequisite.
@@ -22,7 +22,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 **Manual prerequisite — user-owned:** create and switch to branch `jwt-only` from the completed `master`. Branch creation is not an implementation step. Preserve the original course and Git history on `master`; do not rewrite history.
 
-**Status:** Phases J1–J2 and J3.S1 complete; J3.S2–J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
+**Status:** Phases J1–J2 and J3.S1–J3.S2 complete; J3.S3 planned. The migration has **three phases, each containing three numbered steps**: nine implementation steps in total. The application now builds and runs on Java17 with unconditional JWT security; none/basic modes and mode selection are removed. Branch `jwt-only` is selected.
 
 ## Fixed architecture and learning requirements
 
@@ -121,7 +121,9 @@ Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, 
 
 ### J3.S2 — Assemble the complete JWT learning guide
 
-- [ ] Create a focused complete guide linking all nine migration walkthroughs and the retained application/test contracts.
+Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (25.502 s). Complete guide audits 16 production files/77 blocks/561 nonblank lines, maps 21 HTTP methods and includes credential/bearer/error sequences and actual sanitized traces. Production/tests unchanged. [Walkthrough](docs/learning/J3.S2-WALKTHROUGH.md).
+
+- [x] Create a focused complete guide indexing all nine migration steps, linking implemented walkthroughs and the retained application/test contracts. Add J3.S3’s walkthrough when that step is implemented.
 - Audit every remaining production class, method, annotation and meaningful line/block against current documentation, including private helpers and configuration lambdas.
 - Explain initial credential authentication versus later bearer verification, RSA signing/public verification, raw versus normalized validation, SecurityContext establishment and endpoint authorization.
 - Include request sequences from Tomcat through servlet filters, security proxy, DispatcherServlet, mapping/adapter, controller and response handling, with success/failure Mermaid diagrams and actual sanitized traces.

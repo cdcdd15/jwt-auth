@@ -1,6 +1,6 @@
 # Current JWT test matrix
 
-J3.S1 verification on 2026-11-02: `mvn verify` using Eclipse Temurin 17.0.21+9 and Maven 3.9.12 passed **110 HTTP integration + 31 unit/context cases**, zero failures/errors/skips, **24.242 seconds**. This inventory is derived from that run's Surefire/Failsafe XML. Parameterized invocations count as cases, not distinct method declarations. Production and tests are unchanged by J3.S1.
+J3.S2 verification on 2026-11-02: `mvn verify` using Eclipse Temurin 17.0.21+9 and Maven 3.9.12 passed **110 HTTP integration + 31 unit/context cases**, zero failures/errors/skips, **25.502 seconds**. This inventory is derived from that run's Surefire/Failsafe XML. Parameterized invocations count as cases, not distinct method declarations. Production and tests are unchanged by J3.S2.
 
 All HTTP suites use `@SpringBootTest(RANDOM_PORT)`, embedded Tomcat and RestAssured. Test fixtures supply temporary matching keys and controlled clocks where needed; contexts are isolated where configuration differs. Surefire runs *Test. Failsafe integration-test and verify run *IT. `mvn package` alone does not exercise that gate.
 
@@ -114,4 +114,4 @@ JwtStartupTest checks nine failing key configurations and one matching-pair cont
 
 Configured filters, real invocation decorators, REQUEST sink events and separate ERROR/context probes are different evidence layers. An observed filter entry does not prove successful authentication. Finally markers run on rejected paths. Cookie absence plus fresh-request/context assertions demonstrates the exercised stateless behavior, not impossibility of all servlet sessions or universal CSRF safety. Output checks cover tested branches and known secret values, not every possible future logging format.
 
-Current behavior is verified. J3.S2 still owns the complete source-guide audit; J3.S3 owns the final repository/history/package audit. Historical execution totals remain only in the roadmap and checkpoint walkthroughs, not current contract tables. See [claim contract](JWT-CLAIM-CONTRACT.md), [foundations](learning/JWT-FOUNDATIONS.md) and [scope](IN-SCOPE-OUT-OF-SCOPE.md).
+Current behavior is verified. The [complete guide](learning/COMPLETE-GUIDE.md) contains the J3.S2 source-guide audit and all 21 HTTP method mappings; J3.S3 owns the final repository/history/package audit. Historical execution totals remain only in the roadmap and checkpoint walkthroughs, not current contract tables. See [claim contract](JWT-CLAIM-CONTRACT.md), [foundations](learning/JWT-FOUNDATIONS.md) and [scope](IN-SCOPE-OUT-OF-SCOPE.md).

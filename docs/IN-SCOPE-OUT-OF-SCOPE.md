@@ -16,7 +16,7 @@ The objective is to learn Spring HTTP and security internals from a small runnab
 | Lifecycle evidence | Correlated bounded immutable REQUEST snapshots, real filter entry observations, separate test-only ERROR probes, context cleanup and overlapping identity isolation |
 | Verification | Real HTTP RANDOM_PORT RestAssured/Failsafe; focused unit/context tests; deterministic clock and generated temporary keys |
 | Learning | Per-step explanations, Mermaid sequences, actual sanitized traces, claim contract, test map and source references |
-| Final planned delivery | J3.S2 completes the production source/guide audit; J3.S3 runs clean JDK 17 verification, repository/history/log/package checks and records limitations |
+| Final planned delivery | J3.S2 has delivered the [production source/guide audit](learning/COMPLETE-GUIDE.md); J3.S3 will run clean JDK 17 verification, repository/history/log/package checks and records limitations |
 
 ## Out of scope
 

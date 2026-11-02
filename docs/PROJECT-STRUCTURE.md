@@ -56,7 +56,9 @@ TraceConfiguration registers outer REQUEST tracing at HIGHEST_PRECEDENCE+10, bef
 - TEST-MATRIX: current coverage. This file: actual inventory.
 - learning/README: existing walkthroughs and explicitly pending steps.
 - learning/JWT-FOUNDATIONS: retained MVC, credential, JWT, tracing and error explanations with current sources.
-- learning/COMPLETE-GUIDE: temporary navigation bridge until J3.S2 assembles the full source audit.
+- learning/COMPLETE-GUIDE: complete current production source/block audit, request sequences, test mapping, interview questions and actual evidence.
 - J walkthroughs: immutable execution evidence with superseded source/count notes where appropriate.
 
 The original course documents are removed from this branch; recover them through master/Git history. No private keys belong in src/main/resources. Local development files belong under ignored /.local-keys; tests create and clean their own owner-only temporary files.
+
+J3.S2 source/flow audit: [complete guide](learning/COMPLETE-GUIDE.md) and [walkthrough](learning/J3.S2-WALKTHROUGH.md). All 16 production files and21 HTTP test methods are covered; final repository audit remains J3.S3.
