@@ -64,61 +64,179 @@ RS256 does not require Bouncy Castle.
 
 ## 3. List #2 — Complete application dependency tree
 
+The previous tree grouped dependencies by functionality, but did not clearly distinguish **what we declare in `pom.xml` from what Maven resolves transitively**.
+
+**Legend:**
+- `[D]` — Direct dependency, explicitly declared in `pom.xml`.
+- `[T]` — Transitive dependency, automatically resolved by Maven.
+- `[P]` — Provided dependency, declared in POM but supplied at runtime by the container.
+- `[E]` — External runtime component.
+- `[M]` — Version management, not a JAR.
+
+### 3.1. Dependency declarations and their transitive JARs
+
 ```text
-jwt-resource-server
-├── SPRING FRAMEWORK [6.2.19]
-│   ├── [D] spring-webmvc
-│   ├── [T] spring-web
-│   ├── [T] spring-context
-│   ├── [T] spring-beans
-│   ├── [T] spring-core
-│   ├── [T] spring-jcl
-│   ├── [T] spring-aop
-│   ├── [T] spring-expression
-├── SPRING SECURITY [6.5.11]
+jwt-resource-server (Java 17 / WAR)
+│
+├── 1. VERSION MANAGEMENT
+│   ├── [M] spring-framework-bom
+│   └── [M] spring-security-bom
+│
+├── 2. SPRING WEB / MVC
+│   └── [D] spring-webmvc
+│       ├── [T] spring-web
+│       │   └── [T] micrometer-observation
+│       │       └── [T] micrometer-commons
+│       ├── [T] spring-context
+│       ├── [T] spring-aop
+│       ├── [T] spring-beans
+│       ├── [T] spring-expression
+│       └── [T] spring-core
+│           └── [T] spring-jcl
+│
+├── 3. SPRING SECURITY
 │   ├── [D] spring-security-config
-│   ├── [D] spring-security-web
-│   ├── [T] spring-security-core
-│   ├── [T] spring-security-crypto
+│   │   └── [T] spring-security-core
+│   │       └── [T] spring-security-crypto
+│   │
+│   └── [D] spring-security-web
+│       └── [T] spring-security-core
+│
+├── 4. JWT / JOSE / JWKS
 │   ├── [D] spring-security-oauth2-resource-server
-│   ├── [D] spring-security-oauth2-jose
-│   ├── [T] spring-security-oauth2-core
-├── JWT / CRYPTOGRAPHY
-│   ├── [T] nimbus-jose-jwt
-│   ├── [T] jcip-annotations
-├── SERVLET API [provided]
-│   ├── [D] jakarta.servlet-api
-├── SERVLET CONTAINER [external runtime]
-│   ├── [P] Apache Tomcat 10.1.x
-├── JSON SERIALIZATION
-│   ├── [D] jackson-databind
-│   ├── [T] jackson-core
-│   ├── [T] jackson-annotations
-├── OBSERVABILITY
-│   ├── [T] micrometer-observation
-│   ├── [T] micrometer-commons
-├── LOGGING
+│   │   ├── [T] spring-security-core
+│   │   ├── [T] spring-security-web
+│   │   └── [T] spring-security-oauth2-core
+│   │
+│   └── [D] spring-security-oauth2-jose
+│       ├── [T] spring-security-core
+│       ├── [T] spring-security-oauth2-core
+│       └── [T] nimbus-jose-jwt
+│
+├── 5. SERVLET INFRASTRUCTURE
+│   ├── [P] jakarta.servlet-api
+│   └── [E] Apache Tomcat 10.1.x
+│
+├── 6. JSON SERIALIZATION
+│   └── [D] jackson-databind
+│       ├── [T] jackson-core
+│       └── [T] jackson-annotations
+│
+├── 7. LOGGING
 │   ├── [D] slf4j-api
-│   ├── [D] logback-classic
-│   ├── [T] logback-core
-├── TEST [test scope]
-│   ├── [D] spring-test
-│   ├── [D] spring-security-test
-│   ├── [D] junit-jupiter
-│   ├── [T] junit-jupiter-api
-│   ├── [T] junit-jupiter-engine
-│   ├── [T] junit-jupiter-params
-│   ├── [T] junit-platform-engine
-│   ├── [T] junit-platform-commons
-│   ├── [T] opentest4j
-│   ├── [T] apiguardian-api
-│   ├── [D] mockito-junit-jupiter
-│   ├── [T] mockito-core
-│   ├── [T] byte-buddy
-│   ├── [T] byte-buddy-agent
-│   ├── [T] objenesis
-│   ├── [D] hamcrest
+│   └── [D] logback-classic
+│       ├── [T] slf4j-api
+│       └── [T] logback-core
+│
+└── 8. TESTING (test scope)
+    ├── [D] spring-test
+    │   └── [T] spring-core
+    │
+    ├── [D] spring-security-test
+    │   ├── [T] spring-security-core
+    │   ├── [T] spring-security-web
+    │   └── [T] spring-test
+    │
+    ├── [D] junit-jupiter
+    │   ├── [T] junit-jupiter-api
+    │   │   ├── [T] opentest4j
+    │   │   ├── [T] apiguardian-api
+    │   │   └── [T] junit-platform-commons
+    │   ├── [T] junit-jupiter-engine
+    │   │   └── [T] junit-platform-engine
+    │   └── [T] junit-jupiter-params
+    │
+    ├── [D] mockito-junit-jupiter
+    │   └── [T] mockito-core
+    │       ├── [T] byte-buddy
+    │       ├── [T] byte-buddy-agent
+    │       └── [T] objenesis
+    │
+    └── [D] hamcrest
 ```
+
+### 3.2. Summary — What we actually declare in `pom.xml`
+
+| Category | Artifact ID | Scope |
+|---|---|---|
+| Version management | `spring-framework-bom` | import |
+| Version management | `spring-security-bom` | import |
+| Web | `spring-webmvc` | compile |
+| Security | `spring-security-config` | compile |
+| Security | `spring-security-web` | compile |
+| JWT | `spring-security-oauth2-resource-server` | compile |
+| JWT | `spring-security-oauth2-jose` | compile |
+| Servlet | `jakarta.servlet-api` | provided |
+| JSON | `jackson-databind` | compile |
+| Logging | `slf4j-api` | compile |
+| Logging | `logback-classic` | runtime |
+| Testing | `spring-test` | test |
+| Testing | `spring-security-test` | test |
+| Testing | `junit-jupiter` | test |
+| Testing | `mockito-junit-jupiter` | test |
+| Testing | `hamcrest` | test |
+
+| Summary | Count |
+|---|---:|
+| Production dependency declarations | 9 |
+| Test dependency declarations | 5 |
+| BOM imports | 2 |
+| External runtime components | 1 |
+
+### 3.3. Summary — Where important transitive JARs come from
+
+| Transitive JAR | Introduced through |
+|---|---|
+| `spring-core` | `spring-webmvc` and other Spring modules |
+| `spring-context` | `spring-webmvc` |
+| `spring-web` | `spring-webmvc` |
+| `spring-jcl` | `spring-core` |
+| `spring-security-core` | `spring-security-config`, among others |
+| `spring-security-crypto` | `spring-security-core` |
+| `spring-security-oauth2-core` | Resource Server / JOSE |
+| `nimbus-jose-jwt` | `spring-security-oauth2-jose` |
+| `micrometer-observation` | Spring Web and Security modules |
+| `micrometer-commons` | `micrometer-observation` |
+| `jackson-core` | `jackson-databind` |
+| `jackson-annotations` | `jackson-databind` |
+| `logback-core` | `logback-classic` |
+| `mockito-core` | `mockito-junit-jupiter` |
+| `byte-buddy` | `mockito-core` |
+
+### 3.4. Architectural dependency overview
+
+```mermaid
+flowchart TD
+    P["pom.xml"]
+    P --> W["Spring Web MVC"]
+    P --> S["Spring Security"]
+    P --> J["JWT / JOSE"]
+    P --> V["Servlet API"]
+    P --> L["Logging"]
+    P --> JSON["Jackson"]
+    P --> T["Testing"]
+    W --> SC["Spring Framework Core"]
+    S --> SEC["Security Core"]
+    SEC --> CR["Security Crypto"]
+    J --> RS["Resource Server"]
+    J --> JOSE["OAuth2 JOSE"]
+    RS --> SEC
+    JOSE --> N["Nimbus JOSE JWT"]
+    N --> JDK["JDK 17 Cryptography"]
+    V -. Provided by .-> TC["External Tomcat"]
+```
+
+### 3.5. Important observations
+
+- `spring-security-crypto` is **transitive**, not a required direct POM declaration.
+- `nimbus-jose-jwt` is **transitive**, introduced through `spring-security-oauth2-jose`. Declare it directly if our application code directly uses Nimbus APIs.
+- Repeated dependencies in the tree do not imply multiple copies of the same JAR.
+- Some directly declared dependencies are also reachable transitively. Explicit declarations make our intended dependencies clearer.
+- Tomcat is external infrastructure under the proposed WAR deployment model.
+- BOM imports manage versions without adding JARs.
+- No additional JARs are inherently required for standard RS256 cryptography or X.509 certificate processing.
+
+**Verification status:** This is a simplified, proposed dependency tree, not actual `mvn dependency:tree` output. Exact transitive relationships, additional JARs (such as `jcip-annotations`, depending on the resolved Nimbus version), scopes and version compatibility must still be verified against the final POM.
 
 ## 4. Maven BOM configuration
 
