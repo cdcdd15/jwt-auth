@@ -1,0 +1,10 @@
+flowchart TD
+  X["1. API presents its X.509 server certificate during TLS<br/>Hostname, server public key and validity dates<br/>API also sends any needed intermediate certificates"]
+  V["2. Client validates the X.509 certificate<br/>Trusted CA chain, hostname, validity dates and proof of private-key control"]
+  T["3. Client sends the bearer JWT over the established TLS connection"]
+  J["4. API verifies the JWT with the issuer's trusted JWT signing public key"]
+  X --> V --> T --> J
+  style X fill:#e9f0ff,stroke:#2563eb,stroke-width:2px
+  style V fill:#f2f6ff,stroke:#2563eb
+  style T fill:#eef8f0,stroke:#16a34a
+  style J fill:#fcf5ea,stroke:#d97706

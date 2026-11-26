@@ -1,0 +1,22 @@
+flowchart LR
+  subgraph TLS["HTTPS server authentication"]
+    direction TB
+    T["X.509 TLS server certificate<br/>DNS identity and TLS public key"]
+    V["HTTPS client validates certificate<br/>Trust chain, hostname and validity dates"]
+    H["TLS protects the HTTP connection"]
+    T --> V --> H
+  end
+  subgraph JWT["JWT signature verification"]
+    direction TB
+    C["Optional X.509 signing certificate<br/>Can carry the issuer's signing public key"]
+    K["Trusted issuer signing public key<br/>PEM, JWK from JWKS, or certificate"]
+    A["API verifies the JWT signature"]
+    C -.-> K
+    K --> A
+  end
+  style T fill:#e9f0ff,stroke:#2563eb,stroke-width:2px
+  style V fill:#f2f6ff,stroke:#2563eb
+  style C fill:#fcf5ea,stroke:#d97706,stroke-width:2px,stroke-dasharray:5 4
+  style K fill:#fcf5ea,stroke:#d97706
+  style H fill:#eef8f0,stroke:#16a34a
+  style A fill:#eef8f0,stroke:#16a34a

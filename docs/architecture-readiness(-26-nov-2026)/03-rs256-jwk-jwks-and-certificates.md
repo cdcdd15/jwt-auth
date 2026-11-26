@@ -80,8 +80,9 @@ The issuer signs new tokens with Key 02. Old tokens remain valid; the Resource S
 ![JWT signing keys vs TLS certificates](assets/svg/IMG10.svg)
 
 [PNG](assets/png/IMG10.png) · [Mermaid source](assets/mermaid/IMG10.mmd)
+
 | Scenario | JWT signing key | TLS certificate |
-|---|---|---|
+| --- | --- | --- |
 | Sign JWT | Required | No |
 | Validate JWT offline | Required public key | No |
 | Retrieve JWKS over HTTPS | Provides verification keys | Required |

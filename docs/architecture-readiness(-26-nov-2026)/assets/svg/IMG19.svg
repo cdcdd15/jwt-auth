@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" viewBox="0 0 760 300" role="img" aria-labelledby="title description">
+  <title id="title">One RSA public key in two formats</title>
+  <desc id="description">Parsing either the PEM public key or the RSA JWK yields the same modulus and public exponent.</desc>
+  <rect width="760" height="300" fill="white"/>
+  <g font-family="Arial,sans-serif" fill="#243247" text-anchor="middle">
+    <text x="380" y="28" font-size="20" font-weight="bold">One RSA public key in two formats</text>
+    <rect x="40" y="55" width="320" height="96" rx="12" fill="#2563eb" fill-opacity=".07" stroke="#2563eb"/>
+    <rect x="400" y="55" width="320" height="96" rx="12" fill="#d97706" fill-opacity=".07" stroke="#d97706"/>
+    <text x="200" y="80" font-size="17" font-weight="bold">PEM public key</text>
+    <text x="200" y="103" font-size="15">PUBLIC KEY envelope</text>
+    <text x="200" y="127" font-size="15">Base64-encoded SubjectPublicKeyInfo</text>
+    <text x="560" y="80" font-size="17" font-weight="bold">RSA JWK</text>
+    <text x="560" y="103" font-size="15">JSON object with kty set to RSA</text>
+    <text x="560" y="127" font-size="15">Base64url-encoded n and e</text>
+    <g fill="none" stroke="#64748b">
+      <path d="M200 151 V175 H290 V209 l-5 -7 m5 7 l5 -7"/>
+      <path d="M560 151 V175 H470 V209 l-5 -7 m5 7 l5 -7"/>
+    </g>
+    <text x="241" y="194" font-size="13">Parse PEM</text>
+    <text x="524" y="194" font-size="13">Decode JWK</text>
+    <rect x="160" y="210" width="440" height="65" rx="12" fill="#16a34a" fill-opacity=".07" stroke="#16a34a"/>
+    <text x="380" y="236" font-size="17" font-weight="bold">Same RSA public key</text>
+    <text x="380" y="259" font-size="15">Same modulus (n) and public exponent (e)</text>
+  </g>
+</svg>

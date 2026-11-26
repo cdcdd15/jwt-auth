@@ -1,0 +1,6 @@
+flowchart TD
+  P["PEM public key<br/>PUBLIC KEY envelope<br/>Base64-encoded SubjectPublicKeyInfo"]
+  J["RSA JWK<br/>JSON object with kty set to RSA<br/>Base64url-encoded n and e"]
+  K["Same RSA public key<br/>Same modulus (n) and public exponent (e)"]
+  P -->|Parse PEM| K
+  J -->|Decode JWK| K
