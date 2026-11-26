@@ -30,13 +30,13 @@ The three-event invalid-bearer trace is entry/challenge/exit. Anonymous protecte
 
 ## Executed suites and method inventory
 
-### [ErrorPathIT](../src/test/java/com/example/securitylearning/ErrorPathIT.java) — 5 HTTP cases
+### [ErrorPathIT](../../src/test/java/com/example/securitylearning/ErrorPathIT.java) — 5 HTTP cases
 
 - `anonymousRequestsFailSecurityBeforeApplicationErrors`
 - `unmappedUrlReturns404ThroughResourceHandlerAndErrorDispatch`
 - `controllerExceptionReturns500AndNextRequestHasFreshTrace`
 
-### [JwtAuthorizationIT](../src/test/java/com/example/securitylearning/JwtAuthorizationIT.java) — 23 HTTP cases
+### [JwtAuthorizationIT](../../src/test/java/com/example/securitylearning/JwtAuthorizationIT.java) — 23 HTTP cases
 
 - `publicEndpointDoesNotRequireToken`
 - `missingBearerReturns401BeforeMvc`
@@ -45,65 +45,65 @@ The three-event invalid-bearer trace is entry/challenge/exit. Anonymous protecte
 - `bearerRequestDoesNotEstablishSessionAuthentication`
 - `validatedRolesBecomeRequestAuthorities`
 
-### [JwtDiagnosticsIT](../src/test/java/com/example/securitylearning/JwtDiagnosticsIT.java) — 13 HTTP cases
+### [JwtDiagnosticsIT](../../src/test/java/com/example/securitylearning/JwtDiagnosticsIT.java) — 13 HTTP cases
 
 - `tracesAndCapturedOutputExcludeCredentialsAndKeyMaterial`
 - `concurrentBearerIdentitiesStayCorrelatedAndSeparate`
 - `diagnosticsDistinguishAuthenticationAndAuthorization`
 - `completedSecurityBranchDoesNotAuthenticateNextRequest`
 
-### [JwtLoginIT](../src/test/java/com/example/securitylearning/JwtLoginIT.java) — 12 HTTP cases
+### [JwtLoginIT](../../src/test/java/com/example/securitylearning/JwtLoginIT.java) — 12 HTTP cases
 
 - `badCredentialsReturnGeneric401WithoutToken`
 - `loginIssuesTrustedTokenForEndpointPolicy`
 - `malformedLoginReturns400WithoutToken`
 
-### [JwtNegativeValidationIT](../src/test/java/com/example/securitylearning/JwtNegativeValidationIT.java) — 54 HTTP cases
+### [JwtNegativeValidationIT](../../src/test/java/com/example/securitylearning/JwtNegativeValidationIT.java) — 54 HTTP cases
 
 - `permittedRawRepresentationsRemainAuthenticated`
 - `invalidRawTokensFailClosedBeforeMvc`
 - `timestampSkewHasDeterministicBoundaries`
 - `invalidBearerFailsBeforePublicAuthorization`
 
-### [RequestTraceIT](../src/test/java/com/example/securitylearning/RequestTraceIT.java) — 3 HTTP cases
+### [RequestTraceIT](../../src/test/java/com/example/securitylearning/RequestTraceIT.java) — 3 HTTP cases
 
 - `successfulRequestRecordsNestedOrder`
 
-### [JwtDecoderConfigTest](../src/test/java/com/example/securitylearning/config/JwtDecoderConfigTest.java) — 3 unit/context cases
+### [JwtDecoderConfigTest](../../src/test/java/com/example/securitylearning/config/JwtDecoderConfigTest.java) — 3 unit/context cases
 
 - `invalidPublicKeyFails`
 - `missingPublicKeyFailsInsteadOfGeneratingFallback`
 - `undersizedRsaPublicKeyFails`
 
-### [JwtIssuerConfigTest](../src/test/java/com/example/securitylearning/config/JwtIssuerConfigTest.java) — 2 unit/context cases
+### [JwtIssuerConfigTest](../../src/test/java/com/example/securitylearning/config/JwtIssuerConfigTest.java) — 2 unit/context cases
 
 - `invalidPrivateKeyFails`
 - `mismatchedSigningKeyFailsInsteadOfIssuingUnverifiableTokens`
 
-### [JwtStartupTest](../src/test/java/com/example/securitylearning/config/JwtStartupTest.java) — 10 unit/context cases
+### [JwtStartupTest](../../src/test/java/com/example/securitylearning/config/JwtStartupTest.java) — 10 unit/context cases
 
 - `unacceptableKeysFailContextStartup`
 - `matchingDevelopmentKeysCreateOneEncoderAndDecoder`
 
-### [IssuerSecretHandlingTest](../src/test/java/com/example/securitylearning/security/IssuerSecretHandlingTest.java) — 2 unit/context cases
+### [IssuerSecretHandlingTest](../../src/test/java/com/example/securitylearning/security/IssuerSecretHandlingTest.java) — 2 unit/context cases
 
 - `temporaryKeysAreOwnerOnlyAndRemoved`
 - `requestAndResponseDisplayAreRedacted`
 
-### [JwtClaimContractValidatorTest](../src/test/java/com/example/securitylearning/security/JwtClaimContractValidatorTest.java) — 8 unit/context cases
+### [JwtClaimContractValidatorTest](../../src/test/java/com/example/securitylearning/security/JwtClaimContractValidatorTest.java) — 8 unit/context cases
 
 - `validNormalizedClaimsSatisfyContract`
 - `absentOrEmptyRolesRemainAnAuthenticationCandidate`
 - `invalidClaimShapeOrRequiredValueFails`
 
-### [RsaJwtTest](../src/test/java/com/example/securitylearning/security/RsaJwtTest.java) — 4 unit/context cases
+### [RsaJwtTest](../../src/test/java/com/example/securitylearning/security/RsaJwtTest.java) — 4 unit/context cases
 
 - `changedPayloadCannotVerifyOriginalSignature`
 - `developmentKeysAreRsa2048WithMatchingPublicAndPrivateModulus`
 - `differentPublicKeyCannotVerifySignature`
 - `rs256TokenHasExpectedHeaderAndClaimsAndVerifiesWithPublicKey`
 
-### [TraceEventSinkTest](../src/test/java/com/example/securitylearning/tracing/TraceEventSinkTest.java) — 2 unit/context cases
+### [TraceEventSinkTest](../../src/test/java/com/example/securitylearning/tracing/TraceEventSinkTest.java) — 2 unit/context cases
 
 - `completedTracesAreBoundedAndRequestStateIsRemoved`
 - `completedSnapshotCannotBeModifiedByReaders`

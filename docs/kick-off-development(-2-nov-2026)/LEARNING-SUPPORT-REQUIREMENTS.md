@@ -1,10 +1,10 @@
 # Mandatory learning support
 
-The project teaches Spring internals through executed HTTP evidence. Working code without its learning walkthrough is incomplete. [ROADMAP](../ROADMAP.md) is the active nine-step specification for Java 17 and unconditional JWT.
+The project teaches Spring internals through executed HTTP evidence. Working code without its learning walkthrough is incomplete. [ROADMAP](../../ROADMAP.md) is the active nine-step specification for Java 17 and unconditional JWT.
 
 ## Required artifacts for every step
 
-Create `docs/learning/<step>-WALKTHROUGH.md` immediately, including documentation-only steps. Explain:
+Create `docs/kick-off-development(-2-nov-2026)/learning/<step>-WALKTHROUGH.md` immediately, including documentation-only steps. Explain:
 
 1. Objectives, prerequisites, scope and changes from the preceding checkpoint.
 2. Every changed class, method, annotation, constructor dependency, private helper, configuration lambda and meaningful line/block. For documentation-only steps, explain document ownership, the preserved source concepts and deletion/replacement mapping. Do not invent code changes.

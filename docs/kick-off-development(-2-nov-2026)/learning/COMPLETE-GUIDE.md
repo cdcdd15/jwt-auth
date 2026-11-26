@@ -1,6 +1,6 @@
 # Complete Java 17 JWT learning guide
 
-This guide describes the current unconditional JWT application, its entire production source and executed tests. Read [setup](../../README.md), [scope](../IN-SCOPE-OUT-OF-SCOPE.md), [claim contract](../JWT-CLAIM-CONTRACT.md) and [test matrix](../TEST-MATRIX.md) alongside it. [JWT foundations](JWT-FOUNDATIONS.md) gives a gentler prerequisite narrative. The source audit below supersedes old checkpoint ranges; J walkthroughs retain actual historical execution evidence. No original comparison-course document is required.
+This guide describes the current unconditional JWT application, its entire production source and executed tests. Read [setup](../../../README.md), [scope](../IN-SCOPE-OUT-OF-SCOPE.md), [claim contract](../JWT-CLAIM-CONTRACT.md) and [test matrix](../TEST-MATRIX.md) alongside it. [JWT foundations](JWT-FOUNDATIONS.md) gives a gentler prerequisite narrative. The source audit below supersedes old checkpoint ranges; J walkthroughs retain actual historical execution evidence. No original comparison-course document is required.
 
 ## Reading path and step evidence
 
@@ -16,7 +16,7 @@ This guide describes the current unconditional JWT application, its entire produ
 | J3.S2 | Complete current source/flow/test guide | [Walkthrough](J3.S2-WALKTHROUGH.md) |
 | J3.S3 | Final clean runtime/repository audit | [Walkthrough](J3.S3-WALKTHROUGH.md) |
 
-All nine walkthroughs are implemented. The [final audit](J3.S3-WALKTHROUGH.md) closes the [roadmap](../../ROADMAP.md) with clean Java17 verification and explicit evidence limits.
+All nine walkthroughs are implemented. The [final audit](J3.S3-WALKTHROUGH.md) closes the [roadmap](../../../ROADMAP.md) with clean Java17 verification and explicit evidence limits.
 
 ## Architecture and trust boundaries
 
@@ -36,7 +36,7 @@ The fixed issuer is urn:spring-security-learning:local and required audience is 
 
 ## Build and runtime ownership
 
-[pom.xml](../../pom.xml) inherits Boot3.5.7 dependency/plugin management. java.version17 selects compiler release17; Enforcer3.6.2 executes requireJavaVersion at validate with range [17,18). A newer compiler targeting17 is insufficient. The rule gates Maven, not an arbitrary standalone java executable: choose JDK17 for jar startup too. Resource Server supplies runtime security/JOSE dependencies, web supplies MVC/Tomcat, and starter-test/RestAssured remain test-scoped. Boot packaging creates the executable jar. Surefire includes *Test. Failsafe includes *IT and binds integration-test plus verify, so package alone does not run the HTTP verification gate. Use `mvn verify` or `mvn clean verify` with the same JDK17 JAVA_HOME for all phases.
+[pom.xml](../../../pom.xml) inherits Boot3.5.7 dependency/plugin management. java.version17 selects compiler release17; Enforcer3.6.2 executes requireJavaVersion at validate with range [17,18). A newer compiler targeting17 is insufficient. The rule gates Maven, not an arbitrary standalone java executable: choose JDK17 for jar startup too. Resource Server supplies runtime security/JOSE dependencies, web supplies MVC/Tomcat, and starter-test/RestAssured remain test-scoped. Boot packaging creates the executable jar. Surefire includes *Test. Failsafe includes *IT and binds integration-test plus verify, so package alone does not run the HTTP verification gate. Use `mvn verify` or `mvn clean verify` with the same JDK17 JAVA_HOME for all phases.
 
 ## Every production class and meaningful source block
 
@@ -44,7 +44,7 @@ The following 16-file audit uses current one-based inclusive ranges, checked aga
 
 ### SecurityLearningApplication.java
 
-Source: [SecurityLearningApplication.java](../../src/main/java/com/example/securitylearning/SecurityLearningApplication.java).
+Source: [SecurityLearningApplication.java](../../../src/main/java/com/example/securitylearning/SecurityLearningApplication.java).
 
 | Lines | Explanation |
 |---|---|
@@ -54,7 +54,7 @@ Source: [SecurityLearningApplication.java](../../src/main/java/com/example/secur
 
 ### api/AuthController.java
 
-Source: [api/AuthController.java](../../src/main/java/com/example/securitylearning/api/AuthController.java).
+Source: [api/AuthController.java](../../../src/main/java/com/example/securitylearning/api/AuthController.java).
 
 | Lines | Explanation |
 |---|---|
@@ -68,7 +68,7 @@ Source: [api/AuthController.java](../../src/main/java/com/example/securitylearni
 
 ### api/DemoController.java
 
-Source: [api/DemoController.java](../../src/main/java/com/example/securitylearning/api/DemoController.java).
+Source: [api/DemoController.java](../../../src/main/java/com/example/securitylearning/api/DemoController.java).
 
 | Lines | Explanation |
 |---|---|
@@ -80,7 +80,7 @@ Source: [api/DemoController.java](../../src/main/java/com/example/securitylearni
 
 ### config/InMemoryIdentityConfig.java
 
-Source: [config/InMemoryIdentityConfig.java](../../src/main/java/com/example/securitylearning/config/InMemoryIdentityConfig.java).
+Source: [config/InMemoryIdentityConfig.java](../../../src/main/java/com/example/securitylearning/config/InMemoryIdentityConfig.java).
 
 | Lines | Explanation |
 |---|---|
@@ -92,7 +92,7 @@ Source: [config/InMemoryIdentityConfig.java](../../src/main/java/com/example/sec
 
 ### config/JwtDecoderConfig.java
 
-Source: [config/JwtDecoderConfig.java](../../src/main/java/com/example/securitylearning/config/JwtDecoderConfig.java).
+Source: [config/JwtDecoderConfig.java](../../../src/main/java/com/example/securitylearning/config/JwtDecoderConfig.java).
 
 | Lines | Explanation |
 |---|---|
@@ -104,7 +104,7 @@ Source: [config/JwtDecoderConfig.java](../../src/main/java/com/example/securityl
 
 ### config/JwtIssuerConfig.java
 
-Source: [config/JwtIssuerConfig.java](../../src/main/java/com/example/securitylearning/config/JwtIssuerConfig.java).
+Source: [config/JwtIssuerConfig.java](../../../src/main/java/com/example/securitylearning/config/JwtIssuerConfig.java).
 
 | Lines | Explanation |
 |---|---|
@@ -115,7 +115,7 @@ Source: [config/JwtIssuerConfig.java](../../src/main/java/com/example/securityle
 
 ### config/JwtSecurityConfig.java
 
-Source: [config/JwtSecurityConfig.java](../../src/main/java/com/example/securitylearning/config/JwtSecurityConfig.java).
+Source: [config/JwtSecurityConfig.java](../../../src/main/java/com/example/securitylearning/config/JwtSecurityConfig.java).
 
 | Lines | Explanation |
 |---|---|
@@ -132,7 +132,7 @@ Source: [config/JwtSecurityConfig.java](../../src/main/java/com/example/security
 
 ### security/JwtClaimContractValidator.java
 
-Source: [security/JwtClaimContractValidator.java](../../src/main/java/com/example/securitylearning/security/JwtClaimContractValidator.java).
+Source: [security/JwtClaimContractValidator.java](../../../src/main/java/com/example/securitylearning/security/JwtClaimContractValidator.java).
 
 | Lines | Explanation |
 |---|---|
@@ -143,7 +143,7 @@ Source: [security/JwtClaimContractValidator.java](../../src/main/java/com/exampl
 
 ### security/JwtTokenService.java
 
-Source: [security/JwtTokenService.java](../../src/main/java/com/example/securitylearning/security/JwtTokenService.java).
+Source: [security/JwtTokenService.java](../../../src/main/java/com/example/securitylearning/security/JwtTokenService.java).
 
 | Lines | Explanation |
 |---|---|
@@ -156,7 +156,7 @@ Source: [security/JwtTokenService.java](../../src/main/java/com/example/security
 
 ### security/RsaKeyGenerator.java
 
-Source: [security/RsaKeyGenerator.java](../../src/main/java/com/example/securitylearning/security/RsaKeyGenerator.java).
+Source: [security/RsaKeyGenerator.java](../../../src/main/java/com/example/securitylearning/security/RsaKeyGenerator.java).
 
 | Lines | Explanation |
 |---|---|
@@ -165,7 +165,7 @@ Source: [security/RsaKeyGenerator.java](../../src/main/java/com/example/security
 
 ### security/StrictJwtDecoder.java
 
-Source: [security/StrictJwtDecoder.java](../../src/main/java/com/example/securitylearning/security/StrictJwtDecoder.java).
+Source: [security/StrictJwtDecoder.java](../../../src/main/java/com/example/securitylearning/security/StrictJwtDecoder.java).
 
 | Lines | Explanation |
 |---|---|
@@ -178,7 +178,7 @@ Source: [security/StrictJwtDecoder.java](../../src/main/java/com/example/securit
 
 ### tracing/MvcTraceInterceptor.java
 
-Source: [tracing/MvcTraceInterceptor.java](../../src/main/java/com/example/securitylearning/tracing/MvcTraceInterceptor.java).
+Source: [tracing/MvcTraceInterceptor.java](../../../src/main/java/com/example/securitylearning/tracing/MvcTraceInterceptor.java).
 
 | Lines | Explanation |
 |---|---|
@@ -190,7 +190,7 @@ Source: [tracing/MvcTraceInterceptor.java](../../src/main/java/com/example/secur
 
 ### tracing/RequestTraceFilter.java
 
-Source: [tracing/RequestTraceFilter.java](../../src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java).
+Source: [tracing/RequestTraceFilter.java](../../../src/main/java/com/example/securitylearning/tracing/RequestTraceFilter.java).
 
 | Lines | Explanation |
 |---|---|
@@ -200,7 +200,7 @@ Source: [tracing/RequestTraceFilter.java](../../src/main/java/com/example/securi
 
 ### tracing/SecurityTraceFilter.java
 
-Source: [tracing/SecurityTraceFilter.java](../../src/main/java/com/example/securitylearning/tracing/SecurityTraceFilter.java).
+Source: [tracing/SecurityTraceFilter.java](../../../src/main/java/com/example/securitylearning/tracing/SecurityTraceFilter.java).
 
 | Lines | Explanation |
 |---|---|
@@ -210,7 +210,7 @@ Source: [tracing/SecurityTraceFilter.java](../../src/main/java/com/example/secur
 
 ### tracing/TraceConfiguration.java
 
-Source: [tracing/TraceConfiguration.java](../../src/main/java/com/example/securitylearning/tracing/TraceConfiguration.java).
+Source: [tracing/TraceConfiguration.java](../../../src/main/java/com/example/securitylearning/tracing/TraceConfiguration.java).
 
 | Lines | Explanation |
 |---|---|
@@ -220,7 +220,7 @@ Source: [tracing/TraceConfiguration.java](../../src/main/java/com/example/securi
 
 ### tracing/TraceEventSink.java
 
-Source: [tracing/TraceEventSink.java](../../src/main/java/com/example/securitylearning/tracing/TraceEventSink.java).
+Source: [tracing/TraceEventSink.java](../../../src/main/java/com/example/securitylearning/tracing/TraceEventSink.java).
 
 | Lines | Explanation |
 |---|---|

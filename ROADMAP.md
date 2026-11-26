@@ -40,7 +40,7 @@ Create a focused JWT learning application from the completed three-mode course. 
 
 ### J1.S1 — Migrate the build and source to Java 17
 
-Verified 2026-11-02: `mvn clean verify` on Eclipse Temurin17.0.21 passed 153 HTTP + 29 unit cases, zero failures/errors/skips (29.550 seconds). JDK21 and JDK24 `mvn validate` attempts failed with the intended version message. Three test getFirst calls became get(0); application dependencies and security behavior remain unchanged. [Walkthrough](docs/learning/J1.S1-WALKTHROUGH.md).
+Verified 2026-11-02: `mvn clean verify` on Eclipse Temurin17.0.21 passed 153 HTTP + 29 unit cases, zero failures/errors/skips (29.550 seconds). JDK21 and JDK24 `mvn validate` attempts failed with the intended version message. Three test getFirst calls became get(0); application dependencies and security behavior remain unchanged. [Walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J1.S1-WALKTHROUGH.md).
 
 - [x] Configure compiler release 17 and a Maven Java-version gate accepting only `[17,18)`.
 - Replace post-Java-17 source/test APIs and language usage with Java 17 equivalents without changing behavior.
@@ -51,7 +51,7 @@ Verified 2026-11-02: `mvn clean verify` on Eclipse Temurin17.0.21 passed 153 HTT
 
 ### J1.S2 — Make JWT unconditional and retire other modes
 
-Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (20.310 s). Missing-key context startup fails without mode selection; real Tomcat reports one security chain/proxy registration. Retired mode/comparison suites are removed and MVC/error/tracing tests now use signed bearer credentials. [Walkthrough](docs/learning/J1.S2-WALKTHROUGH.md).
+Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (20.310 s). Missing-key context startup fails without mode selection; real Tomcat reports one security chain/proxy registration. Retired mode/comparison suites are removed and MVC/error/tracing tests now use signed bearer credentials. [Walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J1.S2-WALKTHROUGH.md).
 
 - [x] Remove `BasicSecurityConfig`, `SecurityModeConfig`, the selector property and JWT-only conditional annotations.
 - Activate JWT security, local login, issuer and decoder unconditionally; review Boot exclusions and servlet registration for exactly one intended chain/proxy, with outer tracing preserved.
@@ -62,7 +62,7 @@ Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero fa
 
 ### J1.S3 — Simplify the remaining JWT components
 
-Verified 2026-11-02: Java17 `mvn clean verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (20.665 s). Credential beans and the dedicated manager now belong to scanned InMemoryIdentityConfig; the issuer owns signing only. Unnecessary launcher exclusions/direct Security starter declaration removed; explicit proxy ownership remains. Packaged library inventory is identical and singleton/HTTP regressions pass. [Walkthrough](docs/learning/J1.S3-WALKTHROUGH.md).
+Verified 2026-11-02: Java17 `mvn clean verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (20.665 s). Credential beans and the dedicated manager now belong to scanned InMemoryIdentityConfig; the issuer owns signing only. Unnecessary launcher exclusions/direct Security starter declaration removed; explicit proxy ownership remains. Packaged library inventory is identical and singleton/HTTP regressions pass. [Walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J1.S3-WALKTHROUGH.md).
 
 - [x] Retain and simplify the in-memory credential/provider configuration, dedicated login manager, BCrypt, Nimbus encoder/decoder, strict claim guard and role converter.
 - Remove leftover mode-specific branches, imports, redundant wiring and abstractions; avoid unrelated renaming or feature expansion.
@@ -75,7 +75,7 @@ Verified 2026-11-02: Java17 `mvn clean verify` passed 94 HTTP + 23 unit cases, z
 
 ### J2.S1 — Consolidate login, authentication and authorization tests
 
-Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (21.234 s). JwtLoginIT now owns12 cases including issued-token public/user/admin and eight malformed-login shapes; JwtAuthorizationIT owns23 authentication/role/infrastructure cases. Redundant JwtMvcIT and duplicated old validation cases retired with explicit coverage mapping; production and negative-validation code unchanged. [Walkthrough](docs/learning/J2.S1-WALKTHROUGH.md).
+Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero failures/errors/skips (21.234 s). JwtLoginIT now owns12 cases including issued-token public/user/admin and eight malformed-login shapes; JwtAuthorizationIT owns23 authentication/role/infrastructure cases. Redundant JwtMvcIT and duplicated old validation cases retired with explicit coverage mapping; production and negative-validation code unchanged. [Walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J2.S1-WALKTHROUGH.md).
 
 - [x] Consolidate retained HTTP coverage around public, user, admin and local login endpoints rather than historical mode comparisons.
 - Verify valid USER/ADMIN login, trusted claim contents, issued-token use, generic bad-credential 401 and malformed-body 400.
@@ -86,7 +86,7 @@ Verified 2026-11-02: Java17 `mvn verify` passed 94 HTTP + 23 unit cases, zero fa
 
 ### J2.S2 — Consolidate strict validation and key-failure evidence
 
-Verified 2026-11-02: Java17 `mvn clean verify` passed103 HTTP +31 unit/context cases, zero failures/errors/skips (24.470 s). Raw-token suite54 includes public-route failures and accepted representations; key-context suite10 covers nine startup failures and a successful pair. Exact skew boundaries and focused parser/fixture tests retained. No production change. [Walkthrough](docs/learning/J2.S2-WALKTHROUGH.md).
+Verified 2026-11-02: Java17 `mvn clean verify` passed103 HTTP +31 unit/context cases, zero failures/errors/skips (24.470 s). Raw-token suite54 includes public-route failures and accepted representations; key-context suite10 covers nine startup failures and a successful pair. Exact skew boundaries and focused parser/fixture tests retained. No production change. [Walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J2.S2-WALKTHROUGH.md).
 
 - [x] Retain raw-token tests for tampering, unknown RSA key, wrong algorithm, malformed serialization, issuer/audience and required claims.
 - Preserve original JSON type checks, including numeric subject and explicit null timestamps, and malformed-versus-missing role behavior.
@@ -97,7 +97,7 @@ Verified 2026-11-02: Java17 `mvn clean verify` passed103 HTTP +31 unit/context c
 
 ### J2.S3 — Consolidate diagnostics, lifecycle and isolation evidence
 
-Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (26.261 s). Exact branch traces, three sequential cleanup branches, barrier-backed overlapping worker identities, four captured-output branches and anonymous security-before-error cases verified. Weaker duplicate request concurrency test consolidated into the diagnostic overlap case; sink bounds/immutability retained. No production change. [Walkthrough](docs/learning/J2.S3-WALKTHROUGH.md).
+Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (26.261 s). Exact branch traces, three sequential cleanup branches, barrier-backed overlapping worker identities, four captured-output branches and anonymous security-before-error cases verified. Weaker duplicate request concurrency test consolidated into the diagnostic overlap case; sink bounds/immutability retained. No production change. [Walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J2.S3-WALKTHROUGH.md).
 
 - [x] Retain configured-chain and observed-filter-entry checks, distinguishing early bearer rejection, anonymous challenge, authenticated role denial and successful MVC handoff.
 - Verify correlated traces, server-thread post-proxy cleanup, authenticated-then-anonymous requests and concurrent identity separation.
@@ -110,7 +110,7 @@ Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context c
 
 ### J3.S1 — Replace obsolete course documentation
 
-Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (24.242 s). Replaced current contracts/inventory/index, extracted JWT foundations and removed21 obsolete course documents. Production/tests unchanged. [Walkthrough](docs/learning/J3.S1-WALKTHROUGH.md).
+Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (24.242 s). Replaced current contracts/inventory/index, extracted JWT foundations and removed21 obsolete course documents. Production/tests unchanged. [Walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J3.S1-WALKTHROUGH.md).
 
 - [x] Remove the former P1–P5 phase specifications, historical walkthroughs and cross-mode comparison documents from this branch after extracting explanations needed by the JWT-only learning path.
 - Rewrite README, AGENTS, scope, project structure and test matrix for unconditional JWT and Java 17. Preserve this roadmap, its progress and evidence.
@@ -121,7 +121,7 @@ Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, 
 
 ### J3.S2 — Assemble the complete JWT learning guide
 
-Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (25.502 s). Complete guide audits 16 production files/77 blocks/561 nonblank lines, maps 21 HTTP methods and includes credential/bearer/error sequences and actual sanitized traces. Production/tests unchanged. [Walkthrough](docs/learning/J3.S2-WALKTHROUGH.md).
+Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (25.502 s). Complete guide audits 16 production files/77 blocks/561 nonblank lines, maps 21 HTTP methods and includes credential/bearer/error sequences and actual sanitized traces. Production/tests unchanged. [Walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J3.S2-WALKTHROUGH.md).
 
 - [x] Create a focused complete guide indexing all nine migration steps, linking implemented walkthroughs and the retained application/test contracts. Add J3.S3’s walkthrough when that step is implemented.
 - Audit every remaining production class, method, annotation and meaningful line/block against current documentation, including private helpers and configuration lambdas.
@@ -133,7 +133,7 @@ Verified 2026-11-02: Java17 `mvn verify` passed110 HTTP +31 unit/context cases, 
 
 ### J3.S3 — Final Java 17 verification and repository audit
 
-Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (26.226 s). JDK21/24 validation rejected; packaged missing-key startup failed closed. Package/source/history/log and documentation audits passed, with explicit pattern-scan limits and one harmless parser PEM-format hint documented. [Final walkthrough](docs/learning/J3.S3-WALKTHROUGH.md).
+Verified 2026-11-02: Java17 `mvn clean verify` passed110 HTTP +31 unit/context cases, zero failures/errors/skips (26.226 s). JDK21/24 validation rejected; packaged missing-key startup failed closed. Package/source/history/log and documentation audits passed, with explicit pattern-scan limits and one harmless parser PEM-format hint documented. [Final walkthrough](docs/kick-off-development(-2-nov-2026)/learning/J3.S3-WALKTHROUGH.md).
 
 - [x] Run `mvn clean verify` on actual JDK 17 and record Maven/JDK/vendor/framework versions, exact command, test names/counts and actual outcomes.
 - Recheck unconditional startup, one security chain/proxy registration, fail-closed keys, Basic rejection and preserved endpoint/trace contracts using automated evidence.

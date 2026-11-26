@@ -1,6 +1,6 @@
 # Project scope through J3.S3
 
-The objective is to learn Spring HTTP and security internals from a small runnable Java 17 JWT application and executed evidence. [ROADMAP](../ROADMAP.md) defines nine migration steps; one step is authorized per request. All nine steps are complete. J3 replaced documentation, assembled the complete source guide and performed the final audit. Documentation cleanup does not authorize new product features.
+The objective is to learn Spring HTTP and security internals from a small runnable Java 17 JWT application and executed evidence. [ROADMAP](../../ROADMAP.md) defines nine migration steps; one step is authorized per request. All nine steps are complete. J3 replaced documentation, assembled the complete source guide and performed the final audit. Documentation cleanup does not authorize new product features.
 
 ## In scope
 
