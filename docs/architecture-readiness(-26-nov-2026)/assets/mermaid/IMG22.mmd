@@ -1,0 +1,11 @@
+flowchart LR
+  C["Client<br/>Obtain a token<br/>Call the protected API"]
+  I["JWT Issuer<br/>Establish identity and roles<br/>Sign with the private key<br/>Supply public keys and contract"]
+  R["JWT Resource Server<br/>Verify signature and claims<br/>Map roles to authorities<br/>Enforce endpoint policy"]
+  C -->|Token request| I
+  I -->|Signed JWT| C
+  I -.->|Public key or JWKS| R
+  C -->|Protected API request with bearer JWT| R
+  style C fill:#eef4ff,stroke:#2563eb
+  style I fill:#fcf5ea,stroke:#d97706
+  style R fill:#eef8f0,stroke:#16a34a

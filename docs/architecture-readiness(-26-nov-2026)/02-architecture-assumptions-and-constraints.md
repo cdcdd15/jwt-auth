@@ -13,6 +13,7 @@ Before defining the implementation roadmap, we should establish an **Architectur
 ![System architecture and scope](assets/svg/IMG04.svg)
 
 [PNG](assets/png/IMG04.png) · [Mermaid source](assets/mermaid/IMG04.mmd)
+
 | ID | Assumption / responsibility / constraint | Implication |
 |---|---|---|
 | A01 | Two separate applications: jwt-issuer and jwt-resource-server | Independent application lifecycles |

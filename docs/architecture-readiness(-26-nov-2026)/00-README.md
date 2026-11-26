@@ -5,6 +5,7 @@ Six chronological prompt/answer documents, following the approved first export. 
 ## Documents
 
 - [01-stateless-jwt-and-in-memory-storage](01-stateless-jwt-and-in-memory-storage.md)
+  - [01-a — P3 responsibilities, issuer contract, and stakeholder readiness](01-a-p3-actor-responsibilities-and-contracts.md)
 - [02-architecture-assumptions-and-constraints](02-architecture-assumptions-and-constraints.md)
 - [03-rs256-jwk-jwks-and-certificates](03-rs256-jwk-jwks-and-certificates.md)
   - [03-a — Sign and verify with RSA and RS256](03-a-rsa-and-rs256.md)
