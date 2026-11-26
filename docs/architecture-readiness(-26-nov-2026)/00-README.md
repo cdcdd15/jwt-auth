@@ -1,6 +1,6 @@
 # JWT-auth conversation archive
 
-Seven chronological prompt/answer documents, following the approved first export. File 01 and its assets are unchanged. Files 02–07 are reconstructed from the conversation: substantive tables, IDs, examples and diagrams are retained, but wording is condensed in places and diagrams are not pixel-identical. Original interactive citations are not reproduced. Maven versions and trees remain unverified historical proposals. The later packaging/approval exchanges are not included, following the agreed seven-document scope.
+Six chronological prompt/answer documents, following the approved first export. File 01 and its assets are unchanged. Files 02–06 are reconstructed from the conversation: substantive tables, IDs, examples and diagrams are retained, but wording is condensed in places and diagrams are not pixel-identical. Original interactive citations are not reproduced. Maven versions and trees remain unverified historical proposals. The archive ends with the proposed architecture documentation package.
 
 ## Documents
 
@@ -10,7 +10,6 @@ Seven chronological prompt/answer documents, following the approved first export
 - [04-maven-dependencies-java17-plain-spring](04-maven-dependencies-java17-plain-spring.md)
 - [05-clarifications-and-revision-requirements](05-clarifications-and-revision-requirements.md)
 - [06-proposed-architecture-documentation-package](06-proposed-architecture-documentation-package.md)
-- [07-conversation-export-structure](07-conversation-export-structure.md)
 
 ## Assets
 
