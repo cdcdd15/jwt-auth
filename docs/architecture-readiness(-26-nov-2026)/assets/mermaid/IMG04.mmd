@@ -1,0 +1,8 @@
+flowchart TD
+  N0["Client<br/>Authentication / Bearer JWT"]
+  N0 --> N1
+  N1["OUT OF SCOPE — jwt-issuer<br/>User management<br/>Credential validation<br/>Token generation<br/>Private RSA key<br/>Token lifecycle"]
+  N1 --> N2
+  N2["IN SCOPE — jwt-resource-server<br/>Token extraction<br/>Signature validation<br/>Claims validation<br/>Identity reconstruction<br/>Authorization"]
+  N2 --> N3
+  N3["Trust relationship<br/>Public key + token contract"]

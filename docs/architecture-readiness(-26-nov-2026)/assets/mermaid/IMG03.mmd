@@ -1,0 +1,4 @@
+flowchart TD
+ I["jwt-issuer: in-memory users, credentials, RSA private key, Nimbus JWT generation"]
+ R["jwt-resource-server: no users or DB, RSA public key, Nimbus validation, issuer/audience/time checks, scope/role authorization"]
+ I -.->|Signed JWT / trust contract| R

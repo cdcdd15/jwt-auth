@@ -1,0 +1,7 @@
+flowchart TD
+ A[Incoming HTTP request: Bearer JWT] --> B[BearerTokenAuthenticationFilter]
+ B --> C[JwtAuthenticationProvider / JwtDecoder]
+ C --> D[SecurityContextHolder: JwtAuthenticationToken]
+ D --> E[AuthorizationFilter / Controller]
+ E --> F[Request completed: context cleared]
+ style D fill:#dcfce7,stroke:#16a34a

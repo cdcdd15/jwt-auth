@@ -1,0 +1,6 @@
+flowchart TD
+  N0["Initial<br/>Key 01: sign + verify<br/>JWKS: Key 01"]
+  N0 --> N1
+  N1["Transition<br/>Key 01: verify only; Key 02: sign + verify<br/>JWKS: Key 01 + 02"]
+  N1 --> N2
+  N2["Completed<br/>Key 01 retired; Key 02: sign + verify<br/>JWKS: Key 02"]

@@ -1,0 +1,12 @@
+flowchart TD
+  N0["Spring Security Configuration<br/>spring-security-config"]
+  N0 --> N1
+  N1["Web Security Filter Chain<br/>spring-security-web"]
+  N1 --> N2
+  N2["Bearer Token Authentication<br/>spring-security-oauth2-resource-server"]
+  N2 --> N3
+  N3["JWT Validation Abstraction<br/>spring-security-oauth2-jose"]
+  N3 --> N4
+  N4["Cryptographic Implementation<br/>nimbus-jose-jwt"]
+  N4 --> N5
+  N5["Java Cryptography Architecture<br/>JDK 17 — java.security / javax.crypto"]

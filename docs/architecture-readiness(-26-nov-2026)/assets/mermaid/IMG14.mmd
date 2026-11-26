@@ -1,0 +1,14 @@
+flowchart TD
+  N0["00-overview<br/>README.md<br/>document-index.md<br/>requirements-traceability.md"]
+  N0 --> N1
+  N1["01-stakeholder-agreement<br/>01-architecture-assumptions-and-hypotheses.md<br/>02-prerequisites-constraints-and-dependencies.md<br/>03-open-decisions-and-approval-checklist.md"]
+  N1 --> N2
+  N2["02-system-architecture<br/>01-system-context-and-boundaries.md<br/>02-responsibilities-and-scope.md<br/>03-statelessness-and-data-storage.md<br/>04-external-dependencies-and-contracts.md<br/>05-non-functional-requirements.md"]
+  N2 --> N3
+  N3["03-security-and-cryptography<br/>01-security-and-cryptographic-assumptions.md<br/>02-rsa-rs256-signing-and-verification.md<br/>03-jwk-jwks-and-pem.md<br/>04-x509-certificates-tls-and-https.md<br/>05-key-distribution-and-rotation.md<br/>06-token-lifecycle-and-revocation.md<br/>07-identity-roles-and-authorities.md"]
+  N3 --> N4
+  N4["04-maven-dependencies<br/>01-java17-compatibility-baseline.md<br/>02-security-jwt-dependency-tree.md<br/>03-complete-application-dependency-tree.md<br/>04-pom-and-dependency-management.md<br/>05-dependency-verification-and-exclusions.md"]
+  N4 --> N5
+  N5["05-spring-security-design<br/>01-spring-security-components.md<br/>02-jwt-authentication-request-flow.md<br/>03-in-memory-state-and-security-context.md<br/>04-learning-phases-and-target-ecosystem.md"]
+  N5 --> N6
+  N6["06-planning-and-readiness<br/>01-architecture-decision-records.md<br/>02-resource-allocation.md<br/>03-development-readiness-checklist.md<br/>04-project-lifecycle-and-milestones.md"]

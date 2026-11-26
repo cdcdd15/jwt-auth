@@ -1,0 +1,8 @@
+flowchart TD
+  N0["Runtime dependencies<br/>JVM, Spring Security, Nimbus JOSE, trusted public key<br/>System clock and security configuration"]
+  N0 --> N1
+  N1["Contract dependencies<br/>JWT structure, issuer, audience, algorithm, authorities"]
+  N1 --> N2
+  N2["Conditional network dependencies<br/>JWKS endpoint, centralized logging, monitoring, TLS"]
+  N2 --> N3
+  N3["Excluded dependencies<br/>User/business DB, Redis, session store, token introspection"]

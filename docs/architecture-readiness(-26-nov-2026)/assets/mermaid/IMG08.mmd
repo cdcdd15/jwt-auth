@@ -1,0 +1,10 @@
+flowchart TD
+  N0["OUT OF SCOPE — jwt-issuer<br/>RSA private key, RSA public key<br/>RS256 signing"]
+  N0 --> N1
+  N1["KEY DISTRIBUTION<br/>Static PEM / JWK or remote JWKS endpoint<br/>HTTPS + TLS certificates for remote retrieval"]
+  N1 --> N2
+  N2["IN SCOPE — jwt-resource-server<br/>Trusted public key, public key / JWK cache<br/>RS256 verification"]
+  N2 --> N3
+  N3["Client → protected REST API<br/>Bearer JWT over HTTPS"]
+  N3 --> N4
+  N4["TRANSPORT SECURITY<br/>TLS certificates, trusted CAs and encrypted connections"]

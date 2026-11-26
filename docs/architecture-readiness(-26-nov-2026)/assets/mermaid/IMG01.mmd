@@ -1,0 +1,8 @@
+flowchart TD
+ C[Client] -->|Credentials| I[Auth Server]
+ I -->|JWT| C
+ C -->|Bearer JWT| R[Resource Server]
+ I --> U[User storage: in-memory or DB]
+ R -.-> N[No user storage required]
+ I --- K[Private RSA key / sign JWT]
+ R --- P[Public RSA key / validate JWT]
