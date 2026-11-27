@@ -1,0 +1,5 @@
+flowchart TD
+ R[Resource Server] --> K[RSA signing public keys]
+ R --> C[Trusted CA certificates]
+ R -. conditional .-> T[TLS certificate and private key]
+ R -. excluded .-> P[JWT signing private key]

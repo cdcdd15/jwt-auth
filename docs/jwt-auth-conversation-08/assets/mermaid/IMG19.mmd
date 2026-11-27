@@ -1,0 +1,6 @@
+flowchart TD
+ C[Client] -->|Inbound HTTPS / TLS| R[Resource Server]
+ R -->|Outbound HTTPS| I[Issuer JWKS endpoint]
+ I -->|RSA public keys| R
+ R --> V[RS256 verification]
+ R --> T[CA truststore]
