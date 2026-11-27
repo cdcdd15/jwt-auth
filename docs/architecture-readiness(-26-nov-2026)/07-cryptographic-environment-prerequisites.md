@@ -1,4 +1,4 @@
-# 08 — Cryptographic architecture and environment prerequisites
+# 07 — Cryptographic architecture and environment prerequisites
 
 ## Original prompt
 
@@ -12,8 +12,8 @@
 
 | Comparison | Reconciliation |
 | --- | --- |
-| **02 — ADR01 public key distribution, ADR07 issuer availability, ADR10 rotation** | Start with local PEM and manual rotation as proposed in 02. Treat remote JWKS as the target in 08. Remote retrieval and refresh can need the issuer’s endpoint, while verification with a suitable trusted key remains local. Automated rotation depends on publication, cache refresh, and retirement behavior. |
-| **02 — ADR12 TLS termination and S07 HTTPS** | Gateway termination is the preference in 08. Placement, internal TLS and outbound mTLS remain open. The DEV row covers a deployed enterprise environment. Any HTTP exception applies only to explicitly agreed local development. |
+| **02 — ADR01 public key distribution, ADR07 issuer availability, ADR10 rotation** | Start with local PEM and manual rotation as proposed in 02. Treat remote JWKS as the target in 07. Remote retrieval and refresh can need the issuer’s endpoint, while verification with a suitable trusted key remains local. Automated rotation depends on publication, cache refresh, and retirement behavior. |
+| **02 — ADR12 TLS termination and S07 HTTPS** | Gateway termination is the preference in 07. Placement, internal TLS and outbound mTLS remain open. The DEV row covers a deployed enterprise environment. Any HTTP exception applies only to explicitly agreed local development. |
 | **01 / 01-a — Actor and contract boundaries** | The issuer remains external to the proposed API and provides signed tokens, verification keys and claim semantics. D03 covers claim shape, D06 covers roles/scopes, and the API owns R05 authority mapping and R07 enforcement. |
 | **03 / 03-a through 03-d — Signing, key representation, rotation and TLS** | HTTPS uses TLS. A configured RSA verification key can verify JWTs without a JWT signing certificate. TLS protects the JWKS connection, while the configured issuer/key source establishes which keys the API accepts. JWKS supplies the public key; the HTTPS certificate authenticates the endpoint. A JWT signature detects modification. TLS protects data in transit. |
 | **04 — Plain Spring dependencies** | This environment proposal adds provisioning requirements while 04 covers software and build dependencies. Its Maven versions and dependency trees remain historical proposals. |
@@ -27,9 +27,9 @@ The important point is that we should request **cryptographic capabilities and t
 
 # 1. Three cryptographic trust relationships
 
-![Three cryptographic trust relationships](assets/08/svg/IMG19.svg)
+![Three cryptographic trust relationships](assets/07/svg/IMG19.svg)
 
-[PNG](assets/08/png/IMG19.png) · [Mermaid source](assets/08/mermaid/IMG19.mmd)
+[PNG](assets/07/png/IMG19.png) · [Mermaid source](assets/07/mermaid/IMG19.mmd)
 
 | Trust relationship | Purpose | Required cryptographic material |
 |---|---|---|
@@ -61,9 +61,9 @@ If an enterprise gateway or OpenShift ingress terminates incoming TLS, our Java 
 
 Assuming remote JWKS, standard TLS and gateway-managed inbound HTTPS:
 
-![Application cryptographic material](assets/08/svg/IMG20.svg)
+![Application cryptographic material](assets/07/svg/IMG20.svg)
 
-[PNG](assets/08/png/IMG20.png) · [Mermaid source](assets/08/mermaid/IMG20.mmd)
+[PNG](assets/07/png/IMG20.png) · [Mermaid source](assets/07/mermaid/IMG20.mmd)
 
 # 4. Why do we need certificates if we already have public keys?
 
@@ -75,9 +75,9 @@ But how do we know that the public key actually belongs to the system we intend 
 
 ## 4.1. Public key without a certificate
 
-![Public key without a certificate](assets/08/svg/IMG21.svg)
+![Public key without a certificate](assets/07/svg/IMG21.svg)
 
-[PNG](assets/08/png/IMG21.png) · [Mermaid source](assets/08/mermaid/IMG21.mmd)
+[PNG](assets/07/png/IMG21.png) · [Mermaid source](assets/07/mermaid/IMG21.mmd)
 
 Anyone can generate an RSA key pair. The existence of a valid public key does not prove the identity of its owner.
 
@@ -91,9 +91,9 @@ This is essentially the static PEM approach discussed under **ADR01 and K04**.
 
 An X.509 certificate contains more than the public key.
 
-![X.509 certificate structure](assets/08/svg/IMG22.svg)
+![X.509 certificate structure](assets/07/svg/IMG22.svg)
 
-[PNG](assets/08/png/IMG22.png) · [Mermaid source](assets/08/mermaid/IMG22.mmd)
+[PNG](assets/07/png/IMG22.png) · [Mermaid source](assets/07/mermaid/IMG22.mmd)
 
 The certificate binds an identity to a public key through a signed statement.
 
@@ -101,9 +101,9 @@ For HTTPS, the client validates the certificate chain against configured trust a
 
 ## 4.3. Certificate chain of trust
 
-![Certificate chain of trust](assets/08/svg/IMG23.svg)
+![Certificate chain of trust](assets/07/svg/IMG23.svg)
 
-[PNG](assets/08/png/IMG23.png) · [Mermaid source](assets/08/mermaid/IMG23.mmd)
+[PNG](assets/07/png/IMG23.png) · [Mermaid source](assets/07/mermaid/IMG23.mmd)
 
 When our application retrieves a JWKS, TLS authenticates the endpoint and protects the communication. Our configured issuer/JWKS trust relationship determines whether the retrieved signing keys are trusted.
 
@@ -150,9 +150,9 @@ The `x5c` property is optional. Its presence does not automatically establish ce
 
 This distinction will be particularly relevant when requesting environment configuration.
 
-![Keystore vs truststore](assets/08/svg/IMG24.svg)
+![Keystore vs truststore](assets/07/svg/IMG24.svg)
 
-[PNG](assets/08/png/IMG24.png) · [Mermaid source](assets/08/mermaid/IMG24.mmd)
+[PNG](assets/07/png/IMG24.png) · [Mermaid source](assets/07/mermaid/IMG24.mmd)
 
 | Scenario | Keystore | Truststore |
 |---|:---:|:---:|
