@@ -1,0 +1,4 @@
+flowchart TD
+  R["Root CA certificate<br/>Trusted through JVM or enterprise truststore"] -->|Signs| I["Intermediate CA certificate"]
+  I -->|Signs| S["Server X.509 certificate<br/>Server identity and public key"]
+  S --> J["HTTPS endpoint<br/>For example, issuer.example.com"]

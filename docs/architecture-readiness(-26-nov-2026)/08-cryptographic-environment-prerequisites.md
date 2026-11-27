@@ -6,15 +6,30 @@
 
 ## Answer
 
+### How this proposal fits the November 26 archive
+
+[02 — Architecture assumptions and constraints](02-architecture-assumptions-and-constraints.md) is the starting point for the enterprise proposal. This document adds environment-specific cryptographic readiness. The repository’s [implemented learning application](../../README.md) uses Spring Boot, local JSON login and static PEM key loading in one process. The separate issuer and plain Spring deployment described in the archive are enterprise proposals.
+
+| Comparison | Reconciliation |
+| --- | --- |
+| **02 — ADR01 public key distribution, ADR07 issuer availability, ADR10 rotation** | Start with local PEM and manual rotation as proposed in 02. Treat remote JWKS as the target in 08. Remote retrieval and refresh can need the issuer’s endpoint, while verification with a suitable trusted key remains local. Automated rotation depends on publication, cache refresh, and retirement behavior. |
+| **02 — ADR12 TLS termination and S07 HTTPS** | Gateway termination is the preference in 08. Placement, internal TLS and outbound mTLS remain open. The DEV row covers a deployed enterprise environment. Any HTTP exception applies only to explicitly agreed local development. |
+| **01 / 01-a — Actor and contract boundaries** | The issuer remains external to the proposed API and provides signed tokens, verification keys and claim semantics. D03 covers claim shape, D06 covers roles/scopes, and the API owns R05 authority mapping and R07 enforcement. |
+| **03 / 03-a through 03-d — Signing, key representation, rotation and TLS** | HTTPS uses TLS. A configured RSA verification key can verify JWTs without a JWT signing certificate. TLS protects the JWKS connection, while the configured issuer/key source establishes which keys the API accepts. JWKS supplies the public key; the HTTPS certificate authenticates the endpoint. A JWT signature detects modification. TLS protects data in transit. |
+| **04 — Plain Spring dependencies** | This environment proposal adds provisioning requirements while 04 covers software and build dependencies. Its Maven versions and dependency trees remain historical proposals. |
+| **05 / 06 — Two stakeholder lists** | The approval list records decisions, while the environment matrix and ownership list record what must be provided. The request below is a draft for those stakeholders. |
+| **Requirement IDs** | D09 logging and K08 multiple keys, K15 untrusted-key rejection and K16 trusted JWKS location still apply. D11–D16 and K19–K23 are proposed extensions. |
+
+
 For our `jwt-resource-server`, I would separate the enterprise cryptographic requirements into **three independent trust relationships** before requesting certificates, keys, infrastructure or network permissions for DEV, UAT and PROD.
 
 The important point is that we should request **cryptographic capabilities and trust material**, rather than immediately requesting two or three certificates. The actual number of certificates depends on the deployment architecture.
 
 # 1. Three cryptographic trust relationships
 
-![Three cryptographic trust relationships](assets/svg/IMG19.svg)
+![Three cryptographic trust relationships](assets/08/svg/IMG19.svg)
 
-[PNG](assets/png/IMG19.png) · [Mermaid source](assets/mermaid/IMG19.mmd)
+[PNG](assets/08/png/IMG19.png) · [Mermaid source](assets/08/mermaid/IMG19.mmd)
 
 | Trust relationship | Purpose | Required cryptographic material |
 |---|---|---|
@@ -34,7 +49,7 @@ Not necessarily.
 | Issuer JWKS HTTPS/TLS certificate | Yes, if using remote HTTPS JWKS | Issuer team |
 | JWT signing certificate | Optional | Issuer team |
 | Resource Server client certificate | Only if outbound mTLS is required | Application or infrastructure team |
-| CA certificates | Required as trust anchors where applicable | Enterprise PKI / infrastructure team |
+| CA trust material | Use existing trust anchors or provision enterprise CA material as needed | Enterprise PKI / infrastructure team |
 
 **There is no separate HTTPS certificate and TLS certificate.** They refer to the same certificate in this context.
 
@@ -46,9 +61,9 @@ If an enterprise gateway or OpenShift ingress terminates incoming TLS, our Java 
 
 Assuming remote JWKS, standard TLS and gateway-managed inbound HTTPS:
 
-![Application cryptographic material](assets/svg/IMG20.svg)
+![Application cryptographic material](assets/08/svg/IMG20.svg)
 
-[PNG](assets/png/IMG20.png) · [Mermaid source](assets/mermaid/IMG20.mmd)
+[PNG](assets/08/png/IMG20.png) · [Mermaid source](assets/08/mermaid/IMG20.mmd)
 
 # 4. Why do we need certificates if we already have public keys?
 
@@ -60,9 +75,9 @@ But how do we know that the public key actually belongs to the system we intend 
 
 ## 4.1. Public key without a certificate
 
-![Public key without a certificate](assets/svg/IMG21.svg)
+![Public key without a certificate](assets/08/svg/IMG21.svg)
 
-[PNG](assets/png/IMG21.png) · [Mermaid source](assets/mermaid/IMG21.mmd)
+[PNG](assets/08/png/IMG21.png) · [Mermaid source](assets/08/mermaid/IMG21.mmd)
 
 Anyone can generate an RSA key pair. The existence of a valid public key does not prove the identity of its owner.
 
@@ -76,19 +91,19 @@ This is essentially the static PEM approach discussed under **ADR01 and K04**.
 
 An X.509 certificate contains more than the public key.
 
-![X.509 certificate structure](assets/svg/IMG22.svg)
+![X.509 certificate structure](assets/08/svg/IMG22.svg)
 
-[PNG](assets/png/IMG22.png) · [Mermaid source](assets/mermaid/IMG22.mmd)
+[PNG](assets/08/png/IMG22.png) · [Mermaid source](assets/08/mermaid/IMG22.mmd)
 
 The certificate binds an identity to a public key through a signed statement.
 
-The application establishes trust by validating the certificate chain against an already trusted certificate authority, together with validity, identity and applicable usage checks.
+For HTTPS, the client validates the certificate chain against configured trust anchors and checks validity, hostname and applicable usage. If certificates are used to distribute JWT signing keys, agree separately on how the API trusts and validates that signing material.
 
 ## 4.3. Certificate chain of trust
 
-![Certificate chain of trust](assets/svg/IMG23.svg)
+![Certificate chain of trust](assets/08/svg/IMG23.svg)
 
-[PNG](assets/png/IMG23.png) · [Mermaid source](assets/mermaid/IMG23.mmd)
+[PNG](assets/08/png/IMG23.png) · [Mermaid source](assets/08/mermaid/IMG23.mmd)
 
 When our application retrieves a JWKS, TLS authenticates the endpoint and protects the communication. Our configured issuer/JWKS trust relationship determines whether the retrieved signing keys are trusted.
 
@@ -135,9 +150,9 @@ The `x5c` property is optional. Its presence does not automatically establish ce
 
 This distinction will be particularly relevant when requesting environment configuration.
 
-![Keystore vs truststore](assets/svg/IMG24.svg)
+![Keystore vs truststore](assets/08/svg/IMG24.svg)
 
-[PNG](assets/png/IMG24.png) · [Mermaid source](assets/mermaid/IMG24.mmd)
+[PNG](assets/08/png/IMG24.png) · [Mermaid source](assets/08/mermaid/IMG24.mmd)
 
 | Scenario | Keystore | Truststore |
 |---|:---:|:---:|
@@ -164,12 +179,15 @@ This extends our existing **S, K and ADR** architecture requirements.
 | K05 | JWK representation supported | Proposed |
 | K06 | Remote JWKS as target key distribution mechanism | Proposed |
 | K07 | JWT contains a signing key identifier (`kid`) | Proposed |
+| K08 | Multiple verification keys during planned rotation | Proposed |
 | K09 | Public keys cached in JVM memory | Proposed |
 | K10 | Key rotation without redeployment | Proposed |
 | K11 | JWT signing keys and TLS keys are separate | Required |
 | K12 | JWKS retrieval over HTTPS | Mandatory if remote |
 | K13 | TLS certificate and hostname validation | Mandatory |
 | K14 | No DB or distributed key cache | Proposed |
+| K15 | Reject tokens when no suitable trusted verification key is available | Required |
+| K16 | Use a configured trusted JWKS location | Required if remote |
 | K17 | X.509 JWT signing certificates | Optional |
 | K18 | Defined key retrieval and cache failure policies | Required |
 | S07 | HTTPS in enterprise environments | Mandatory |
@@ -180,7 +198,7 @@ This extends our existing **S, K and ADR** architecture requirements.
 | K22 (new) | Certificate and key lifecycle ownership | Required |
 | K23 (new) | Approved TLS versions and cryptographic policies | Required |
 
-I would strongly recommend separating PROD and non-PROD signing keys and trust domains. A DEV-issued JWT should not be accepted in PROD.
+For environment isolation, agree on distinct trusted issuers or keys as appropriate, environment-specific audiences, and a test that rejects a DEV-issued JWT in PROD. Separating PROD and non-PROD signing keys is proposed under K20.
 
 # 8. List #2 — DEV / UAT / PROD prerequisites and dependencies
 
@@ -193,32 +211,33 @@ This is the actual provisioning and information request for infrastructure, secu
 | Trusted issuer identifier | Required | Required | Required |
 | Expected JWT audience | Required | Required | Required |
 | RSA public key / JWKS URL | Required | Required | Required |
-| Issuer HTTPS certificate | If remote JWKS | If remote JWKS | If remote JWKS |
+| JWKS endpoint TLS server certificate, managed at its termination point | If remote JWKS | If remote JWKS | If remote JWKS |
 | Trusted CA chain | As applicable | As applicable | As applicable |
 | JVM truststore configuration | As applicable | As applicable | As applicable |
 | Outbound JWKS connectivity | If remote JWKS | If remote JWKS | If remote JWKS |
 | Inbound TLS termination | Required* | Required | Required |
-| Application TLS certificate | Conditional | Conditional | Conditional |
+| Application TLS server certificate and private key | If application terminates TLS | If application terminates TLS | If application terminates TLS |
 | mTLS client certificate | Conditional | Conditional | Conditional |
 | Key rotation procedure | Testable | Validated | Operational |
 | Certificate renewal procedure | Defined | Validated | Operational |
 | Signed JWT test fixtures | Required | Required | Not normally |
 | Reliable system clock | Required | Required | Required |
 
-\* Local development may permit HTTP under an explicitly agreed exception.
+\* This covers deployed DEV. An explicitly agreed exception may allow HTTP on a local workstation.
 
 ## 8.2. Dependency classification and ownership
 
 | ID | Classification | Required resource | Responsible team |
 |---|---|---|---|
-| D01 | External system | JWT issuer availability | Identity team |
+| D01 | External system | Issuer availability for token issuance and integration testing | Identity team |
 | D02 | Cryptographic | RSA public keys / JWKS | Identity team |
-| D03 | Contractual | JWT claims specification | Identity / architecture |
+| D03 | Contractual | JWT claims specification and examples | Identity publishes; API team agrees |
 | D04 | Configuration | Issuer identifier | Identity team |
-| D05 | Configuration | Expected audience | Architecture / identity |
-| D06 | Contractual | Roles and scopes contract | Business / identity |
+| D05 | Configuration | Expected audience | API team defines; identity issues for it |
+| D06 | Contractual | Role/scope values and semantics. The API owns authority mapping and enforcement | Identity publishes; business and API teams agree |
 | D07 | Infrastructure | Clock synchronization | Infrastructure |
 | D08 | Infrastructure | TLS termination and certificates | Infrastructure / PKI |
+| D09 | Operational | Sanitized security logging and agreed destination | API / operations |
 | D10 | Software | Spring Security and Nimbus | Development |
 | D11 (new) | Network | Outbound JWKS connectivity | Network team |
 | D12 (new) | Cryptographic | Trusted CA certificates | PKI team |
@@ -249,6 +268,7 @@ The application will not issue tokens, store user credentials, implement a compl
 
 For each environment, please confirm or provide:
 
+- The issuer’s claims schema and role/scope definitions, with examples and the API team’s agreed authority mapping.
 - Trusted JWT issuer identifier.
 - Expected audience.
 - Supported signing algorithm (RS256).
@@ -305,7 +325,7 @@ Certificate provisioning should be based on the agreed TLS termination, key dist
 
 ---
 
-# 10. Recommended target architecture
+# 10. Proposed target architecture
 
 For our project, I would propose the following baseline for stakeholder approval.
 
@@ -323,7 +343,7 @@ For our project, I would propose the following baseline for stakeholder approval
 | Environment separation | Independent trust configuration |
 | Database | None |
 
-Under this proposed architecture, the Resource Server itself could operate with **zero application-owned certificates and zero private keys**. It would only need trusted RSA public keys and access to the appropriate CA trust material.
+With gateway termination and standard outbound TLS, the Java process can operate without an application-owned identity certificate or private key. It still needs trusted RSA signing public keys and access to the appropriate CA trust material. Application-terminated TLS or outbound mTLS changes those provisioning needs.
 
 The HTTPS certificates would be managed by the infrastructure and issuer teams.
 

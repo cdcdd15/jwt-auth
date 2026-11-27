@@ -1,0 +1,5 @@
+flowchart LR
+  K["Keystore<br/>Own private key, certificate and certificate chain"]
+  T["Truststore<br/>Trusted CA or peer certificates"]
+  K --> A["Application authenticates itself to a peer"]
+  T --> B["Application authenticates a peer"]

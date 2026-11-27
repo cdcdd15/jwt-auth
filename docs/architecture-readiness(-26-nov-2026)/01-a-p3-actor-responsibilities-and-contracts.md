@@ -61,3 +61,5 @@ Record the named owner, readiness status, and evidence for each item before deve
 | Infrastructure and operations | TLS termination and trust configuration, synchronized clocks, and sanitized logging destination are confirmed. | Platform and operations teams |
 | Testing | Signed fixtures and expected outcomes cover permitted and denied roles, missing claims, wrong audience, and expiry. | QA, issuer, and API teams |
 | Excluded | Database, Redis, session storage, and token introspection are documented as outside the proposed resource-server scope. | Architect and platform team |
+
+See the [DEV/UAT/PROD cryptographic prerequisites](08-cryptographic-environment-prerequisites.md) for the environment-specific provisioning matrix.

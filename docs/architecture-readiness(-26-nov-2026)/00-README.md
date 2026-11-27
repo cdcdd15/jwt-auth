@@ -1,6 +1,6 @@
 # JWT-auth conversation archive
 
-Six chronological prompt/answer documents, following the approved first export. File 01 and its assets are unchanged. Files 02–06 are reconstructed from the conversation: substantive tables, IDs, examples and diagrams are retained, but wording is condensed in places and diagrams are not pixel-identical. Original interactive citations are not reproduced. Maven versions and trees remain unverified historical proposals. The archive ends with the proposed architecture documentation package.
+Six chronological prompt/answer documents, following the approved first export. File 01 and its assets are unchanged. Files 02–06 are reconstructed from the conversation: substantive tables, IDs, examples and diagrams are retained, but wording is condensed in places and diagrams are not pixel-identical. Original interactive citations are not reproduced. Maven versions and trees remain unverified historical proposals. The archive also includes the later environment-prerequisites follow-up (08).
 
 ## Documents
 
@@ -15,6 +15,7 @@ Six chronological prompt/answer documents, following the approved first export. 
 - [04-maven-dependencies-java17-plain-spring](04-maven-dependencies-java17-plain-spring.md)
 - [05-clarifications-and-revision-requirements](05-clarifications-and-revision-requirements.md)
 - [06-proposed-architecture-documentation-package](06-proposed-architecture-documentation-package.md)
+- [08 — Cryptographic architecture and environment prerequisites](08-cryptographic-environment-prerequisites.md)
 
 ## Assets
 
