@@ -15,7 +15,7 @@ Six chronological prompt/answer documents, following the approved first export. 
 - [04-maven-dependencies-java17-plain-spring](04-maven-dependencies-java17-plain-spring.md)
 - [05-clarifications-and-revision-requirements](05-clarifications-and-revision-requirements.md)
 - [06-proposed-architecture-documentation-package](06-proposed-architecture-documentation-package.md)
-- [07 — Cryptographic architecture and environment prerequisites](07-cryptographic-environment-prerequisites.md)
+- [07-cryptographic-environment-prerequisites](07-cryptographic-environment-prerequisites.md)
 
 ## Assets
 
